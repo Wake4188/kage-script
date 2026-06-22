@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const BansenshukaiHistoryRoute = BansenshukaiHistoryRouteImport.update({
+  id: '/bansenshukai-history',
+  path: '/bansenshukai-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +25,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bansenshukai-history': typeof BansenshukaiHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bansenshukai-history': typeof BansenshukaiHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bansenshukai-history': typeof BansenshukaiHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/bansenshukai-history'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/bansenshukai-history'
+  id: '__root__' | '/' | '/bansenshukai-history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/bansenshukai-history': {
+      id: '/bansenshukai-history'
+      path: '/bansenshukai-history'
+      fullPath: '/bansenshukai-history'
+      preLoaderRoute: typeof BansenshukaiHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

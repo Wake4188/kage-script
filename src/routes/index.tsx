@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -258,6 +258,9 @@ function Index() {
             >
               Source ↗
             </a>
+            <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
+              History →
+            </Link>
           </div>
         </footer>
       </div>
