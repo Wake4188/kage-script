@@ -3,16 +3,16 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { shinobiEncode } from "@/lib/shinobi";
+import { shinobiEncode, shinobiDecode } from "@/lib/shinobi";
 import { translateToHiragana } from "@/lib/translate.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SHINOBI / 忍" },
-      { name: "description", content: "Translate any language into the 1676 ninja cipher 忍びいろは." },
-      { property: "og:title", content: "SHINOBI / 忍" },
-      { property: "og:description", content: "Translate any language into the 1676 ninja cipher." },
+      { title: "KAGE / 影" },
+      { name: "description", content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back." },
+      { property: "og:title", content: "KAGE / 影" },
+      { property: "og:description", content: "Encode any language into the 1676 ninja cipher, or decode it back." },
     ],
   }),
   component: Index,
@@ -42,9 +42,11 @@ function useTheme() {
 }
 
 function Index() {
+  const [mode, setMode] = useState<"encode" | "decode">("encode");
   const [input, setInput] = useState("");
   const [hiragana, setHiragana] = useState("");
   const [ninja, setNinja] = useState("");
+  const [decoded, setDecoded] = useState("");
   const [copied, setCopied] = useState(false);
   const { isDark, toggle } = useTheme();
 
@@ -65,14 +67,30 @@ function Index() {
 
   const submit = () => {
     const t = input.trim();
-    if (!t || mutation.isPending) return;
-    mutation.mutate(t);
+    if (!t) return;
+    if (mode === "encode") {
+      if (mutation.isPending) return;
+      mutation.mutate(t);
+    } else {
+      setDecoded(shinobiDecode(t));
+    }
   };
 
+  const output = mode === "encode" ? ninja : decoded;
+
   const copy = async () => {
-    if (!ninja) return;
-    await navigator.clipboard.writeText(ninja);
+    if (!output) return;
+    await navigator.clipboard.writeText(output);
     setCopied(true);
+  };
+
+  const switchMode = (next: "encode" | "decode") => {
+    if (next === mode) return;
+    setMode(next);
+    setInput("");
+    setHiragana("");
+    setNinja("");
+    setDecoded("");
   };
 
   return (
@@ -80,7 +98,7 @@ function Index() {
       <div className="mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-8 pt-6 sm:px-8 sm:pt-10">
         {/* Header — minimal monospace bar */}
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground sm:text-xs">
-          <span>SHINOBI/忍</span>
+          <span>KAGE/影</span>
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -106,11 +124,36 @@ function Index() {
           </p>
         </section>
 
+        {/* Mode tabs */}
+        <div
+          role="tablist"
+          aria-label="Mode"
+          className="mt-10 grid grid-cols-2 border border-foreground font-mono-display text-[11px] uppercase tracking-[0.2em] sm:mt-14"
+        >
+          {(["encode", "decode"] as const).map((m) => (
+            <button
+              key={m}
+              role="tab"
+              aria-selected={mode === m}
+              type="button"
+              onClick={() => switchMode(m)}
+              className={
+                "py-3 transition " +
+                (mode === m
+                  ? "bg-foreground text-background"
+                  : "bg-transparent text-foreground hover:bg-foreground/10")
+              }
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+
         {/* Input */}
-        <section className="mt-12 border-t border-foreground sm:mt-16">
+        <section className="mt-8 border-t border-foreground sm:mt-10">
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             <label htmlFor="shinobi-input" className="cursor-pointer">
-              01 / Input
+              01 / {mode === "encode" ? "Text" : "Cipher"}
             </label>
             <span>{input.length}/2000</span>
           </div>
@@ -121,7 +164,7 @@ function Index() {
             onKeyDown={(e) => {
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
             }}
-            placeholder="Type anything…"
+            placeholder={mode === "encode" ? "Type anything…" : "Paste ninja cipher…"}
             rows={3}
             spellCheck={false}
             maxLength={2000}
@@ -130,10 +173,16 @@ function Index() {
           <button
             type="button"
             onClick={submit}
-            disabled={!input.trim() || mutation.isPending}
+            disabled={!input.trim() || (mode === "encode" && mutation.isPending)}
             className="mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6"
           >
-            <span>{mutation.isPending ? "Encrypting…" : "Translate"}</span>
+            <span>
+              {mode === "encode"
+                ? mutation.isPending
+                  ? "Encoding…"
+                  : "Encode"
+                : "Decode"}
+            </span>
             <span aria-hidden className="ml-6">→</span>
           </button>
         </section>
@@ -141,28 +190,28 @@ function Index() {
         {/* Output */}
         <section className="mt-12 border-t border-foreground sm:mt-16">
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>02 / Cipher</span>
+            <span>02 / {mode === "encode" ? "Cipher" : "Hiragana"}</span>
             <button
               type="button"
               onClick={copy}
-              disabled={!ninja}
+              disabled={!output}
               className="font-mono-display uppercase tracking-[0.2em] text-foreground transition hover:opacity-60 disabled:opacity-20"
             >
               {copied ? "Copied ✓" : "Copy"}
             </button>
           </div>
           <div className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl" aria-live="polite">
-            {ninja ? (
-              ninja
-            ) : mutation.isPending ? (
+            {output ? (
+              output
+            ) : mode === "encode" && mutation.isPending ? (
               <span className="text-muted-foreground">…</span>
-            ) : mutation.isError ? (
+            ) : mode === "encode" && mutation.isError ? (
               <span className="text-base text-foreground">Failed. Try again.</span>
             ) : (
               <span className="text-muted-foreground/40">𨊂浾⽕紫゙</span>
             )}
           </div>
-          {hiragana && (
+          {mode === "encode" && hiragana && (
             <div className="border-t border-foreground/10 pt-3">
               <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 Hiragana
