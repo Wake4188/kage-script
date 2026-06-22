@@ -8,10 +8,10 @@ import { translateToHiragana } from "@/lib/translate.functions";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Shinobi — Ninja Text Translator" },
-      { name: "description", content: "Encode any language into the 1676 ninja cipher 忍びいろは (Shinobi Iroha)." },
-      { property: "og:title", content: "Shinobi — Ninja Text Translator" },
-      { property: "og:description", content: "Encode any language into the secret ninja cipher 忍びいろは." },
+      { title: "SHINOBI / 忍" },
+      { name: "description", content: "Translate any language into the 1676 ninja cipher 忍びいろは." },
+      { property: "og:title", content: "SHINOBI / 忍" },
+      { property: "og:description", content: "Translate any language into the 1676 ninja cipher." },
     ],
   }),
   component: Index,
@@ -51,134 +51,101 @@ function Index() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Decorative giant kanji */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-10 top-10 select-none font-brush text-[28rem] leading-none text-foreground/[0.04] sm:-right-24 sm:text-[40rem]"
-      >
-        忍
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-16 bottom-0 select-none font-brush text-[18rem] leading-none text-foreground/[0.04] sm:text-[24rem]"
-      >
-        影
-      </div>
-
-      <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-10 pt-6 sm:px-6 sm:pt-10">
-        {/* Header */}
-        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground sm:text-xs">
-              忍びいろは・Shinobi Iroha
-            </p>
-            <h1 className="mt-1 truncate font-brush text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Ninja Translator
-            </h1>
-          </div>
-          <span className="hanko shrink-0 px-2 py-1 text-[10px] sm:px-3 sm:py-1.5 sm:text-xs">
-            忍
-          </span>
+    <main className="min-h-dvh bg-background text-foreground font-display">
+      <div className="mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-8 pt-6 sm:px-8 sm:pt-10">
+        {/* Header — minimal monospace bar */}
+        <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground sm:text-xs">
+          <span>SHINOBI/忍</span>
+          <span className="text-muted-foreground">v1 · 1676</span>
         </header>
 
-        <p className="mt-3 max-w-prose text-xs leading-relaxed text-muted-foreground sm:text-sm">
-          Any language → secret kanji cipher used by ninja, compiled in the 1676
-          encyclopedia 萬川集海.
-        </p>
+        {/* Hero */}
+        <section className="mt-14 sm:mt-24">
+          <h1 className="font-display text-[44px] font-medium leading-[0.95] tracking-[-0.05em] sm:text-[88px]">
+            Ninja
+            <br />
+            <span className="italic font-normal">cipher.</span>
+          </h1>
+          <p className="mt-5 max-w-[36ch] font-mono-display text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
+            Any language → 忍びいろは, the secret kanji cipher compiled in 萬川集海.
+          </p>
+        </section>
 
-        {/* Input card */}
-        <section className="mt-5 rounded-lg border-2 border-foreground/80 bg-card p-4 ink-shadow sm:mt-8 sm:p-6">
-          <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground sm:text-xs">
-            Plain Text
-          </label>
+        {/* Input */}
+        <section className="mt-12 border-t border-foreground sm:mt-16">
+          <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span>01 / Input</span>
+            <span>{input.length}/2000</span>
+          </div>
           <textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value.slice(0, 2000))}
             onKeyDown={(e) => {
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
             }}
-            placeholder="Type anything in any language…"
-            rows={4}
-            className="w-full resize-none border-0 bg-transparent font-jp text-base leading-relaxed text-foreground placeholder:text-muted-foreground/60 focus:outline-none sm:text-lg"
+            placeholder="Type anything…"
+            rows={3}
+            spellCheck={false}
+            maxLength={2000}
+            className="w-full resize-none border-0 bg-transparent py-2 text-xl leading-snug tracking-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none sm:text-2xl"
           />
-          <div className="mt-3 flex items-center justify-between gap-2">
-            <span className="text-[10px] text-muted-foreground sm:text-xs">
-              {input.length}/2000
-            </span>
-            <button
-              type="button"
-              onClick={submit}
-              disabled={!input.trim() || mutation.isPending}
-              className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-background transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:text-sm"
-            >
-              {mutation.isPending ? "Encrypting…" : "Translate 翻訳"}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!input.trim() || mutation.isPending}
+            className="mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6"
+          >
+            <span>{mutation.isPending ? "Encrypting…" : "Translate"}</span>
+            <span aria-hidden className="ml-6">→</span>
+          </button>
         </section>
 
-        {/* Decorative divider */}
-        <div className="my-5 flex items-center gap-3 sm:my-8">
-          <div className="h-px flex-1 bg-foreground/30" />
-          <span className="font-brush text-sm text-foreground/60">秘伝</span>
-          <div className="h-px flex-1 bg-foreground/30" />
-        </div>
-
-        {/* Output card */}
-        <section className="rounded-lg border-2 border-foreground/80 bg-foreground p-4 text-background ink-shadow sm:p-6">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-            <label className="text-[10px] font-semibold uppercase tracking-[0.25em] text-background/60 sm:text-xs">
-              Ninja Cipher
-            </label>
+        {/* Output */}
+        <section className="mt-12 border-t border-foreground sm:mt-16">
+          <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span>02 / Cipher</span>
             <button
               type="button"
               onClick={copy}
               disabled={!ninja}
-              className="shrink-0 rounded border border-background/30 px-2.5 py-1 text-[10px] uppercase tracking-widest text-background/90 transition hover:bg-background/10 disabled:opacity-40 sm:text-xs"
+              className="font-mono-display uppercase tracking-[0.2em] text-foreground transition hover:opacity-60 disabled:opacity-20"
             >
-              {copied ? "Copied" : "Copy"}
+              {copied ? "Copied ✓" : "Copy"}
             </button>
           </div>
-
-          <div className="mt-3 min-h-[7rem] break-words font-jp text-2xl leading-[1.5] sm:min-h-[9rem] sm:text-3xl">
+          <div className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl" aria-live="polite">
             {ninja ? (
               ninja
             ) : mutation.isPending ? (
-              <span className="text-background/40">…</span>
+              <span className="text-muted-foreground">…</span>
             ) : mutation.isError ? (
-              <span className="text-base text-[color:var(--shu)] sm:text-lg">
-                Encryption failed. Try again.
-              </span>
+              <span className="text-base text-foreground">Failed. Try again.</span>
             ) : (
-              <span className="text-background/30">
-                𨊂浾⽕紫゙
-              </span>
+              <span className="text-muted-foreground/40">𨊂浾⽕紫゙</span>
             )}
           </div>
-
           {hiragana && (
-            <div className="mt-4 border-t border-background/15 pt-3">
-              <p className="text-[10px] uppercase tracking-[0.25em] text-background/50 sm:text-xs">
-                Hiragana bridge
+            <div className="border-t border-foreground/10 pt-3">
+              <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Hiragana
               </p>
-              <p className="mt-1 font-jp text-sm text-background/80 sm:text-base">
-                {hiragana}
-              </p>
+              <p className="mt-1 text-sm text-foreground/70 sm:text-base">{hiragana}</p>
             </div>
           )}
         </section>
 
-        <footer className="mt-auto pt-8 text-center text-[10px] text-muted-foreground sm:text-xs">
-          Cipher table from{" "}
-          <a
-            href="https://github.com/tomill/Text-Shinobi"
-            target="_blank"
-            rel="noreferrer"
-            className="underline-offset-4 hover:text-foreground hover:underline"
-          >
-            Text::Shinobi
-          </a>{" "}
-          · 萬川集海 · 1676
+        <footer className="mt-auto border-t border-foreground pt-3 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
+          <div className="flex items-center justify-between">
+            <span>萬川集海</span>
+            <a
+              href="https://github.com/tomill/Text-Shinobi"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-foreground hover:opacity-60"
+            >
+              Source ↗
+            </a>
+          </div>
         </footer>
       </div>
     </main>
