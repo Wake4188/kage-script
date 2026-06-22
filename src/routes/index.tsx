@@ -175,7 +175,7 @@ function Index() {
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span>Created by Noa Wilhide in France</span>
+              <span className="normal-case">Created by Noa Wilhide in France</span>
               <span className="hidden text-muted-foreground/40 sm:inline">·</span>
               <span>萬川集海</span>
             </div>
