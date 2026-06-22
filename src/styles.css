@@ -62,54 +62,43 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Washi paper background, sumi ink foreground, shu red accent */
-  --background: oklch(0.965 0.012 80);
-  --foreground: oklch(0.18 0.02 40);
-  --card: oklch(0.98 0.01 80);
-  --card-foreground: oklch(0.18 0.02 40);
-  --popover: oklch(0.98 0.01 80);
-  --popover-foreground: oklch(0.18 0.02 40);
-  --primary: oklch(0.18 0.02 40);
-  --primary-foreground: oklch(0.97 0.012 80);
-  --secondary: oklch(0.92 0.018 75);
-  --secondary-foreground: oklch(0.18 0.02 40);
-  --muted: oklch(0.92 0.015 75);
-  --muted-foreground: oklch(0.42 0.02 50);
-  --accent: oklch(0.55 0.21 27);
-  --accent-foreground: oklch(0.98 0.01 80);
-  --destructive: oklch(0.55 0.21 27);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.82 0.02 70);
-  --input: oklch(0.88 0.02 75);
-  --ring: oklch(0.55 0.21 27);
+  --radius: 0;
+  /* Pure black & white — Nothing / mathi.jp inspired */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: oklch(0 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0 0 0);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.97 0.012 80);
-  --sidebar-foreground: oklch(0.18 0.02 40);
-  --sidebar-primary: oklch(0.18 0.02 40);
-  --sidebar-primary-foreground: oklch(0.97 0.012 80);
-  --sidebar-accent: oklch(0.92 0.018 75);
-  --sidebar-accent-foreground: oklch(0.18 0.02 40);
-  --sidebar-border: oklch(0.82 0.02 70);
-  --sidebar-ring: oklch(0.55 0.21 27);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0 0 0);
+  --sidebar-primary: oklch(0 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0 0);
+  --sidebar-accent-foreground: oklch(0 0 0);
+  --sidebar-border: oklch(0 0 0);
+  --sidebar-ring: oklch(0 0 0);
 
-  --shu: oklch(0.55 0.21 27);
-  --sumi: oklch(0.18 0.02 40);
-  --washi: oklch(0.965 0.012 80);
-  --kinpaku: oklch(0.78 0.13 85);
-
-  --font-serif-jp: "Shippori Mincho", "Noto Serif JP", ui-serif, Georgia, serif;
-  --font-brush: "Yuji Syuku", "Shippori Mincho", ui-serif, serif;
-
-  --shadow-sumi: 0 18px 50px -20px color-mix(in oklab, var(--sumi) 55%, transparent);
-  --gradient-washi:
-    radial-gradient(1200px 600px at 10% -10%, color-mix(in oklab, var(--kinpaku) 18%, transparent), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--shu) 10%, transparent), transparent 55%),
-    linear-gradient(180deg, var(--washi), color-mix(in oklab, var(--washi) 85%, var(--kinpaku)));
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 .dark {
@@ -153,35 +142,19 @@
   }
 
   body {
-    background: var(--gradient-washi);
-    background-attachment: fixed;
+    background: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-serif-jp);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }
 
-@utility font-brush {
-  font-family: var(--font-brush);
+@utility font-mono-display {
+  font-family: var(--font-mono);
 }
 
-@utility font-jp {
-  font-family: var(--font-serif-jp);
-}
-
-@utility ink-shadow {
-  box-shadow: var(--shadow-sumi);
-}
-
-@utility hanko {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--shu);
-  color: var(--washi);
-  border: 2px solid color-mix(in oklab, var(--shu) 80%, black);
-  border-radius: 6px;
-  font-family: var(--font-brush);
-  letter-spacing: 0.1em;
-  box-shadow: 0 2px 0 color-mix(in oklab, var(--shu) 60%, black);
+@utility font-display {
+  font-family: var(--font-sans);
+  letter-spacing: -0.04em;
 }
