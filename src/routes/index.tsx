@@ -14,6 +14,28 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "KAGE / 影" },
       { property: "og:description", content: "Encode any language into the 1676 ninja cipher, or decode it back." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Kage",
+          alternateName: "影",
+          applicationCategory: "UtilitiesApplication",
+          operatingSystem: "Web",
+          url: "https://ninja-script-app.lovable.app",
+          description:
+            "Encode any language into the 1676 ninja kanji cipher 忍びいろは, or decode it back.",
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+          },
+          author: { "@type": "Person", name: "Noa Wilhide" },
+        }),
+      },
+    ],
   }),
   component: Index,
 });

@@ -103,6 +103,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Kage",
+          alternateName: "影",
+          url: "https://ninja-script-app.lovable.app",
+          description:
+            "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back.",
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
