@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 import { shinobiEncode } from "@/lib/shinobi";
 import { translateToHiragana } from "@/lib/translate.functions";
 
@@ -17,11 +18,35 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function useTheme() {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof document === "undefined") return false;
+    return document.documentElement.classList.contains("dark");
+  });
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  const toggle = () => {
+    const root = document.documentElement;
+    const next = !root.classList.contains("dark");
+    root.classList.toggle("dark", next);
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {}
+    setIsDark(next);
+  };
+
+  return { isDark, toggle };
+}
+
 function Index() {
   const [input, setInput] = useState("");
   const [hiragana, setHiragana] = useState("");
   const [ninja, setNinja] = useState("");
   const [copied, setCopied] = useState(false);
+  const { isDark, toggle } = useTheme();
 
   const translateFn = useServerFn(translateToHiragana);
   const mutation = useMutation({
@@ -56,7 +81,17 @@ function Index() {
         {/* Header — minimal monospace bar */}
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground sm:text-xs">
           <span>SHINOBI/忍</span>
-          <span className="text-muted-foreground">v1 · 1676</span>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="inline-flex h-7 w-7 items-center justify-center border border-foreground text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+            >
+              {isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
+            </button>
+            <span className="text-muted-foreground">v1 · 1676</span>
+          </div>
         </header>
 
         {/* Hero */}
@@ -74,10 +109,13 @@ function Index() {
         {/* Input */}
         <section className="mt-12 border-t border-foreground sm:mt-16">
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>01 / Input</span>
+            <label htmlFor="shinobi-input" className="cursor-pointer">
+              01 / Input
+            </label>
             <span>{input.length}/2000</span>
           </div>
           <textarea
+            id="shinobi-input"
             value={input}
             onChange={(e) => setInput(e.target.value.slice(0, 2000))}
             onKeyDown={(e) => {
@@ -134,9 +172,13 @@ function Index() {
           )}
         </section>
 
-        <footer className="mt-auto border-t border-foreground pt-3 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-          <div className="flex items-center justify-between">
-            <span>萬川集海</span>
+        <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="normal-case">Created by Noa Wilhide in France</span>
+              <span className="hidden text-muted-foreground/40 sm:inline">·</span>
+              <span>萬川集海</span>
+            </div>
             <a
               href="https://github.com/tomill/Text-Shinobi"
               target="_blank"
