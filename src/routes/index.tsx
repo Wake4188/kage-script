@@ -209,6 +209,7 @@ function Index() {
             type="button"
             onClick={submit}
             disabled={!input.trim() || (mode === "encode" && mutation.isPending)}
+            style={undefined}
             className="mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6"
           >
             <span>
