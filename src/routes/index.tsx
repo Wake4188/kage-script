@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { shinobiEncode, shinobiDecode } from "@/lib/shinobi";
-import { translateToHiragana } from "@/lib/translate.functions";
+import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,13 +41,12 @@ export const Route = createFileRoute("/")({
 });
 
 function useTheme() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof document === "undefined") return false;
-    return document.documentElement.classList.contains("dark");
-  });
+  const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
+    setMounted(true);
   }, []);
 
   const toggle = () => {
@@ -60,7 +59,7 @@ function useTheme() {
     setIsDark(next);
   };
 
-  return { isDark, toggle };
+  return { isDark, toggle, mounted };
 }
 
 function Index() {
@@ -69,8 +68,9 @@ function Index() {
   const [hiragana, setHiragana] = useState("");
   const [ninja, setNinja] = useState("");
   const [decoded, setDecoded] = useState("");
+  const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle, mounted } = useTheme();
 
   const translateFn = useServerFn(translateToHiragana);
   const mutation = useMutation({
@@ -78,6 +78,14 @@ function Index() {
     onSuccess: (res) => {
       setHiragana(res.hiragana);
       setNinja(shinobiEncode(res.hiragana));
+    },
+  });
+
+  const translateBackFn = useServerFn(translateFromHiragana);
+  const decodeMutation = useMutation({
+    mutationFn: (text: string) => translateBackFn({ data: { text } }),
+    onSuccess: (res) => {
+      setEnglish(res.english);
     },
   });
 
@@ -94,11 +102,15 @@ function Index() {
       if (mutation.isPending) return;
       mutation.mutate(t);
     } else {
-      setDecoded(shinobiDecode(t));
+      if (decodeMutation.isPending) return;
+      const hira = shinobiDecode(t);
+      setDecoded(hira);
+      setEnglish("");
+      decodeMutation.mutate(hira);
     }
   };
 
-  const output = mode === "encode" ? ninja : decoded;
+  const output = mode === "encode" ? ninja : english;
 
   const copy = async () => {
     if (!output) return;
@@ -113,6 +125,7 @@ function Index() {
     setHiragana("");
     setNinja("");
     setDecoded("");
+    setEnglish("");
   };
 
   return (
@@ -125,10 +138,10 @@ function Index() {
             <button
               type="button"
               onClick={toggle}
-              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={mounted && isDark ? "Switch to light mode" : "Switch to dark mode"}
               className="inline-flex h-7 w-7 items-center justify-center border border-foreground text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
-              {isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
+              {mounted && isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
             </button>
             <span className="text-muted-foreground">v1 · 1676</span>
           </div>
@@ -195,7 +208,10 @@ function Index() {
           <button
             type="button"
             onClick={submit}
-            disabled={!input.trim() || (mode === "encode" && mutation.isPending)}
+            disabled={
+              !input.trim() ||
+              (mode === "encode" ? mutation.isPending : decodeMutation.isPending)
+            }
             className="mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6"
           >
             <span>
@@ -203,7 +219,9 @@ function Index() {
                 ? mutation.isPending
                   ? "Encoding…"
                   : "Encode"
-                : "Decode"}
+                : decodeMutation.isPending
+                  ? "Decoding…"
+                  : "Decode"}
             </span>
             <span aria-hidden className="ml-6">→</span>
           </button>
@@ -212,7 +230,7 @@ function Index() {
         {/* Output */}
         <section className="mt-12 border-t border-foreground sm:mt-16">
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>02 / {mode === "encode" ? "Cipher" : "Hiragana"}</span>
+            <span>02 / {mode === "encode" ? "Cipher" : "English"}</span>
             <button
               type="button"
               onClick={copy}
@@ -225,9 +243,9 @@ function Index() {
           <div className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl" aria-live="polite">
             {output ? (
               output
-            ) : mode === "encode" && mutation.isPending ? (
+            ) : (mode === "encode" ? mutation.isPending : decodeMutation.isPending) ? (
               <span className="text-muted-foreground">…</span>
-            ) : mode === "encode" && mutation.isError ? (
+            ) : (mode === "encode" ? mutation.isError : decodeMutation.isError) ? (
               <span className="text-base text-foreground">Failed. Try again.</span>
             ) : (
               <span className="text-muted-foreground/40">𨊂浾⽕紫゙</span>
@@ -239,6 +257,14 @@ function Index() {
                 Hiragana
               </p>
               <p className="mt-1 text-sm text-foreground/70 sm:text-base">{hiragana}</p>
+            </div>
+          )}
+          {mode === "decode" && decoded && (
+            <div className="border-t border-foreground/10 pt-3">
+              <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Hiragana
+              </p>
+              <p className="mt-1 text-sm text-foreground/70 sm:text-base">{decoded}</p>
             </div>
           )}
         </section>
