@@ -40,3 +40,39 @@ export const translateToHiragana = createServerFn({ method: "POST" })
     const hiragana = json.choices?.[0]?.message?.content?.trim() ?? "";
     return { hiragana };
   });
+
+export const translateFromHiragana = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => InputSchema.parse(data))
+  .handler(async ({ data }) => {
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) throw new Error("LOVABLE_API_KEY is not configured");
+
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You receive Japanese hiragana text (possibly transliterated from another language). Translate it into natural English. Output ONLY the English translation, no quotes, no explanation, no labels.",
+          },
+          { role: "user", content: data.text },
+        ],
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`AI gateway error ${res.status}: ${body}`);
+    }
+    const json = (await res.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    const english = json.choices?.[0]?.message?.content?.trim() ?? "";
+    return { english };
+  });
