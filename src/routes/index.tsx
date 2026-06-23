@@ -284,7 +284,7 @@ function Index() {
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
               <span className="normal-case">Created by Noa Wilhide in France</span>
               <span className="hidden text-muted-foreground/40 sm:inline">·</span>
-              <span>萬川集海</span>
+              <span>{"\n"}</span>
             </div>
             <a
               href="https://github.com/tomill/Text-Shinobi"
