@@ -280,12 +280,9 @@ function Index() {
         </section>
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span className="normal-case">Created by Noa Wilhide in France</span>
-              <span className="hidden text-muted-foreground/40 sm:inline">·</span>
-              <span>{"\n"}</span>
-            </div>
+          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap">
+            <span className="normal-case">Created by Noa Wilhide in France</span>
+            <span className="text-muted-foreground/40">·</span>
             <a
               href="https://github.com/tomill/Text-Shinobi"
               target="_blank"
@@ -294,9 +291,11 @@ function Index() {
             >
               Source ↗
             </a>
+            <span className="text-muted-foreground/40">·</span>
             <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
               History →
             </Link>
+            <span className="text-muted-foreground/40">·</span>
             <Link to="/ninja-symbols" className="text-foreground hover:opacity-60">
               Symbols →
             </Link>
