@@ -149,10 +149,15 @@ function Index() {
 
         {/* Hero */}
         <section className="mt-14 sm:mt-24">
-          <h1 className="font-display text-[44px] font-medium leading-[0.95] tracking-[-0.05em] sm:text-[88px]">
-            Ninja
-            <br />
-            <span className="italic font-normal">cipher.</span>
+          <h1
+            aria-label="Shinobi Iroha Ninja Cipher Translator"
+            className="font-display text-[44px] font-medium leading-[0.95] tracking-[-0.05em] sm:text-[88px]"
+          >
+            <span aria-hidden="true">
+              Ninja
+              <br />
+              <span className="italic font-normal">cipher.</span>
+            </span>
           </h1>
           <p className="mt-5 max-w-[36ch] font-mono-display text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
             Any language → 忍びいろは, the secret kanji cipher compiled in 萬川集海.
@@ -186,6 +191,7 @@ function Index() {
 
         {/* Input */}
         <section className="mt-8 border-t border-foreground sm:mt-10">
+          <h2 className="sr-only">{mode === "encode" ? "Text input" : "Cipher input"}</h2>
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             <label htmlFor="shinobi-input" className="cursor-pointer">
               01 / {mode === "encode" ? "Text" : "Cipher"}
@@ -229,12 +235,14 @@ function Index() {
 
         {/* Output */}
         <section className="mt-12 border-t border-foreground sm:mt-16">
+          <h2 className="sr-only">{mode === "encode" ? "Cipher output" : "English output"}</h2>
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             <span>02 / {mode === "encode" ? "Cipher" : "English"}</span>
             <button
               type="button"
               onClick={copy}
               disabled={!output}
+              aria-label={copied ? "Copied to clipboard" : "Copy output to clipboard"}
               className="font-mono-display uppercase tracking-[0.2em] text-foreground transition hover:opacity-60 disabled:opacity-20"
             >
               {copied ? "Copied ✓" : "Copy"}
