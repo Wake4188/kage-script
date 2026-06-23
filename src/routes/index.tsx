@@ -9,11 +9,13 @@ import { translateToHiragana, translateFromHiragana } from "@/lib/translate.func
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "KAGE / 影" },
+      { title: "Kage / 影 — Ninja Cipher Translator (忍びいろは)" },
       { name: "description", content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back." },
-      { property: "og:title", content: "KAGE / 影" },
+      { property: "og:title", content: "Kage / 影 — Ninja Cipher Translator (忍びいろは)" },
       { property: "og:description", content: "Encode any language into the 1676 ninja cipher, or decode it back." },
+      { property: "og:url", content: "https://ninja-script-app.lovable.app/" },
     ],
+    links: [{ rel: "canonical", href: "https://ninja-script-app.lovable.app/" }],
     scripts: [
       {
         type: "application/ld+json",
