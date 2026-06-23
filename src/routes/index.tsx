@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { shinobiEncode, shinobiDecode } from "@/lib/shinobi";
-import { translateToHiragana } from "@/lib/translate.functions";
+import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,13 +41,12 @@ export const Route = createFileRoute("/")({
 });
 
 function useTheme() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof document === "undefined") return false;
-    return document.documentElement.classList.contains("dark");
-  });
+  const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
+    setMounted(true);
   }, []);
 
   const toggle = () => {
@@ -60,7 +59,7 @@ function useTheme() {
     setIsDark(next);
   };
 
-  return { isDark, toggle };
+  return { isDark, toggle, mounted };
 }
 
 function Index() {
@@ -69,8 +68,9 @@ function Index() {
   const [hiragana, setHiragana] = useState("");
   const [ninja, setNinja] = useState("");
   const [decoded, setDecoded] = useState("");
+  const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle, mounted } = useTheme();
 
   const translateFn = useServerFn(translateToHiragana);
   const mutation = useMutation({
@@ -78,6 +78,14 @@ function Index() {
     onSuccess: (res) => {
       setHiragana(res.hiragana);
       setNinja(shinobiEncode(res.hiragana));
+    },
+  });
+
+  const translateBackFn = useServerFn(translateFromHiragana);
+  const decodeMutation = useMutation({
+    mutationFn: (text: string) => translateBackFn({ data: { text } }),
+    onSuccess: (res) => {
+      setEnglish(res.english);
     },
   });
 
@@ -94,11 +102,15 @@ function Index() {
       if (mutation.isPending) return;
       mutation.mutate(t);
     } else {
-      setDecoded(shinobiDecode(t));
+      if (decodeMutation.isPending) return;
+      const hira = shinobiDecode(t);
+      setDecoded(hira);
+      setEnglish("");
+      decodeMutation.mutate(hira);
     }
   };
 
-  const output = mode === "encode" ? ninja : decoded;
+  const output = mode === "encode" ? ninja : english;
 
   const copy = async () => {
     if (!output) return;
@@ -113,6 +125,7 @@ function Index() {
     setHiragana("");
     setNinja("");
     setDecoded("");
+    setEnglish("");
   };
 
   return (
@@ -125,10 +138,10 @@ function Index() {
             <button
               type="button"
               onClick={toggle}
-              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={mounted && isDark ? "Switch to light mode" : "Switch to dark mode"}
               className="inline-flex h-7 w-7 items-center justify-center border border-foreground text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
-              {isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
+              {mounted && isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
             </button>
             <span className="text-muted-foreground">v1 · 1676</span>
           </div>
