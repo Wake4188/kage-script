@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
+  id: '/ninja-symbols',
+  path: '/ninja-symbols',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BansenshukaiHistoryRoute = BansenshukaiHistoryRouteImport.update({
   id: '/bansenshukai-history',
   path: '/bansenshukai-history',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/ninja-symbols': typeof NinjaSymbolsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/ninja-symbols': typeof NinjaSymbolsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/ninja-symbols': typeof NinjaSymbolsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bansenshukai-history'
+  fullPaths: '/' | '/bansenshukai-history' | '/ninja-symbols'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bansenshukai-history'
-  id: '__root__' | '/' | '/bansenshukai-history'
+  to: '/' | '/bansenshukai-history' | '/ninja-symbols'
+  id: '__root__' | '/' | '/bansenshukai-history' | '/ninja-symbols'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
+  NinjaSymbolsRoute: typeof NinjaSymbolsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ninja-symbols': {
+      id: '/ninja-symbols'
+      path: '/ninja-symbols'
+      fullPath: '/ninja-symbols'
+      preLoaderRoute: typeof NinjaSymbolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bansenshukai-history': {
       id: '/bansenshukai-history'
       path: '/bansenshukai-history'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
+  NinjaSymbolsRoute: NinjaSymbolsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

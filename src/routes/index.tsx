@@ -297,6 +297,9 @@ function Index() {
             <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
               History →
             </Link>
+            <Link to="/ninja-symbols" className="text-foreground hover:opacity-60">
+              Symbols →
+            </Link>
           </div>
         </footer>
       </div>
