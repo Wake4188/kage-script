@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Moon, Sun, Languages } from "lucide-react";
 import { shinobiEncode, shinobiDecode } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
+import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -73,6 +74,18 @@ function Index() {
   const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
   const { isDark, toggle, mounted } = useTheme();
+  const { lang, setLang, t } = useI18n();
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [langOpen]);
 
   const translateFn = useServerFn(translateToHiragana);
   const mutation = useMutation({
@@ -85,7 +98,7 @@ function Index() {
 
   const translateBackFn = useServerFn(translateFromHiragana);
   const decodeMutation = useMutation({
-    mutationFn: (text: string) => translateBackFn({ data: { text } }),
+    mutationFn: (text: string) => translateBackFn({ data: { text, targetLang: lang } }),
     onSuccess: (res) => {
       setEnglish(res.english);
     },
@@ -136,16 +149,57 @@ function Index() {
         {/* Header — minimal monospace bar */}
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground sm:text-xs">
           <span>KAGE/影</span>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div ref={langRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setLangOpen((o) => !o)}
+                aria-label={t.langSwitch}
+                aria-haspopup="listbox"
+                aria-expanded={langOpen}
+                className="inline-flex h-7 min-w-7 items-center justify-center gap-1 border border-foreground px-1.5 text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+              >
+                <Languages size={12} strokeWidth={1.5} />
+                <span className="font-mono-display text-[10px]">
+                  {LANGS.find((l) => l.code === lang)?.short ?? "EN"}
+                </span>
+              </button>
+              {langOpen && (
+                <ul
+                  role="listbox"
+                  className="absolute right-0 z-10 mt-1 min-w-[140px] border border-foreground bg-background py-1 font-mono-display text-[10px] uppercase tracking-[0.2em] shadow-lg"
+                >
+                  {LANGS.map((l) => (
+                    <li key={l.code}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={l.code === lang}
+                        onClick={() => {
+                          setLang(l.code as Lang);
+                          setLangOpen(false);
+                        }}
+                        className={
+                          "block w-full px-3 py-2 text-left transition hover:bg-foreground hover:text-background " +
+                          (l.code === lang ? "bg-foreground/10" : "")
+                        }
+                      >
+                        {l.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
             <button
               type="button"
               onClick={toggle}
-              aria-label={mounted && isDark ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={mounted && isDark ? t.themeLight : t.themeDark}
               className="inline-flex h-7 w-7 items-center justify-center border border-foreground text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
               {mounted && isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
             </button>
-            <span className="text-muted-foreground">v1 · 1676</span>
+            <span className="hidden text-muted-foreground sm:inline">v1 · 1676</span>
           </div>
         </header>
 
@@ -156,20 +210,20 @@ function Index() {
             className="font-display text-[44px] font-medium leading-[0.95] tracking-[-0.05em] sm:text-[88px]"
           >
             <span aria-hidden="true">
-              Ninja
+              {t.heroLine1}
               <br />
-              <span className="italic font-normal">cipher.</span>
+              <span className="italic font-normal">{t.heroLine2}</span>
             </span>
           </h1>
           <p className="mt-5 max-w-[36ch] font-mono-display text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
-            Any language → 忍びいろは, the secret kanji cipher compiled in 萬川集海.
+            {t.subtitle}
           </p>
         </section>
 
         {/* Mode tabs */}
         <div
           role="tablist"
-          aria-label="Mode"
+          aria-label={t.modeAria}
           className="mt-10 grid grid-cols-2 border border-foreground font-mono-display text-[11px] uppercase tracking-[0.2em] sm:mt-14"
         >
           {(["encode", "decode"] as const).map((m) => (
@@ -186,17 +240,17 @@ function Index() {
                   : "bg-transparent text-foreground hover:bg-foreground/10")
               }
             >
-              {m}
+              {m === "encode" ? t.encode : t.decode}
             </button>
           ))}
         </div>
 
         {/* Input */}
         <section className="mt-8 border-t border-foreground sm:mt-10">
-          <h2 className="sr-only">{mode === "encode" ? "Text input" : "Cipher input"}</h2>
+          <h2 className="sr-only">{mode === "encode" ? t.textLabel : t.cipherLabel}</h2>
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             <label htmlFor="shinobi-input" className="cursor-pointer">
-              01 / {mode === "encode" ? "Text" : "Cipher"}
+              01 / {mode === "encode" ? t.textLabel : t.cipherLabel}
             </label>
             <span>{input.length}/2000</span>
           </div>
@@ -207,7 +261,7 @@ function Index() {
             onKeyDown={(e) => {
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
             }}
-            placeholder={mode === "encode" ? "Type anything…" : "Paste ninja cipher…"}
+            placeholder={mode === "encode" ? t.inputPlaceholderEncode : t.inputPlaceholderDecode}
             rows={3}
             spellCheck={false}
             maxLength={2000}
@@ -225,11 +279,11 @@ function Index() {
             <span>
               {mode === "encode"
                 ? mutation.isPending
-                  ? "Encoding…"
-                  : "Encode"
+                  ? t.encoding
+                  : t.encode
                 : decodeMutation.isPending
-                  ? "Decoding…"
-                  : "Decode"}
+                  ? t.decoding
+                  : t.decode}
             </span>
             <span aria-hidden className="ml-6">→</span>
           </button>
@@ -237,17 +291,17 @@ function Index() {
 
         {/* Output */}
         <section className="mt-12 border-t border-foreground sm:mt-16">
-          <h2 className="sr-only">{mode === "encode" ? "Cipher output" : "English output"}</h2>
+          <h2 className="sr-only">{mode === "encode" ? t.cipherLabel : t.translationLabel}</h2>
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>02 / {mode === "encode" ? "Cipher" : "English"}</span>
+            <span>02 / {mode === "encode" ? t.cipherLabel : t.translationLabel}</span>
             <button
               type="button"
               onClick={copy}
               disabled={!output}
-              aria-label={copied ? "Copied to clipboard" : "Copy output to clipboard"}
+              aria-label={copied ? t.copied : t.copy}
               className="font-mono-display uppercase tracking-[0.2em] text-foreground transition hover:opacity-60 disabled:opacity-20"
             >
-              {copied ? "Copied ✓" : "Copy"}
+              {copied ? t.copied : t.copy}
             </button>
           </div>
           <div className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl" aria-live="polite">
@@ -256,7 +310,7 @@ function Index() {
             ) : (mode === "encode" ? mutation.isPending : decodeMutation.isPending) ? (
               <span className="text-muted-foreground">…</span>
             ) : (mode === "encode" ? mutation.isError : decodeMutation.isError) ? (
-              <span className="text-base text-foreground">Failed. Try again.</span>
+              <span className="text-base text-foreground">{t.failed}</span>
             ) : (
               <span className="text-muted-foreground/40">𨊂浾⽕紫゙</span>
             )}
@@ -264,7 +318,7 @@ function Index() {
           {mode === "encode" && hiragana && (
             <div className="border-t border-foreground/10 pt-3">
               <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Hiragana
+                {t.hiragana}
               </p>
               <p className="mt-1 text-sm text-foreground/70 sm:text-base">{hiragana}</p>
             </div>
@@ -272,16 +326,16 @@ function Index() {
           {mode === "decode" && decoded && (
             <div className="border-t border-foreground/10 pt-3">
               <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Hiragana
+                {t.hiragana}
               </p>
               <p className="mt-1 text-sm text-foreground/70 sm:text-base">{decoded}</p>
             </div>
           )}
         </section>
 
-        <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap">
-            <span className="normal-case">Created by Noa Wilhide in France</span>
+        <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
+          <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
+            <span className="normal-case text-[9px] sm:text-[11px]">{t.createdBy}</span>
             <span className="text-muted-foreground/40">·</span>
             <a
               href="https://github.com/tomill/Text-Shinobi"
@@ -289,15 +343,15 @@ function Index() {
               rel="noreferrer noopener"
               className="text-foreground hover:opacity-60"
             >
-              Source ↗
+              {t.source}
             </a>
             <span className="text-muted-foreground/40">·</span>
             <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
-              History →
+              {t.history}
             </Link>
             <span className="text-muted-foreground/40">·</span>
             <Link to="/ninja-symbols" className="text-foreground hover:opacity-60">
-              Symbols →
+              {t.symbols}
             </Link>
           </div>
         </footer>

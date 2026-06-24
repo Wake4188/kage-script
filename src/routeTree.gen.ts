@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
   id: '/ninja-symbols',
   path: '/ninja-symbols',
@@ -33,34 +39,50 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bansenshukai-history' | '/ninja-symbols'
+  fullPaths: '/' | '/bansenshukai-history' | '/ninja-symbols' | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bansenshukai-history' | '/ninja-symbols'
-  id: '__root__' | '/' | '/bansenshukai-history' | '/ninja-symbols'
+  to: '/' | '/bansenshukai-history' | '/ninja-symbols' | '/sitemap.xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/bansenshukai-history'
+    | '/ninja-symbols'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ninja-symbols': {
       id: '/ninja-symbols'
       path: '/ninja-symbols'
@@ -89,6 +111,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
