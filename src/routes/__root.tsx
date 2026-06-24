@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Analytics } from "@vercel/analytics/react";
+import { I18nProvider } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -77,18 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kage — Ninja Text Encoder" },
-      { name: "description", content: "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back." },
       { name: "author", content: "Kage" },
-      { property: "og:title", content: "Kage — Ninja Text Encoder" },
-      { property: "og:description", content: "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back." },
-      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Kage" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Kage — Ninja Text Encoder" },
-      { name: "twitter:description", content: "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/315b2bb6-969a-4229-98e8-917037890bed" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/315b2bb6-969a-4229-98e8-917037890bed" },
     ],
     links: [
       {
@@ -148,8 +142,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <I18nProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <Analytics />
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
