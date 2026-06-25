@@ -49,7 +49,6 @@ function normalizeRomaji(s: string): string {
     .replace(/[êÊ]/g, "ee")
     .replace(/[ôÔ]/g, "ou")
     .replace(/dzu/gi, "zu")
-    .replace(/d([zj])/gi, "$1")
     .replace(/'/g, "");
 }
 
