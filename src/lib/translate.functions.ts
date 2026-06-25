@@ -135,6 +135,13 @@ async function kanaToJapaneseBestEffort(text: string): Promise<string> {
   return converted.join("").trim() || text;
 }
 
+function japaneseRecoveryScore(text: string): number {
+  const kanji = text.match(/[一-龯々〆ヵヶ]/g)?.length ?? 0;
+  const katakana = text.match(/[ァ-ヶー]/g)?.length ?? 0;
+  const spaces = text.match(/\s/g)?.length ?? 0;
+  return kanji * 4 + katakana * 2 - spaces;
+}
+
 export const translateToHiragana = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
@@ -167,14 +174,12 @@ export const translateFromHiragana = createServerFn({ method: "POST" })
     // forms created by Google ("watashi wa", "hon o", etc.), then run Japanese
     // IME conversion to recover likely kanji before translating.
     const repaired = repairDecodedKana(data.text);
-    let japanese = await kanaToJapaneseBestEffort(repaired).catch(() => repaired);
-
-    if (japanese === repaired) {
-      const compact = repaired.replace(/\s+/g, "");
-      if (compact !== repaired) {
-        japanese = await kanaToJapaneseBestEffort(compact).catch(() => japanese);
-      }
-    }
+    const compact = repaired.replace(/\s+/g, "");
+    const candidates = compact !== repaired ? [repaired, compact] : [repaired];
+    const recovered = await Promise.all(
+      candidates.map((candidate) => kanaToJapaneseBestEffort(candidate).catch(() => candidate)),
+    );
+    const japanese = recovered.sort((a, b) => japaneseRecoveryScore(b) - japaneseRecoveryScore(a))[0] ?? repaired;
 
     // Step 2: translate normalized Japanese into the user's language.
     const json = await gt(japanese, "ja", target, ["t"]);
