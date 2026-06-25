@@ -104,6 +104,38 @@ async function kanaToJapanese(text: string): Promise<string> {
     .trim() || text;
 }
 
+function splitForIme(text: string): string[] {
+  const parts = text.match(/[^。！？!?\n]+[。！？!?\n]*/g) ?? [text];
+  const chunks: string[] = [];
+
+  for (const part of parts) {
+    let rest = part;
+    while (rest.length > 80) {
+      let cut = Math.max(
+        rest.lastIndexOf(" ", 80),
+        rest.lastIndexOf("、", 80),
+        rest.lastIndexOf(",", 80),
+      );
+      if (cut < 30) cut = 80;
+      chunks.push(rest.slice(0, cut + 1));
+      rest = rest.slice(cut + 1);
+    }
+    if (rest) chunks.push(rest);
+  }
+
+  return chunks.filter(Boolean).slice(0, 32);
+}
+
+async function kanaToJapaneseBestEffort(text: string): Promise<string> {
+  const chunks = splitForIme(text);
+  if (chunks.length <= 1) return kanaToJapanese(text);
+
+  const converted = await Promise.all(
+    chunks.map((chunk) => kanaToJapanese(chunk).catch(() => chunk)),
+  );
+  return converted.join("").trim() || text;
+}
+
 export const translateToHiragana = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
@@ -136,12 +168,12 @@ export const translateFromHiragana = createServerFn({ method: "POST" })
     // forms created by Google ("watashi wa", "hon o", etc.), then run Japanese
     // IME conversion to recover likely kanji before translating.
     const repaired = repairDecodedKana(data.text);
-    let japanese = await kanaToJapanese(repaired).catch(() => repaired);
+    let japanese = await kanaToJapaneseBestEffort(repaired).catch(() => repaired);
 
     if (japanese === repaired) {
       const compact = repaired.replace(/\s+/g, "");
       if (compact !== repaired) {
-        japanese = await kanaToJapanese(compact).catch(() => japanese);
+        japanese = await kanaToJapaneseBestEffort(compact).catch(() => japanese);
       }
     }
 
