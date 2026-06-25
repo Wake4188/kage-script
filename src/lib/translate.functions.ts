@@ -24,8 +24,7 @@ async function gt(text: string, sl: string, tl: string, dt: string[]): Promise<G
   const url = `https://translate.googleapis.com/translate_a/single?${params.toString()}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
   if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    console.error("Translate gateway error", res.status, body);
+    console.error("Translate gateway error", res.status);
     throw new Error("Translation service unavailable");
   }
   return (await res.json()) as GTResponse;
