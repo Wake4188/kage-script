@@ -12,6 +12,12 @@ type GTResponse = [GTSentence[], ...unknown[]];
 
 type InputToolsResponse = ["SUCCESS" | "FAILED", Array<[string, string[], ...unknown[]]>];
 
+function getRomaji(s: GTSentence): string {
+  if (typeof s?.[2] === "string") return s[2];
+  if (typeof s?.[3] === "string") return s[3];
+  return "";
+}
+
 async function gt(text: string, sl: string, tl: string, dt: string[]): Promise<GTResponse> {
   const params = new URLSearchParams({ client: "gtx", sl, tl, q: text });
   for (const d of dt) params.append("dt", d);
@@ -109,13 +115,13 @@ export const translateToHiragana = createServerFn({ method: "POST" })
     let romaji = "";
     for (const s of sentences) {
       if (typeof s?.[0] === "string") japanese += s[0];
-      if (typeof s?.[2] === "string") romaji += s[2];
+      romaji += getRomaji(s);
     }
     // If the romaji of the Japanese result wasn't returned (rare), ask again
     if (!romaji && japanese) {
       const j2 = await gt(japanese, "ja", "en", ["t", "rm"]);
       for (const s of j2[0] ?? []) {
-        if (typeof s?.[2] === "string") romaji += s[2];
+        romaji += getRomaji(s);
       }
     }
     const hiragana = romajiToHiragana(romaji).trim();
