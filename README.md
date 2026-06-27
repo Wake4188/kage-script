@@ -38,6 +38,10 @@ bun run build
 The project is configured for Lovable's one-click publish.  
 To deploy on **Vercel**, set the Nitro preset to `vercel` in your build configuration and add `LOVABLE_API_KEY` as an environment variable.
 
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
 ## Credits
 
 Created by **Noa Wilhide** in France.  
