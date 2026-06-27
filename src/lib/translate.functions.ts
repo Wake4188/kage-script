@@ -1,15 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
+import type Kuroshiro from "kuroshiro";
 import { z } from "zod";
 import { toHiragana } from "wanakana";
-import Kuroshiro from "kuroshiro";
-import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
 import { callGeminiJson } from "./gemini";
 
 let kuroshiroInstance: Kuroshiro | null = null;
 
 async function getKuroshiro(): Promise<Kuroshiro | null> {
   if (kuroshiroInstance) return kuroshiroInstance;
+  if (typeof window !== "undefined") return null;
+
   try {
+    const [{ default: Kuroshiro }, { default: KuromojiAnalyzer }] = await Promise.all([
+      import("kuroshiro"),
+      import("kuroshiro-analyzer-kuromoji"),
+    ]);
+
     const instance = new Kuroshiro();
     await instance.init(KuromojiAnalyzer as unknown);
     kuroshiroInstance = instance;
