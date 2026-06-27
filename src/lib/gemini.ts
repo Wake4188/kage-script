@@ -7,42 +7,6 @@ function getGeminiConfig() {
   return { apiKey, model };
 }
 
-async function callGeminiApi<T>(
-  kind: "encode" | "decode",
-  input: string,
-  prompt: string,
-  targetLang?: string,
-): Promise<T | null> {
-  const { apiKey, model } = getGeminiConfig();
-  if (!apiKey) return null;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.2, responseMimeType: "application/json" },
-  };
-
-  try {
-    const res = await fetchWithRetry(url, payload);
-    if (!res.ok) {
-      const body = await res.text();
-      console.warn("Gemini request failed", res.status, body.slice(0, 400));
-      return null;
-    }
-
-    const json = (await res.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    const text = json.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("")?.trim() ?? "";
-
-    if (!text) return null;
-    return parseGeminiJson<T>(text);
-  } catch (error) {
-    console.warn("Gemini request error", error);
-    return null;
-  }
-}
-
 function buildGeminiCacheKey(kind: "encode" | "decode", input: string, targetLang?: string): string {
   return `${kind}:${targetLang ?? "en"}:${input.trim()}`;
 }
