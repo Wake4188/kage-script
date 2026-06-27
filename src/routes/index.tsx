@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Moon, Sun, Languages } from "lucide-react";
-import { shinobiEncode, shinobiDecode } from "@/lib/shinobi";
+import { shinobiEncode, shinobiDecode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 
@@ -92,7 +92,7 @@ function Index() {
     mutationFn: (text: string) => translateFn({ data: { text } }),
     onSuccess: (res) => {
       setHiragana(res.hiragana);
-      setNinja(shinobiEncode(res.hiragana));
+      setNinja(shinobiEncode(res.hiragana, res.japanese ? { japanese: res.japanese } : undefined));
     },
   });
 
@@ -118,10 +118,11 @@ function Index() {
       mutation.mutate(t);
     } else {
       if (decodeMutation.isPending) return;
-      const hira = shinobiDecode(t);
+      const { decodedText, metadata } = shinobiDecodeWithMetadata(t);
+      const hira = decodedText;
       setDecoded(hira);
       setEnglish("");
-      decodeMutation.mutate(hira);
+      decodeMutation.mutate(hira + (metadata?.japanese ? `\n${metadata.japanese}` : ""));
     }
   };
 

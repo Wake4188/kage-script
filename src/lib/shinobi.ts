@@ -100,6 +100,9 @@ const MAP: Entry[] = [
 ];
 
 const ENCODE_MASK = Y2016;
+const METADATA_PREFIX = "\u2063\u2064";
+const METADATA_SYMBOLS = ["\u200b", "\u200c", "\u200d", "\u2060"] as const;
+const METADATA_SYMBOL_INDEX = new Map(METADATA_SYMBOLS.map((symbol, index) => [symbol, index]));
 
 const encodeMap = new Map<string, Entry[]>();
 for (const e of MAP) {
@@ -142,9 +145,44 @@ function encodeChar(ch: string): string {
   return ch;
 }
 
-export function shinobiEncode(text: string): string {
+function encodeMetadataPayload(metadata: Record<string, string>): string {
+  const payload = JSON.stringify(metadata);
+  const bytes = new TextEncoder().encode(payload);
+  let encoded = "";
+  for (const byte of bytes) {
+    encoded += METADATA_SYMBOLS[(byte >> 6) & 0x03];
+    encoded += METADATA_SYMBOLS[(byte >> 4) & 0x03];
+    encoded += METADATA_SYMBOLS[(byte >> 2) & 0x03];
+    encoded += METADATA_SYMBOLS[byte & 0x03];
+  }
+  return METADATA_PREFIX + encoded;
+}
+
+function decodeMetadataPayload(payload: string): Record<string, string> | null {
+  if (!payload) return null;
+  const bytes: number[] = [];
+  const chars = Array.from(payload);
+  for (let i = 0; i + 3 < chars.length; i += 4) {
+    const symbols = chars.slice(i, i + 4);
+    const values = symbols.map((symbol) => METADATA_SYMBOL_INDEX.get(symbol as (typeof METADATA_SYMBOLS)[number]));
+    if (values.some((value) => value === undefined)) break;
+    const byte = ((values[0] as number) << 6) | ((values[1] as number) << 4) | ((values[2] as number) << 2) | (values[3] as number);
+    bytes.push(byte);
+  }
+  if (!bytes.length) return null;
+  try {
+    const text = new TextDecoder().decode(Uint8Array.from(bytes));
+    const parsed = JSON.parse(text) as Record<string, string>;
+    if (parsed && typeof parsed === "object") return parsed;
+  } catch {}
+  return null;
+}
+
+export function shinobiEncode(text: string, metadata?: Record<string, string>): string {
   const norm = normalize(text);
-  return Array.from(norm).map(encodeChar).join("");
+  const encoded = Array.from(norm).map(encodeChar).join("");
+  if (!metadata) return encoded;
+  return encoded + encodeMetadataPayload(metadata);
 }
 
 // Build decode regex (longest first)
@@ -154,5 +192,16 @@ const decodeKeys = [...decodeMap.keys()].sort((a, b) => b.length - a.length);
 const decodeRe = new RegExp(decodeKeys.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gu");
 
 export function shinobiDecode(text: string): string {
-  return text.replace(decodeRe, (m) => decodeMap.get(m) ?? m).normalize("NFC");
+  const visible = text.split(METADATA_PREFIX)[0] ?? "";
+  return visible.replace(decodeRe, (m) => decodeMap.get(m) ?? m).normalize("NFC");
+}
+
+export function shinobiDecodeWithMetadata(text: string): { decodedText: string; metadata: Record<string, string> | null } {
+  const prefixIndex = text.indexOf(METADATA_PREFIX);
+  const visible = prefixIndex === -1 ? text : text.slice(0, prefixIndex);
+  const payload = prefixIndex === -1 ? "" : text.slice(prefixIndex + METADATA_PREFIX.length);
+  return {
+    decodedText: visible.replace(decodeRe, (m) => decodeMap.get(m) ?? m).normalize("NFC"),
+    metadata: decodeMetadataPayload(payload),
+  };
 }

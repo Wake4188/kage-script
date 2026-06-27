@@ -1,6 +1,23 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toHiragana } from "wanakana";
+import Kuroshiro from "kuroshiro";
+import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import { callGeminiJson } from "./gemini";
+
+let kuroshiroInstance: Kuroshiro | null = null;
+
+async function getKuroshiro(): Promise<Kuroshiro | null> {
+  if (kuroshiroInstance) return kuroshiroInstance;
+  try {
+    const instance = new Kuroshiro();
+    await instance.init(KuromojiAnalyzer as unknown);
+    kuroshiroInstance = instance;
+    return instance;
+  } catch {
+    return null;
+  }
+}
 
 const InputSchema = z.object({
   text: z.string().min(1).max(2000),
@@ -63,7 +80,38 @@ function romajiToHiragana(romaji: string): string {
   return normalized.replace(/[A-Za-z0-9\s.,:;!?/()[\]{}"`~\-]+/g, (chunk) => toHiragana(chunk));
 }
 
-function repairDecodedKana(text: string): string {
+export async function japaneseToHiragana(japanese: string): Promise<string> {
+  const kuroshiro = await getKuroshiro();
+  if (!kuroshiro) return romajiToHiragana(japanese);
+  try {
+    return (await kuroshiro.convert(japanese, { to: "hiragana" })) as string;
+  } catch {
+    return romajiToHiragana(japanese);
+  }
+}
+
+export async function translateTextToJapanese(text: string): Promise<{ japanese: string; romaji: string }> {
+  const json = await gt(text, "auto", "ja", ["t", "rm"]);
+  const sentences = json[0] ?? [];
+  let japanese = "";
+  let romaji = "";
+  for (const s of sentences) {
+    if (typeof s?.[0] === "string") japanese += s[0];
+    romaji += getRomaji(s);
+  }
+  return { japanese, romaji };
+}
+
+export async function translateJapaneseToEnglish(text: string, targetLang = "en"): Promise<string> {
+  const json = await gt(text, "ja", targetLang, ["t"]);
+  let english = "";
+  for (const s of json[0] ?? []) {
+    if (typeof s?.[0] === "string") english += s[0];
+  }
+  return english.trim();
+}
+
+export function repairDecodedKana(text: string): string {
   return text
     .replace(/\s+/g, " ")
     .replace(/(^|\s)わ(?=\s|$|[。、,.!?！？])/g, "$1は")
@@ -125,7 +173,7 @@ function splitForIme(text: string): string[] {
   return chunks.filter(Boolean).slice(0, 32);
 }
 
-async function kanaToJapaneseBestEffort(text: string): Promise<string> {
+export async function kanaToJapaneseBestEffort(text: string): Promise<string> {
   const chunks = splitForIme(text);
   if (chunks.length <= 1) return kanaToJapanese(text);
 
@@ -142,33 +190,75 @@ function japaneseRecoveryScore(text: string): number {
   return kanji * 4 + katakana * 2 - spaces;
 }
 
+async function translateWithGeminiToJapanese(text: string): Promise<{ japanese: string; hiragana: string } | null> {
+  if (!text?.trim()) return null;
+
+  const prompt = [
+    "You are translating text into Japanese for a kana-based cipher.",
+    "Return ONLY JSON with the keys japanese and hiragana.",
+    "Requirements:",
+    "- Preserve the intended meaning as closely as possible.",
+    "- Use natural Japanese.",
+    "- Provide the hiragana reading that matches the Japanese sentence exactly.",
+    "- Do not include commentary or markdown.",
+    `Input text: ${text}`,
+  ].join("\n");
+
+  return callGeminiJson<{ japanese: string; hiragana: string }>("encode", text, prompt);
+}
+
+async function recoverJapaneseWithGemini(hiragana: string, targetLang: string): Promise<{ japanese: string; translation: string } | null> {
+  if (!hiragana?.trim()) return null;
+
+  const targetLabel = {
+    en: "English",
+    fr: "French",
+    es: "Spanish",
+    de: "German",
+    ja: "Japanese",
+  }[targetLang] ?? "English";
+
+  const prompt = [
+    "The following input is the phonetic reading of a Japanese sentence, possibly imperfect.",
+    "Recover the most likely natural Japanese sentence and translate it to the target language.",
+    "Return ONLY JSON with the keys japanese and translation.",
+    "Requirements:",
+    "- Preserve the intended meaning as closely as possible.",
+    "- Keep the Japanese sentence natural and readable.",
+    "- Do not include commentary or markdown.",
+    `Target language: ${targetLabel}`,
+    `Input: ${hiragana}`,
+  ].join("\n");
+
+  return callGeminiJson<{ japanese: string; translation: string }>("decode", hiragana, prompt, targetLang);
+}
+
 export const translateToHiragana = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => InputSchema.parse(data))
+  .validator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
-    // 1) Translate input → Japanese, and also request romaji of the result
-    const json = await gt(data.text, "auto", "ja", ["t", "rm"]);
-    const sentences = json[0] ?? [];
-    let japanese = "";
-    let romaji = "";
-    for (const s of sentences) {
-      if (typeof s?.[0] === "string") japanese += s[0];
-      romaji += getRomaji(s);
+    // Prefer a higher-fidelity Japanese reading path when Gemini is configured.
+    const gemini = await translateWithGeminiToJapanese(data.text);
+    if (gemini?.hiragana) {
+      return { hiragana: gemini.hiragana.trim(), japanese: gemini.japanese.trim() };
     }
-    // If the romaji of the Japanese result wasn't returned (rare), ask again
-    if (!romaji && japanese) {
-      const j2 = await gt(japanese, "ja", "en", ["t", "rm"]);
-      for (const s of j2[0] ?? []) {
-        romaji += getRomaji(s);
-      }
-    }
-    const hiragana = romajiToHiragana(romaji).trim();
-    return { hiragana };
+
+    // Fallback: translate input → Japanese, then derive hiragana from romaji.
+    const { japanese, romaji } = await translateTextToJapanese(data.text);
+    const hiragana = (await japaneseToHiragana(japanese || romaji)).trim();
+    return { hiragana, japanese: (japanese || romaji).trim() };
   });
 
 export const translateFromHiragana = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => InputSchema.parse(data))
+  .validator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
     const target = (data.targetLang ?? "en").toLowerCase();
+
+    // Prefer a higher-fidelity recovery path when Gemini is configured.
+    const gemini = await recoverJapaneseWithGemini(data.text, target);
+    if (gemini?.translation) {
+      return { english: gemini.translation.trim() };
+    }
+
     // The cipher is intentionally lossy: は/わ, を/お, dakuten, and small kana
     // can collapse during encoding. First repair the common romaji particle
     // forms created by Google ("watashi wa", "hon o", etc.), then run Japanese

@@ -1,0 +1,1023 @@
+{
+  "count": 101,
+  "old": {
+    "averageSimilarity": 0.7125051806293536,
+    "exactMatches": 11
+  },
+  "new": {
+    "averageSimilarity": 0.8475593266327884,
+    "exactMatches": 26
+  },
+  "results": [
+    {
+      "index": 1,
+      "original": "Hello there!",
+      "old": "Hello!",
+      "new": "Hello!",
+      "oldSimilarity": 0.5,
+      "newSimilarity": 0.5,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 2,
+      "original": "How are you today?",
+      "old": "How are you today?",
+      "new": "How are you today?",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 3,
+      "original": "Please call me tomorrow.",
+      "old": "Please call me tomorrow.",
+      "new": "Please call me tomorrow.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 4,
+      "original": "I am learning Japanese.",
+      "old": "I'm studying Japanese.",
+      "new": "I'm studying Japanese.",
+      "oldSimilarity": 0.6956521739130435,
+      "newSimilarity": 0.6956521739130435,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 5,
+      "original": "The weather is nice today.",
+      "old": "The weather is nice today, isn't it?",
+      "new": "It's nice weather today.",
+      "oldSimilarity": 0.6944444444444444,
+      "newSimilarity": 0.42307692307692313,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 6,
+      "original": "Would you like some coffee?",
+      "old": "How about a publicly funded doctor?",
+      "new": "Would you like some coffee?",
+      "oldSimilarity": 0.3142857142857143,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 7,
+      "original": "My name is Alex.",
+      "old": "My name is exhaustive.",
+      "new": "My name is Alex.",
+      "oldSimilarity": 0.5909090909090908,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 8,
+      "original": "We met in Paris last year.",
+      "old": "We met in Paris last year.",
+      "new": "We met in Paris last year.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 9,
+      "original": "She works at a startup.",
+      "old": "She works at Star and Atsufu Enterprises.",
+      "new": "She works at a start-up company.",
+      "oldSimilarity": 0.46341463414634143,
+      "newSimilarity": 0.71875,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 10,
+      "original": "This is a short sentence.",
+      "old": "This is a short medical text.",
+      "new": "This is a short sentence.",
+      "oldSimilarity": 0.6551724137931034,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 11,
+      "original": "The quick brown fox jumps over the lazy dog.",
+      "old": "A quick brown fox flies over a lazy dog.",
+      "new": "A quick brown fox jumps over a lazy dog.",
+      "oldSimilarity": 0.7727272727272727,
+      "newSimilarity": 0.8636363636363636,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 12,
+      "original": "I have two cats and three dogs.",
+      "old": "I have two cats and three dogs.",
+      "new": "I have two cats and three dogs.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 13,
+      "original": "Please bring me the blue folder.",
+      "old": "Please bring me the blue flame daa.",
+      "new": "Please bring me the blue folder.",
+      "oldSimilarity": 0.8,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 14,
+      "original": "The meeting starts at 9:30.",
+      "old": "The meeting will begin at 9:30.",
+      "new": "The meeting begins at 9:30.",
+      "oldSimilarity": 0.6774193548387097,
+      "newSimilarity": 0.8148148148148149,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 15,
+      "original": "Call me at 555-1234.",
+      "old": "Please call us at 555-1234.",
+      "new": "Please call us at 555-1234.",
+      "oldSimilarity": 0.6666666666666667,
+      "newSimilarity": 0.6666666666666667,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 16,
+      "original": "I bought a 14-inch laptop.",
+      "old": "I bought a 14-inch brain and computer.",
+      "new": "I purchased a 14-inch laptop.",
+      "oldSimilarity": 0.6052631578947368,
+      "newSimilarity": 0.7241379310344828,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 17,
+      "original": "The project deadline is June 15.",
+      "old": "The project deadline for rehearsal is June 15th.",
+      "new": "The project deadline is June 15th.",
+      "oldSimilarity": 0.6666666666666667,
+      "newSimilarity": 0.9411764705882353,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 18,
+      "original": "He said, \"Hello, world!\"",
+      "old": "He said, \"Hello, world!\"",
+      "new": "He said, \"Hello, world!\"",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 19,
+      "original": "Don't forget your passport.",
+      "old": "Don't forget your passport.",
+      "new": "Don't forget your passport.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 20,
+      "original": "My favorite color is teal.",
+      "old": "My favorite color is Body.",
+      "new": "My favorite color is teal.",
+      "oldSimilarity": 0.8461538461538461,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 21,
+      "original": "The train leaves at 6:05 PM.",
+      "old": "The train departs at 6:05 p.m.",
+      "new": "The train departs at 6:05 p.m.",
+      "oldSimilarity": 0.8333333333333334,
+      "newSimilarity": 0.8333333333333334,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 22,
+      "original": "We need to finish this by Friday.",
+      "old": "I have to finish this by Friday.",
+      "new": "I have to finish this by Friday.",
+      "oldSimilarity": 0.8181818181818181,
+      "newSimilarity": 0.8181818181818181,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 23,
+      "original": "It is important to be patient.",
+      "old": "It is important to be patient.",
+      "new": "It is important to be patient.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 24,
+      "original": "Can you help me with this issue?",
+      "old": "Can you please help me with this problem?",
+      "new": "Can you help me with this issue?",
+      "oldSimilarity": 0.6829268292682926,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 25,
+      "original": "I live in Seattle, Washington.",
+      "old": "I live in Seattle, Washington.",
+      "new": "I live in Seattle, Washington.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 26,
+      "original": "The museum opens at 10 AM.",
+      "old": "The museum opens at 10am.",
+      "new": "The museum opens at 10am.",
+      "oldSimilarity": 0.9615384615384616,
+      "newSimilarity": 0.9615384615384616,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 27,
+      "original": "Please send the report before noon.",
+      "old": "Please submit your report by noon.",
+      "new": "Please submit your report by noon.",
+      "oldSimilarity": 0.6,
+      "newSimilarity": 0.6,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 28,
+      "original": "This is a very long sentence that contains many details and should test the pipeline over multiple clauses and punctuation marks while still staying readable and meaningful for the benchmark.",
+      "old": "This is a very long medical text that contains many words and details, and you will need to test your pipeline across multiple phrases and punctuation marks while keeping it readable and meaningful on the bench.",
+      "new": "This is a very long sentence with lots of details, and you need to test your pipeline across multiple phrases and punctuation while keeping it readable and meaningful for your benchmarks.",
+      "oldSimilarity": 0.6872037914691943,
+      "newSimilarity": 0.6858638743455497,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 29,
+      "original": "The company announced a new product launch for next quarter, and the board expects strong demand from both Europe and Asia.",
+      "old": "The company has announced new product launches for the next quarter, and the board expects strong demand from both Europe and Asia.",
+      "new": "The company has announced new product launches for the next quarter, and the board expects strong demand from both Europe and Asia.",
+      "oldSimilarity": 0.9083969465648855,
+      "newSimilarity": 0.9083969465648855,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 30,
+      "original": "After the storm, the children returned home safely and the neighbors celebrated together in the evening.",
+      "old": "After the storm, the children returned home safely, and in the evening, the neighbors celebrated together.",
+      "new": "After the storm, the children returned home safely, and in the evening the neighbors celebrated together.",
+      "oldSimilarity": 0.6981132075471699,
+      "newSimilarity": 0.7047619047619047,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 31,
+      "original": "I would like to schedule a meeting for next Tuesday morning, if that works for everyone involved.",
+      "old": "If it is convenient for all concerned, I would like to schedule a meeting for next Tuesday morning.",
+      "new": "If it is convenient for all concerned, I would like to schedule a meeting for next Tuesday morning.",
+      "oldSimilarity": 0.23232323232323238,
+      "newSimilarity": 0.23232323232323238,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 32,
+      "original": "Please review the attached document carefully and send your feedback before the end of the week.",
+      "old": "Please read the attached document carefully and send the Sugiido Backpack by the end of the week.",
+      "new": "Please read the attached document carefully and send us your feedback by the end of the week.",
+      "oldSimilarity": 0.7731958762886598,
+      "newSimilarity": 0.875,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 33,
+      "original": "The software update includes performance improvements, bug fixes, and better support for multilingual input.",
+      "old": "Software Pressure Zodiac includes improvements to Puff King Manse, bug fixes, and improvements to support multilingual input.",
+      "new": "Software updates include performance improvements, bug fixes, and improved support for multilingual input.",
+      "oldSimilarity": 0.536,
+      "newSimilarity": 0.8796296296296297,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 34,
+      "original": "A modern web application should be fast, accessible, and easy to maintain for long-term development.",
+      "old": "Modern top-b applications need to be fast, accessible, and easy to maintain for long-term development.",
+      "new": "Modern web applications must be fast, accessible, and easy to maintain for long-term development.",
+      "oldSimilarity": 0.8627450980392157,
+      "newSimilarity": 0.9299999999999999,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 35,
+      "original": "Machine learning models can recognize patterns, generate text, and assist with translation tasks.",
+      "old": "Machine learning models can recognize draft patterns, generate text, and assist with translation tasks.",
+      "new": "Machine learning models can recognize patterns, generate text, and assist with translation tasks.",
+      "oldSimilarity": 0.941747572815534,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 36,
+      "original": "Our team is preparing a launch plan for the new dashboard and the training materials for customers.",
+      "old": "We are preparing a new introduction plan and training materials for our customers.",
+      "new": "Our team is preparing a new dashboard implementation plan and training materials for our customers.",
+      "oldSimilarity": 0.5656565656565656,
+      "newSimilarity": 0.6363636363636364,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 37,
+      "original": "The conference will be held in Tokyo, Japan, on October 12 and will feature speakers from several countries.",
+      "old": "The event will be held in Tokyo, Japan on October 12th and will be attended by speakers from all over the world.",
+      "new": "The conference will be held in Tokyo, Japan on October 12th and will be attended by speakers from several countries.",
+      "oldSimilarity": 0.6785714285714286,
+      "newSimilarity": 0.8879310344827587,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 38,
+      "original": "The research paper explains the tradeoffs between accuracy, latency, and cost in real-world systems.",
+      "old": "The research paper describes the trade-off between accuracy, delay, and cost in real systems.",
+      "new": "Research papers discuss the trade-offs between accuracy, delay, and cost in real-world systems.",
+      "oldSimilarity": 0.8,
+      "newSimilarity": 0.8200000000000001,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 39,
+      "original": "The user asked for a summary of the meeting notes, and the assistant produced a concise version.",
+      "old": "Arizaa requested a summary of the meeting notes, and his assistant prepared a concise version.",
+      "new": "The user requested a summary of the meeting notes, and the assistant created a concise version.",
+      "oldSimilarity": 0.7604166666666666,
+      "newSimilarity": 0.8541666666666666,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 40,
+      "original": "We are evaluating three different approaches and comparing them with a small but representative test set.",
+      "old": "We evaluate three different approaches and compare them with a small but representative test theory.",
+      "new": "We evaluate three different approaches and compare them against a small but representative test set.",
+      "oldSimilarity": 0.8571428571428572,
+      "newSimilarity": 0.8476190476190476,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 41,
+      "original": "In many languages, punctuation changes the rhythm and meaning of a sentence in subtle ways.",
+      "old": "In multi-district languages, punctuation marks subtly change the rhythm and meaning of sentences.",
+      "new": "In many languages, punctuation marks subtly change the rhythm and meaning of a sentence.",
+      "oldSimilarity": 0.5567010309278351,
+      "newSimilarity": 0.6813186813186813,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 42,
+      "original": "The project manager wrote a detailed memo about the rollout schedule and the fallback plan.",
+      "old": "Project Maneji has written a detailed memo regarding the plans for Rollout: Yuruto Sukeji and Fourou.",
+      "new": "The project manager wrote detailed notes about the rollout schedule and fallback plan.",
+      "oldSimilarity": 0.4158415841584159,
+      "newSimilarity": 0.8791208791208791,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 43,
+      "original": "A tiny change in the data can cause a very large difference in the final output quality.",
+      "old": "Even the slightest change in the output can have a big difference in the final output quality.",
+      "new": "Small changes to the data can make a big difference in the final output quality.",
+      "oldSimilarity": 0.6595744680851063,
+      "newSimilarity": 0.7613636363636364,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 44,
+      "original": "Please confirm the invoice number, the delivery date, and the shipping address before we proceed.",
+      "old": "Please check your invoice number, delivery date, and shipping address before proceeding.",
+      "new": "Please check your invoice number, delivery date, and shipping address before proceeding.",
+      "oldSimilarity": 0.7525773195876289,
+      "newSimilarity": 0.7525773195876289,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 45,
+      "original": "The server crashed after the update, but the logs were preserved for debugging purposes.",
+      "old": "After the update, Baa was saved in Kuratsu City, but the log end was saved for the next purpose.",
+      "new": "The server crashed after the update, but the logs were saved for debugging purposes.",
+      "oldSimilarity": 0.4375,
+      "newSimilarity": 0.9431818181818182,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 46,
+      "original": "A good benchmark should include greetings, names, numbers, punctuation, technical vocabulary, and longer sentences.",
+      "old": "A good bench space should include greetings, names, numbers, punctuation, technical terms, and long sentences.",
+      "new": "A good benchmark should include greetings, names, numbers, punctuation, jargon, and long sentences.",
+      "oldSimilarity": 0.8521739130434782,
+      "newSimilarity": 0.8260869565217391,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 47,
+      "original": "The password reset link expires in 24 hours, so please act quickly.",
+      "old": "The expiration date for password disassociation and links is 24 hours, so please take action immediately.",
+      "new": "Your password reset link will expire for 24 hours, so act quickly.",
+      "oldSimilarity": 0.4666666666666667,
+      "newSimilarity": 0.7014925373134329,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 48,
+      "original": "My friend Maria visited London in April and bought a red umbrella.",
+      "old": "My friend Maria visited London in April and bought a red doctor umbrella.",
+      "new": "My friend Maria visited London in April and bought a red umbrella.",
+      "oldSimilarity": 0.904109589041096,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 49,
+      "original": "The device uses USB-C, Wi-Fi 6, and Bluetooth 5.3.",
+      "old": "This device uses sb-c, wei 6, b and th 5.3.",
+      "new": "This device uses USB-C, Wi-Fi 6, and Bluetooth 5.3.",
+      "oldSimilarity": 0.7,
+      "newSimilarity": 0.9607843137254902,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 50,
+      "original": "The API response contained a 404 error and a timeout message.",
+      "old": "The API response included 404 Timeout after error.",
+      "new": "The API response contained a 404 error and a timeout message.",
+      "oldSimilarity": 0.5245901639344263,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 51,
+      "original": "We are shipping version 2.1.4 next week.",
+      "old": "We are planning to ship Baji 4 2.1.4 next week.",
+      "new": "We plan to ship version 2.1.4 next week.",
+      "oldSimilarity": 0.6382978723404256,
+      "newSimilarity": 0.75,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 52,
+      "original": "The file is located in /var/log/app.log and should be reviewed.",
+      "old": "This face is ・Ar・Og・App. It's on your computer and you need to check it out.",
+      "new": "This file is located at /var/log/app.log and should be reviewed.",
+      "oldSimilarity": 0.35526315789473684,
+      "newSimilarity": 0.9375,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 53,
+      "original": "The function name is parseMarkdownToHTML and it runs in the browser.",
+      "old": "The function name is ``Parallel'' and ``HTML'' and will be executed in the browser.",
+      "new": "The function name is parseMarkdownToHTML and it runs in the browser.",
+      "oldSimilarity": 0.6385542168674698,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 54,
+      "original": "The README mentions React, TypeScript, Vite, and TanStack.",
+      "old": "Rare dme mentions rare CT, TYP SC, CK, and other CK.",
+      "new": "The README mentions React, TypeScript, Vite, and TanStack.",
+      "oldSimilarity": 0.603448275862069,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 55,
+      "original": "I scheduled a call with Dr. Smith at 8:15 AM.",
+      "old": "I scheduled a call with Dr. Smith for 8:15am.",
+      "new": "I scheduled a call with Dr. Smith for 8:15am.",
+      "oldSimilarity": 0.9111111111111111,
+      "newSimilarity": 0.9111111111111111,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 56,
+      "original": "The package includes 12 modules and 3 examples.",
+      "old": "In Patsukee, 12 characters contain 3 samples.",
+      "new": "The package contains 12 modules and 3 samples.",
+      "oldSimilarity": 0.34042553191489366,
+      "newSimilarity": 0.8085106382978724,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 57,
+      "original": "Our roadmap includes Q3 planning, Q4 rollout, and post-launch monitoring.",
+      "old": "Our review includes third quarter plans, fourth quarter developments, and post-launch monitoring.",
+      "new": "Our roadmap includes Q3 planning, Q4 deployment, and post-launch monitoring.",
+      "oldSimilarity": 0.5670103092783505,
+      "newSimilarity": 0.9078947368421053,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 58,
+      "original": "The article discusses UTF-8 encoding, Unicode normalization, and tokenization.",
+      "old": "In this article, we will explain UTF-8 encoding, Unico normalization, and tokenization.",
+      "new": "This article describes UTF-8 encoding, Unicode normalization, and tokenization.",
+      "oldSimilarity": 0.7471264367816092,
+      "newSimilarity": 0.9240506329113924,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 59,
+      "original": "A simple sentence can still be ambiguous without enough context.",
+      "old": "A simple sentence that sounds hot can become vague without enough context.",
+      "new": "Even simple sentences can become ambiguous without sufficient context.",
+      "oldSimilarity": 0.6891891891891893,
+      "newSimilarity": 0.6857142857142857,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 60,
+      "original": "I enjoy hiking, cooking, and listening to classical music.",
+      "old": "I enjoy hiking, cooking, and listening to music that makes my life easier.",
+      "new": "I like hiking, cooking, and listening to classical music.",
+      "oldSimilarity": 0.6756756756756757,
+      "newSimilarity": 0.9137931034482758,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 61,
+      "original": "The city council approved the budget last night.",
+      "old": "The City Council approved the budget last night.",
+      "new": "The City Council approved the budget last night.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 62,
+      "original": "The restaurant on Main Street serves sushi, ramen, and curry.",
+      "old": "The restaurant on Main Street Ito serves sushi, raa noodles, and kae.",
+      "new": "The restaurant on Main Street serves sushi, ramen, and curry.",
+      "oldSimilarity": 0.7536231884057971,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 63,
+      "original": "Can we meet at 7:00 pm in the lobby?",
+      "old": "Can we meet in the lobby at 7pm?",
+      "new": "Can we meet in the lobby at 7pm?",
+      "oldSimilarity": 0.5,
+      "newSimilarity": 0.5,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 64,
+      "original": "Please keep the receipt for your records.",
+      "old": "Please keep your receipt for your records.",
+      "new": "Please keep your receipt for your records.",
+      "oldSimilarity": 0.9047619047619048,
+      "newSimilarity": 0.9047619047619048,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 65,
+      "original": "She bought a new tablet for her daughter.",
+      "old": "She bought a new one for her daughter.",
+      "new": "She bought a new tablet for her daughter.",
+      "oldSimilarity": 0.8780487804878049,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 66,
+      "original": "The old pipeline loses information at every stage, so the result is often less faithful.",
+      "old": "Because information is lost at every step in the paleomedical pipeline, results often have low fidelity.",
+      "new": "Older pipelines often lose information at every step, resulting in low-fidelity results.",
+      "oldSimilarity": 0.3173076923076923,
+      "newSimilarity": 0.4772727272727273,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 67,
+      "original": "The redesign removes the romaji hop and uses more context-aware recovery.",
+      "old": "The redesign removes the robaji hotsufu and uses a more context-aware recovery.",
+      "new": "The redesign removes Roman hops and uses more context-aware recovery.",
+      "oldSimilarity": 0.8987341772151899,
+      "newSimilarity": 0.904109589041096,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 68,
+      "original": "This benchmark measures whether that change actually helps.",
+      "old": "This bench spacing measures whether the changes are actually helpful.",
+      "new": "This benchmark measures whether the changes are actually helpful.",
+      "oldSimilarity": 0.7536231884057971,
+      "newSimilarity": 0.8461538461538461,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 69,
+      "original": "A short phrase like \"hello\" is easy, but longer prose reveals the real differences.",
+      "old": "It is easy to write short-term medical phrases such as ``Hello,'' but in long-term medical prose, the true nature of the wrong doctor becomes clear.",
+      "new": "Short phrases like \"hello\" are easy, but longer prose reveals the real difference.",
+      "oldSimilarity": 0.3581081081081081,
+      "newSimilarity": 0.9156626506024097,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 70,
+      "original": "Names such as Yuki, Sato, and Nguyen should be handled reasonably well.",
+      "old": "Names such as Yuki, Sato, and Ngu gastritis should be handled appropriately.",
+      "new": "Names such as Yuki, Sato, and Nguyen should be handled appropriately.",
+      "oldSimilarity": 0.7105263157894737,
+      "newSimilarity": 0.8309859154929577,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 71,
+      "original": "Technical words such as Kubernetes, microservices, and concurrency are challenging.",
+      "old": "Technical terminology such as \"difficult\", \"microservices\", and \"concurrency\" are arbitrary.",
+      "new": "Terminology such as Kubernetes, microservices, and concurrency can be difficult.",
+      "oldSimilarity": 0.6195652173913043,
+      "newSimilarity": 0.6987951807228916,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 72,
+      "original": "Even punctuation like commas, semicolons, quotes, and ellipses can change the final text.",
+      "old": "Punctuation marks such as commas, semicolons, quotation marks, and ellipses can also distort the final text.",
+      "new": "Punctuation marks such as commas, semicolons, quotation marks, and ellipses can also change the final text.",
+      "oldSimilarity": 0.6388888888888888,
+      "newSimilarity": 0.7009345794392523,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 73,
+      "original": "The digits 12345 and the number 20,000 should remain recognizable after decoding.",
+      "old": "The numbers 12345 and 20,000 should remain recognizable after altitude.",
+      "new": "The numbers 12345 and 20,000 should remain recognizable after decoding.",
+      "oldSimilarity": 0.691358024691358,
+      "newSimilarity": 0.7901234567901234,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 74,
+      "original": "The system should preserve the original meaning of a request, not just the surface form.",
+      "old": "The system must preserve the original meaning of the request, not just its superficial form.",
+      "new": "The system must preserve the original meaning of the request, not just its superficial form.",
+      "oldSimilarity": 0.8152173913043479,
+      "newSimilarity": 0.8152173913043479,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 75,
+      "original": "Today is Monday, June 27, 2026, and the time is 14:32.",
+      "old": "Today is Monday, June 27, 2026, and the time is 14:32.",
+      "new": "Today is Monday, June 27, 2026, and the time is 14:32.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 76,
+      "original": "Please open the settings panel and select the dark theme.",
+      "old": "Open the settings panel and select the Akute Ema.",
+      "new": "Open the settings panel and select dark theme.",
+      "oldSimilarity": 0.7719298245614035,
+      "newSimilarity": 0.8070175438596492,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 77,
+      "original": "The error message said: \"Connection failed: timeout after 30 seconds.\"",
+      "old": "The Great Mekkou Guards were as follows. \"Connection failed: Timed out after 30 seconds.\"",
+      "new": "The error message was: \"Connection failed: Timed out after 30 seconds.\"",
+      "oldSimilarity": 0.6629213483146068,
+      "newSimilarity": 0.9295774647887324,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 78,
+      "original": "I need to pick up milk, eggs, bread, and cheese on the way home.",
+      "old": "When you return home, you have to buy milk, eggs, bread, and status maps.",
+      "new": "I have to buy milk, eggs, bread and cheese on the way home.",
+      "oldSimilarity": 0.3561643835616438,
+      "newSimilarity": 0.828125,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 79,
+      "original": "The office is located on 5th Avenue near the river.",
+      "old": "The office is located on 5th Avenue near the river.",
+      "new": "The office is located on 5th Avenue near the river.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 80,
+      "original": "We have a backlog of 87 tickets and 4 open escalations.",
+      "old": "There are 87 land decisions and 4 backlogs of the royal Escale artist 4.",
+      "new": "There is a backlog of 87 tickets and 4 open escalations.",
+      "oldSimilarity": 0.36111111111111116,
+      "newSimilarity": 0.875,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 81,
+      "original": "The release notes mention improved caching and reduced memory usage.",
+      "old": "Lily Know includes improvements to Kiyazu City Oil and a reduction in memory usage.",
+      "new": "The release notes list cache improvements and memory usage reductions.",
+      "oldSimilarity": 0.3975903614457831,
+      "newSimilarity": 0.4714285714285714,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 82,
+      "original": "This sentence is intentionally written with mixed casing and punctuation to test robustness.",
+      "old": "This sentence is intentionally slopped with mixed case and punctuation to test robustness.",
+      "new": "This sentence was intentionally written with mixed case and punctuation to test its robustness.",
+      "oldSimilarity": 0.9021739130434783,
+      "newSimilarity": 0.9052631578947369,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 83,
+      "original": "The password must contain at least 8 characters and one special symbol.",
+      "old": "Password must contain at least 8 characters and 1 special character.",
+      "new": "Passwords must contain at least 8 characters and one special symbol.",
+      "oldSimilarity": 0.7746478873239436,
+      "newSimilarity": 0.9295774647887324,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 84,
+      "original": "If the network is slow, the application should retry automatically.",
+      "old": "If the heat permanent action is delayed, the app artist 4 will have to retry automatically.",
+      "new": "If the network is slow, the application should automatically retry.",
+      "oldSimilarity": 0.5274725274725275,
+      "newSimilarity": 0.8208955223880597,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 85,
+      "original": "The new architecture is designed to preserve more information and reduce avoidable loss.",
+      "old": "The new IA Tired Mouth Store is designed to help you store more information and reduce avoidable losses.",
+      "new": "The new architecture is designed to store more information and reduce avoidable losses.",
+      "oldSimilarity": 0.7403846153846154,
+      "newSimilarity": 0.9090909090909091,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 86,
+      "original": "A benchmark with 100 examples is large enough to show clear trends.",
+      "old": "A bench size of 100 examples is large enough to show a clear trend.",
+      "new": "A benchmark with 100 examples is large enough to show clear trends.",
+      "oldSimilarity": 0.8208955223880597,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 87,
+      "original": "The old route and the new route should be compared on the same sentences.",
+      "old": "It is necessary to compare the old route and the new route in simultaneous sentences.",
+      "new": "The old route and the new route must be compared in the same sentence.",
+      "oldSimilarity": 0.42352941176470593,
+      "newSimilarity": 0.904109589041096,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 88,
+      "original": "This sentence includes an em dash — and parentheses (and bracketed notes) to stress the decoder.",
+      "old": "This sentence includes a picture omitted and parentheses (and brackets) to emphasize the decoder.",
+      "new": "This sentence includes an em dash and parentheses (and a note in parentheses) to emphasize the decoder.",
+      "oldSimilarity": 0.7010309278350515,
+      "newSimilarity": 0.7475728155339806,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 89,
+      "original": "Please ensure the output is valid JSON and includes all required fields.",
+      "old": "Make sure that the output is a valid field and includes all required fields.",
+      "new": "Make sure the output is valid JSON and includes all required fields.",
+      "oldSimilarity": 0.7631578947368421,
+      "newSimilarity": 0.9166666666666666,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 90,
+      "original": "I am writing this from a laptop in a quiet room near the station.",
+      "old": "I'm writing this with my brain and computer in a quiet room near a station.",
+      "new": "I'm writing this on my laptop in a quiet room near the station.",
+      "oldSimilarity": 0.6666666666666667,
+      "newSimilarity": 0.8923076923076922,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 91,
+      "original": "The model should preserve the intended meaning of context-heavy prose.",
+      "old": "The model should preserve the intended meaning of the context-sensitive prose.",
+      "new": "The model should preserve the intended meaning of the context-sensitive prose.",
+      "oldSimilarity": 0.858974358974359,
+      "newSimilarity": 0.858974358974359,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 92,
+      "original": "We recommend using a small sample of real user requests for future evaluations.",
+      "old": "We recommend using a small sample of actual requests for future evaluations.",
+      "new": "We recommend using a small sample of real user requests for future evaluations.",
+      "oldSimilarity": 0.9113924050632911,
+      "newSimilarity": 1,
+      "oldExact": false,
+      "newExact": true
+    },
+    {
+      "index": 93,
+      "original": "The system should work well for formal writing and casual conversation alike.",
+      "old": "This system should work equally well for informal documents and casual conversations.",
+      "new": "This system should work equally well in formal documents and casual conversations.",
+      "oldSimilarity": 0.6941176470588235,
+      "newSimilarity": 0.6707317073170731,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 94,
+      "original": "This benchmark is not perfect, but it is a practical way to quantify improvement.",
+      "old": "This bench spacing is not perfect, but it is a practical way to quantify improvement.",
+      "new": "This benchmark is not perfect, but it is a practical way to quantify improvements.",
+      "oldSimilarity": 0.9176470588235294,
+      "newSimilarity": 0.9878048780487805,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 95,
+      "original": "The task is to compare the two pipelines on the same input and measure how much they differ.",
+      "old": "The task is to compare two angular pipelines on simultaneous inputs and measure how different they are.",
+      "new": "The task is to compare two pipelines on the same input and measure how different they are.",
+      "oldSimilarity": 0.6699029126213591,
+      "newSimilarity": 0.8043478260869565,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 96,
+      "original": "A single sentence can be ambiguous, so the aggregate metric matters more than any one example.",
+      "old": "Aggregate metrics are more important than single examples because a single sentence can be ambiguous.",
+      "new": "Aggregate metrics are more important than single examples because a single sentence can be ambiguous.",
+      "oldSimilarity": 0.25742574257425743,
+      "newSimilarity": 0.25742574257425743,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 97,
+      "original": "The new implementation aims to reduce errors caused by unnecessary intermediate transformations.",
+      "old": "The new arbitrary implementation aims to reduce errors caused by unnecessary intermediate conversions.",
+      "new": "The new implementation aims to reduce errors caused by unnecessary intermediate conversions.",
+      "oldSimilarity": 0.8137254901960784,
+      "newSimilarity": 0.90625,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 98,
+      "original": "Our goal is to maximize round-trip accuracy while keeping the cipher intact.",
+      "old": "Our goal is to maximize round-trip accuracy while keeping the cipher intact.",
+      "new": "Our goal is to maximize round-trip accuracy while keeping the cipher intact.",
+      "oldSimilarity": 1,
+      "newSimilarity": 1,
+      "oldExact": true,
+      "newExact": true
+    },
+    {
+      "index": 99,
+      "original": "The old system often over-normalizes text and loses subtle distinctions.",
+      "old": "Paleomedical systems often over-normalize text and lose subtle distinctions.",
+      "new": "Older systems often over-normalize text and lose subtle distinctions.",
+      "oldSimilarity": 0.8289473684210527,
+      "newSimilarity": 0.875,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 100,
+      "original": "The redesign tries to keep the meaning intact until the final translation step.",
+      "old": "The redesign attempts to keep the meaning intact until the final translation.",
+      "new": "The redesign attempts to keep the meaning intact until the final translation step.",
+      "oldSimilarity": 0.8607594936708861,
+      "newSimilarity": 0.926829268292683,
+      "oldExact": false,
+      "newExact": false
+    },
+    {
+      "index": 101,
+      "original": "The benchmark covers greetings, names, punctuation, numbers, technical terms, and long prose.",
+      "old": "This bench space covers greetings, names, punctuation, numbers, technical terms, and medical prose.",
+      "new": "This benchmark covers greetings, names, punctuation, numbers, jargon, and long prose.",
+      "oldSimilarity": 0.8585858585858586,
+      "newSimilarity": 0.8279569892473118,
+      "oldExact": false,
+      "newExact": false
+    }
+  ]
+}

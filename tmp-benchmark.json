@@ -1,0 +1,406 @@
+[
+  {
+    "sentence": "Hello there!",
+    "encoded": "Hello there!"
+  },
+  {
+    "sentence": "How are you today?",
+    "encoded": "How are you today?"
+  },
+  {
+    "sentence": "Please call me tomorrow.",
+    "encoded": "Please call me tomorrow."
+  },
+  {
+    "sentence": "I am learning Japanese.",
+    "encoded": "I am learning Japanese."
+  },
+  {
+    "sentence": "The weather is nice today.",
+    "encoded": "The weather is nice today."
+  },
+  {
+    "sentence": "Would you like some coffee?",
+    "encoded": "Would you like some coffee?"
+  },
+  {
+    "sentence": "My name is Alex.",
+    "encoded": "My name is Alex."
+  },
+  {
+    "sentence": "We met in Paris last year.",
+    "encoded": "We met in Paris last year."
+  },
+  {
+    "sentence": "She works at a startup.",
+    "encoded": "She works at a startup."
+  },
+  {
+    "sentence": "This is a short sentence.",
+    "encoded": "This is a short sentence."
+  },
+  {
+    "sentence": "The quick brown fox jumps over the lazy dog.",
+    "encoded": "The quick brown fox jumps over the lazy dog."
+  },
+  {
+    "sentence": "I have two cats and three dogs.",
+    "encoded": "I have two cats and three dogs."
+  },
+  {
+    "sentence": "Please bring me the blue folder.",
+    "encoded": "Please bring me the blue folder."
+  },
+  {
+    "sentence": "The meeting starts at 9:30.",
+    "encoded": "The meeting starts at 9:30."
+  },
+  {
+    "sentence": "Call me at 555-1234.",
+    "encoded": "Call me at 555-1234."
+  },
+  {
+    "sentence": "I bought a 14-inch laptop.",
+    "encoded": "I bought a 14-inch laptop."
+  },
+  {
+    "sentence": "The project deadline is June 15.",
+    "encoded": "The project deadline is June 15."
+  },
+  {
+    "sentence": "He said, \"Hello, world!\"",
+    "encoded": "He said, \"Hello, world!\""
+  },
+  {
+    "sentence": "Don't forget your passport.",
+    "encoded": "Don't forget your passport."
+  },
+  {
+    "sentence": "My favorite color is teal.",
+    "encoded": "My favorite color is teal."
+  },
+  {
+    "sentence": "The train leaves at 6:05 PM.",
+    "encoded": "The train leaves at 6:05 PM."
+  },
+  {
+    "sentence": "We need to finish this by Friday.",
+    "encoded": "We need to finish this by Friday."
+  },
+  {
+    "sentence": "It is important to be patient.",
+    "encoded": "It is important to be patient."
+  },
+  {
+    "sentence": "Can you help me with this issue?",
+    "encoded": "Can you help me with this issue?"
+  },
+  {
+    "sentence": "I live in Seattle, Washington.",
+    "encoded": "I live in Seattle, Washington."
+  },
+  {
+    "sentence": "The museum opens at 10 AM.",
+    "encoded": "The museum opens at 10 AM."
+  },
+  {
+    "sentence": "Please send the report before noon.",
+    "encoded": "Please send the report before noon."
+  },
+  {
+    "sentence": "This is a very long sentence that contains many details and should test the pipeline over multiple clauses and punctuation marks while still staying readable and meaningful for the benchmark.",
+    "encoded": "This is a very long sentence that contains many details and should test the pipeline over multiple clauses and punctuation marks while still staying readable and meaningful for the benchmark."
+  },
+  {
+    "sentence": "The company announced a new product launch for next quarter, and the board expects strong demand from both Europe and Asia.",
+    "encoded": "The company announced a new product launch for next quarter, and the board expects strong demand from both Europe and Asia."
+  },
+  {
+    "sentence": "After the storm, the children returned home safely and the neighbors celebrated together in the evening.",
+    "encoded": "After the storm, the children returned home safely and the neighbors celebrated together in the evening."
+  },
+  {
+    "sentence": "I would like to schedule a meeting for next Tuesday morning, if that works for everyone involved.",
+    "encoded": "I would like to schedule a meeting for next Tuesday morning, if that works for everyone involved."
+  },
+  {
+    "sentence": "Please review the attached document carefully and send your feedback before the end of the week.",
+    "encoded": "Please review the attached document carefully and send your feedback before the end of the week."
+  },
+  {
+    "sentence": "The software update includes performance improvements, bug fixes, and better support for multilingual input.",
+    "encoded": "The software update includes performance improvements, bug fixes, and better support for multilingual input."
+  },
+  {
+    "sentence": "A modern web application should be fast, accessible, and easy to maintain for long-term development.",
+    "encoded": "A modern web application should be fast, accessible, and easy to maintain for long-term development."
+  },
+  {
+    "sentence": "Machine learning models can recognize patterns, generate text, and assist with translation tasks.",
+    "encoded": "Machine learning models can recognize patterns, generate text, and assist with translation tasks."
+  },
+  {
+    "sentence": "Our team is preparing a launch plan for the new dashboard and the training materials for customers.",
+    "encoded": "Our team is preparing a launch plan for the new dashboard and the training materials for customers."
+  },
+  {
+    "sentence": "The conference will be held in Tokyo, Japan, on October 12 and will feature speakers from several countries.",
+    "encoded": "The conference will be held in Tokyo, Japan, on October 12 and will feature speakers from several countries."
+  },
+  {
+    "sentence": "The research paper explains the tradeoffs between accuracy, latency, and cost in real-world systems.",
+    "encoded": "The research paper explains the tradeoffs between accuracy, latency, and cost in real-world systems."
+  },
+  {
+    "sentence": "The user asked for a summary of the meeting notes, and the assistant produced a concise version.",
+    "encoded": "The user asked for a summary of the meeting notes, and the assistant produced a concise version."
+  },
+  {
+    "sentence": "We are evaluating three different approaches and comparing them with a small but representative test set.",
+    "encoded": "We are evaluating three different approaches and comparing them with a small but representative test set."
+  },
+  {
+    "sentence": "In many languages, punctuation changes the rhythm and meaning of a sentence in subtle ways.",
+    "encoded": "In many languages, punctuation changes the rhythm and meaning of a sentence in subtle ways."
+  },
+  {
+    "sentence": "The project manager wrote a detailed memo about the rollout schedule and the fallback plan.",
+    "encoded": "The project manager wrote a detailed memo about the rollout schedule and the fallback plan."
+  },
+  {
+    "sentence": "A tiny change in the data can cause a very large difference in the final output quality.",
+    "encoded": "A tiny change in the data can cause a very large difference in the final output quality."
+  },
+  {
+    "sentence": "Please confirm the invoice number, the delivery date, and the shipping address before we proceed.",
+    "encoded": "Please confirm the invoice number, the delivery date, and the shipping address before we proceed."
+  },
+  {
+    "sentence": "The server crashed after the update, but the logs were preserved for debugging purposes.",
+    "encoded": "The server crashed after the update, but the logs were preserved for debugging purposes."
+  },
+  {
+    "sentence": "A good benchmark should include greetings, names, numbers, punctuation, technical vocabulary, and longer sentences.",
+    "encoded": "A good benchmark should include greetings, names, numbers, punctuation, technical vocabulary, and longer sentences."
+  },
+  {
+    "sentence": "The password reset link expires in 24 hours, so please act quickly.",
+    "encoded": "The password reset link expires in 24 hours, so please act quickly."
+  },
+  {
+    "sentence": "My friend Maria visited London in April and bought a red umbrella.",
+    "encoded": "My friend Maria visited London in April and bought a red umbrella."
+  },
+  {
+    "sentence": "The device uses USB-C, Wi-Fi 6, and Bluetooth 5.3.",
+    "encoded": "The device uses USB-C, Wi-Fi 6, and Bluetooth 5.3."
+  },
+  {
+    "sentence": "The API response contained a 404 error and a timeout message.",
+    "encoded": "The API response contained a 404 error and a timeout message."
+  },
+  {
+    "sentence": "We are shipping version 2.1.4 next week.",
+    "encoded": "We are shipping version 2.1.4 next week."
+  },
+  {
+    "sentence": "The file is located in /var/log/app.log and should be reviewed.",
+    "encoded": "The file is located in /var/log/app.log and should be reviewed."
+  },
+  {
+    "sentence": "The function name is parseMarkdownToHTML and it runs in the browser.",
+    "encoded": "The function name is parseMarkdownToHTML and it runs in the browser."
+  },
+  {
+    "sentence": "The README mentions React, TypeScript, Vite, and TanStack.",
+    "encoded": "The README mentions React, TypeScript, Vite, and TanStack."
+  },
+  {
+    "sentence": "I scheduled a call with Dr. Smith at 8:15 AM.",
+    "encoded": "I scheduled a call with Dr. Smith at 8:15 AM."
+  },
+  {
+    "sentence": "The package includes 12 modules and 3 examples.",
+    "encoded": "The package includes 12 modules and 3 examples."
+  },
+  {
+    "sentence": "Our roadmap includes Q3 planning, Q4 rollout, and post-launch monitoring.",
+    "encoded": "Our roadmap includes Q3 planning, Q4 rollout, and post-launch monitoring."
+  },
+  {
+    "sentence": "The article discusses UTF-8 encoding, Unicode normalization, and tokenization.",
+    "encoded": "The article discusses UTF-8 encoding, Unicode normalization, and tokenization."
+  },
+  {
+    "sentence": "A simple sentence can still be ambiguous without enough context.",
+    "encoded": "A simple sentence can still be ambiguous without enough context."
+  },
+  {
+    "sentence": "I enjoy hiking, cooking, and listening to classical music.",
+    "encoded": "I enjoy hiking, cooking, and listening to classical music."
+  },
+  {
+    "sentence": "The city council approved the budget last night.",
+    "encoded": "The city council approved the budget last night."
+  },
+  {
+    "sentence": "The restaurant on Main Street serves sushi, ramen, and curry.",
+    "encoded": "The restaurant on Main Street serves sushi, ramen, and curry."
+  },
+  {
+    "sentence": "Can we meet at 7:00 pm in the lobby?",
+    "encoded": "Can we meet at 7:00 pm in the lobby?"
+  },
+  {
+    "sentence": "Please keep the receipt for your records.",
+    "encoded": "Please keep the receipt for your records."
+  },
+  {
+    "sentence": "She bought a new tablet for her daughter.",
+    "encoded": "She bought a new tablet for her daughter."
+  },
+  {
+    "sentence": "The old pipeline loses information at every stage, so the result is often less faithful.",
+    "encoded": "The old pipeline loses information at every stage, so the result is often less faithful."
+  },
+  {
+    "sentence": "The redesign removes the romaji hop and uses more context-aware recovery.",
+    "encoded": "The redesign removes the romaji hop and uses more context-aware recovery."
+  },
+  {
+    "sentence": "This benchmark measures whether that change actually helps.",
+    "encoded": "This benchmark measures whether that change actually helps."
+  },
+  {
+    "sentence": "A short phrase like \"hello\" is easy, but longer prose reveals the real differences.",
+    "encoded": "A short phrase like \"hello\" is easy, but longer prose reveals the real differences."
+  },
+  {
+    "sentence": "Names such as Yuki, Sato, and Nguyen should be handled reasonably well.",
+    "encoded": "Names such as Yuki, Sato, and Nguyen should be handled reasonably well."
+  },
+  {
+    "sentence": "Technical words such as Kubernetes, microservices, and concurrency are challenging.",
+    "encoded": "Technical words such as Kubernetes, microservices, and concurrency are challenging."
+  },
+  {
+    "sentence": "Even punctuation like commas, semicolons, quotes, and ellipses can change the final text.",
+    "encoded": "Even punctuation like commas, semicolons, quotes, and ellipses can change the final text."
+  },
+  {
+    "sentence": "The digits 12345 and the number 20,000 should remain recognizable after decoding.",
+    "encoded": "The digits 12345 and the number 20,000 should remain recognizable after decoding."
+  },
+  {
+    "sentence": "The system should preserve the original meaning of a request, not just the surface form.",
+    "encoded": "The system should preserve the original meaning of a request, not just the surface form."
+  },
+  {
+    "sentence": "Today is Monday, June 27, 2026, and the time is 14:32.",
+    "encoded": "Today is Monday, June 27, 2026, and the time is 14:32."
+  },
+  {
+    "sentence": "Please open the settings panel and select the dark theme.",
+    "encoded": "Please open the settings panel and select the dark theme."
+  },
+  {
+    "sentence": "The error message said: \"Connection failed: timeout after 30 seconds.\"",
+    "encoded": "The error message said: \"Connection failed: timeout after 30 seconds.\""
+  },
+  {
+    "sentence": "I need to pick up milk, eggs, bread, and cheese on the way home.",
+    "encoded": "I need to pick up milk, eggs, bread, and cheese on the way home."
+  },
+  {
+    "sentence": "The office is located on 5th Avenue near the river.",
+    "encoded": "The office is located on 5th Avenue near the river."
+  },
+  {
+    "sentence": "We have a backlog of 87 tickets and 4 open escalations.",
+    "encoded": "We have a backlog of 87 tickets and 4 open escalations."
+  },
+  {
+    "sentence": "The release notes mention improved caching and reduced memory usage.",
+    "encoded": "The release notes mention improved caching and reduced memory usage."
+  },
+  {
+    "sentence": "This sentence is intentionally written with mixed casing and punctuation to test robustness.",
+    "encoded": "This sentence is intentionally written with mixed casing and punctuation to test robustness."
+  },
+  {
+    "sentence": "The password must contain at least 8 characters and one special symbol.",
+    "encoded": "The password must contain at least 8 characters and one special symbol."
+  },
+  {
+    "sentence": "If the network is slow, the application should retry automatically.",
+    "encoded": "If the network is slow, the application should retry automatically."
+  },
+  {
+    "sentence": "The new architecture is designed to preserve more information and reduce avoidable loss.",
+    "encoded": "The new architecture is designed to preserve more information and reduce avoidable loss."
+  },
+  {
+    "sentence": "A benchmark with 100 examples is large enough to show clear trends.",
+    "encoded": "A benchmark with 100 examples is large enough to show clear trends."
+  },
+  {
+    "sentence": "The old route and the new route should be compared on the same sentences.",
+    "encoded": "The old route and the new route should be compared on the same sentences."
+  },
+  {
+    "sentence": "This sentence includes an em dash — and parentheses (and bracketed notes) to stress the decoder.",
+    "encoded": "This sentence includes an em dash — and parentheses (and bracketed notes) to stress the decoder."
+  },
+  {
+    "sentence": "Please ensure the output is valid JSON and includes all required fields.",
+    "encoded": "Please ensure the output is valid JSON and includes all required fields."
+  },
+  {
+    "sentence": "I am writing this from a laptop in a quiet room near the station.",
+    "encoded": "I am writing this from a laptop in a quiet room near the station."
+  },
+  {
+    "sentence": "The model should preserve the intended meaning of context-heavy prose.",
+    "encoded": "The model should preserve the intended meaning of context-heavy prose."
+  },
+  {
+    "sentence": "We recommend using a small sample of real user requests for future evaluations.",
+    "encoded": "We recommend using a small sample of real user requests for future evaluations."
+  },
+  {
+    "sentence": "The system should work well for formal writing and casual conversation alike.",
+    "encoded": "The system should work well for formal writing and casual conversation alike."
+  },
+  {
+    "sentence": "This benchmark is not perfect, but it is a practical way to quantify improvement.",
+    "encoded": "This benchmark is not perfect, but it is a practical way to quantify improvement."
+  },
+  {
+    "sentence": "The task is to compare the two pipelines on the same input and measure how much they differ.",
+    "encoded": "The task is to compare the two pipelines on the same input and measure how much they differ."
+  },
+  {
+    "sentence": "A single sentence can be ambiguous, so the aggregate metric matters more than any one example.",
+    "encoded": "A single sentence can be ambiguous, so the aggregate metric matters more than any one example."
+  },
+  {
+    "sentence": "The new implementation aims to reduce errors caused by unnecessary intermediate transformations.",
+    "encoded": "The new implementation aims to reduce errors caused by unnecessary intermediate transformations."
+  },
+  {
+    "sentence": "Our goal is to maximize round-trip accuracy while keeping the cipher intact.",
+    "encoded": "Our goal is to maximize round-trip accuracy while keeping the cipher intact."
+  },
+  {
+    "sentence": "The old system often over-normalizes text and loses subtle distinctions.",
+    "encoded": "The old system often over-normalizes text and loses subtle distinctions."
+  },
+  {
+    "sentence": "The redesign tries to keep the meaning intact until the final translation step.",
+    "encoded": "The redesign tries to keep the meaning intact until the final translation step."
+  },
+  {
+    "sentence": "The benchmark covers greetings, names, punctuation, numbers, technical terms, and long prose.",
+    "encoded": "The benchmark covers greetings, names, punctuation, numbers, technical terms, and long prose."
+  }
+]
