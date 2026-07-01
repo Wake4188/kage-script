@@ -73,7 +73,7 @@ async function fetchWithRetry(url: string, payload: unknown, attempts = 2): Prom
   throw new Error("Gemini request failed");
 }
 
-async function callGeminiApi<T>(
+export async function callGeminiApi<T>(
   kind: "encode" | "decode",
   input: string,
   prompt: string,
@@ -125,36 +125,15 @@ export async function callGeminiJson<T>(
     return parseGeminiJson<T>(cached.value ?? "") ?? null;
   }
 
-  if (process.env.NODE_ENV === "test") {
-    const result = await callGeminiApi<T>(kind, input, prompt, targetLang);
-    if (result !== null) {
-      geminiCache.set(cacheKey, {
-        expiresAt: Date.now() + GEMINI_CACHE_TTL_MS,
-        value: JSON.stringify(result),
-      });
-    }
-    return result;
-  }
-
-  const baseUrl = buildApiBaseUrl();
-  const url = new URL("/api/translate", baseUrl).toString();
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ kind, input, prompt, targetLang }),
+  // Call Gemini directly from the server function. Previously this hopped
+  // through a public /api/translate route which allowed anyone to submit
+  // arbitrary prompts and burn the app owner's Gemini quota.
+  const result = await callGeminiApi<T>(kind, input, prompt, targetLang);
+  if (result !== null) {
+    geminiCache.set(cacheKey, {
+      expiresAt: Date.now() + GEMINI_CACHE_TTL_MS,
+      value: JSON.stringify(result),
     });
-    if (!response.ok) return null;
-    const payload = (await response.json()) as { result: T | null };
-    if (payload.result !== null) {
-      geminiCache.set(cacheKey, {
-        expiresAt: Date.now() + GEMINI_CACHE_TTL_MS,
-        value: JSON.stringify(payload.result),
-      });
-    }
-    return payload.result;
-  } catch (error) {
-    console.warn("Gemini proxy request error", error);
-    return null;
   }
+  return result;
 }
