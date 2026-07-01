@@ -6,6 +6,7 @@ import { Moon, Sun, Languages } from "lucide-react";
 import { shinobiEncode, shinobiDecode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
+import { buildCanonicalUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,9 +22,11 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Encode any language into the 1676 ninja cipher, or decode it back.",
       },
-      { property: "og:url", content: "https://ninja-script-app.lovable.app/" },
+      { property: "og:url", content: buildCanonicalUrl("/") },
+      { name: "twitter:title", content: "Kage / 影 — Ninja Cipher Translator" },
+      { name: "twitter:description", content: "Encode any language into the secret Shinobi Iroha ninja cipher, or decode it back." },
     ],
-    links: [{ rel: "canonical", href: "https://ninja-script-app.lovable.app/" }],
+    links: [{ rel: "canonical", href: buildCanonicalUrl("/") }],
     scripts: [
       {
         type: "application/ld+json",
@@ -163,7 +166,7 @@ function Index() {
   };
 
   return (
-    <main className="min-h-dvh bg-background text-foreground font-display">
+    <main id="main-content" className="min-h-dvh bg-background text-foreground font-display">
       <div className="mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-8 pt-6 sm:px-8 sm:pt-10">
         {/* Header — minimal monospace bar */}
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground sm:text-xs">
@@ -174,6 +177,7 @@ function Index() {
                 type="button"
                 onClick={() => setLangOpen((o) => !o)}
                 aria-label={t.langSwitch}
+                aria-controls="language-menu"
                 aria-haspopup="listbox"
                 aria-expanded={langOpen}
                 className="inline-flex h-7 min-w-7 items-center justify-center gap-1 border border-foreground px-1.5 text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
@@ -185,6 +189,7 @@ function Index() {
               </button>
               {langOpen && (
                 <ul
+                  id="language-menu"
                   role="listbox"
                   className="absolute right-0 z-10 mt-1 min-w-[140px] border border-foreground bg-background py-1 font-mono-display text-[10px] uppercase tracking-[0.2em] shadow-lg"
                 >
@@ -280,11 +285,13 @@ function Index() {
           <textarea
             id="shinobi-input"
             value={input}
+            aria-describedby="translation-help"
             onChange={(e) => setInput(e.target.value.slice(0, 2000))}
             onKeyDown={(e) => {
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
             }}
             placeholder={mode === "encode" ? t.inputPlaceholderEncode : t.inputPlaceholderDecode}
+            aria-describedby="translation-help"
             rows={3}
             spellCheck={false}
             maxLength={2000}
@@ -293,6 +300,7 @@ function Index() {
           <button
             type="button"
             onClick={submit}
+            aria-label={mode === "encode" ? t.encode : t.decode}
             disabled={
               !input.trim() || (mode === "encode" ? mutation.isPending : decodeMutation.isPending)
             }
@@ -314,8 +322,8 @@ function Index() {
         </section>
 
         {/* Output */}
-        <section className="mt-12 border-t border-foreground sm:mt-16">
-          <h2 className="sr-only">{mode === "encode" ? t.cipherLabel : t.translationLabel}</h2>
+        <section className="mt-12 border-t border-foreground sm:mt-16" aria-labelledby="output-heading">
+          <h2 id="output-heading" className="sr-only">{mode === "encode" ? t.cipherLabel : t.translationLabel}</h2>
           <div className="flex items-center justify-between py-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             <span>02 / {mode === "encode" ? t.cipherLabel : t.translationLabel}</span>
             <button
@@ -329,6 +337,7 @@ function Index() {
             </button>
           </div>
           <div
+            id="translation-help"
             className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl"
             aria-live="polite"
           >

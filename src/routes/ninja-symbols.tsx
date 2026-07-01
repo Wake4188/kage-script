@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { shinobiEncode } from "@/lib/shinobi";
+import { buildCanonicalUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/ninja-symbols")({
   head: () => ({
@@ -17,9 +18,11 @@ export const Route = createFileRoute("/ninja-symbols")({
           "A visual library of the 49 ninja symbols from the Bansenshukai — each glyph with its hiragana, romaji, and meaning. The full ninja alphabet.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://ninja-script-app.lovable.app/ninja-symbols" },
+      { property: "og:url", content: buildCanonicalUrl("/ninja-symbols") },
+      { name: "twitter:title", content: "Ninja Symbols — The 49 Shinobi Iroha Characters" },
+      { name: "twitter:description", content: "Visual reference of the 49 symbols of the Shinobi Iroha cipher with hiragana, romaji, and meanings." },
     ],
-    links: [{ rel: "canonical", href: "https://ninja-script-app.lovable.app/ninja-symbols" }],
+    links: [{ rel: "canonical", href: buildCanonicalUrl("/ninja-symbols") }],
     scripts: [
       {
         type: "application/ld+json",
@@ -98,7 +101,7 @@ const IROHA: { kana: string; romaji: string; note: string }[] = [
 
 function NinjaSymbolsPage() {
   return (
-    <main className="min-h-dvh bg-background text-foreground font-display">
+    <main id="main-content" className="min-h-dvh bg-background text-foreground font-display">
       <div className="mx-auto flex min-h-dvh w-full max-w-[920px] flex-col px-5 pb-12 pt-6 sm:px-8 sm:pt-10">
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] sm:text-xs">
           <Link to="/" className="hover:opacity-60">

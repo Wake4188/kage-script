@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { buildCanonicalUrl } from "@/lib/site";
 
 export const Route = createFileRoute("/bansenshukai-history")({
   head: () => ({
@@ -16,11 +17,11 @@ export const Route = createFileRoute("/bansenshukai-history")({
           "How Fujibayashi Yasutake compiled the Bansenshukai in 1676 and the 49 kanji symbols ninja used to write in secret.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://ninja-script-app.lovable.app/bansenshukai-history" },
+      { property: "og:url", content: buildCanonicalUrl("/bansenshukai-history") },
+      { name: "twitter:title", content: "Bansenshukai & the Shinobi Iroha Cipher — Kage" },
+      { name: "twitter:description", content: "A history of the Bansenshukai and the 49-symbol Shinobi Iroha cipher used to encode secret messages." },
     ],
-    links: [
-      { rel: "canonical", href: "https://ninja-script-app.lovable.app/bansenshukai-history" },
-    ],
+    links: [{ rel: "canonical", href: buildCanonicalUrl("/bansenshukai-history") }],
     scripts: [
       {
         type: "application/ld+json",
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/bansenshukai-history")({
 
 function HistoryPage() {
   return (
-    <main className="min-h-dvh bg-background text-foreground font-display">
+    <main id="main-content" className="min-h-dvh bg-background text-foreground font-display">
       <div className="mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-12 pt-6 sm:px-8 sm:pt-10">
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] sm:text-xs">
           <Link to="/" className="hover:opacity-60">

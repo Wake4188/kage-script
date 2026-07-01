@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Analytics } from "@vercel/analytics/react";
 import { I18nProvider } from "@/lib/i18n";
+import { buildCanonicalUrl } from "@/lib/site";
 
 function NotFoundComponent() {
   return (
@@ -80,9 +81,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "author", content: "Kage" },
+      { name: "theme-color", content: "#050505" },
+      { name: "color-scheme", content: "dark light" },
       { property: "og:site_name", content: "Kage" },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: buildCanonicalUrl("/favicon.svg") },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Kage — Shinobi Iroha translator" },
+      { name: "twitter:description", content: "Encode any language into the secret Shinobi Iroha ninja cipher, or decode it back." },
     ],
     links: [
       {
@@ -90,6 +97,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.svg" },
+      { rel: "manifest", href: "/manifest.json" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -123,14 +132,27 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();`,
-          }}
-        />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-3 focus:py-2 focus:text-foreground"
+        >
+          Skip to content
+        </a>
         {children}
+        <footer className="mx-auto flex w-full max-w-[680px] flex-wrap items-center justify-center gap-3 px-5 pb-8 pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:px-8">
+          <Link to="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
+          <Link to="/terms" className="hover:text-foreground">
+            Terms
+          </Link>
+          <Link to="/imprint" className="hover:text-foreground">
+            Imprint
+          </Link>
+        </footer>
         <Scripts />
       </body>
     </html>
@@ -139,6 +161,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    try {
+      const storedTheme = window.localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = storedTheme === "dark" || (!storedTheme && prefersDark);
+      document.documentElement.classList.toggle("dark", isDark);
+    } catch {
+      // Ignore storage access errors and fall back to the default theme.
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
