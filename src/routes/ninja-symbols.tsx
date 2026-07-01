@@ -19,9 +19,7 @@ export const Route = createFileRoute("/ninja-symbols")({
       { property: "og:type", content: "article" },
       { property: "og:url", content: "https://ninja-script-app.lovable.app/ninja-symbols" },
     ],
-    links: [
-      { rel: "canonical", href: "https://ninja-script-app.lovable.app/ninja-symbols" },
-    ],
+    links: [{ rel: "canonical", href: "https://ninja-script-app.lovable.app/ninja-symbols" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -103,7 +101,9 @@ function NinjaSymbolsPage() {
     <main className="min-h-dvh bg-background text-foreground font-display">
       <div className="mx-auto flex min-h-dvh w-full max-w-[920px] flex-col px-5 pb-12 pt-6 sm:px-8 sm:pt-10">
         <header className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] sm:text-xs">
-          <Link to="/" className="hover:opacity-60">← KAGE/影</Link>
+          <Link to="/" className="hover:opacity-60">
+            ← KAGE/影
+          </Link>
           <span className="text-muted-foreground">49 / symbols</span>
         </header>
 
@@ -119,22 +119,24 @@ function NinjaSymbolsPage() {
           <p className="mt-6 max-w-[62ch] text-base leading-relaxed text-foreground/80 sm:text-lg">
             The complete <strong>ninja alphabet</strong>: 49 symbols from the Shinobi Iroha
             (忍びいろは), the substitution cipher recorded in the 1676 ninja encyclopedia
-            <em> Bansenshukai</em>. Each glyph below replaces one kana — together they let a
-            ninja write any Japanese sentence in symbols that look like obscure literary kanji.
+            <em> Bansenshukai</em>. Each glyph below replaces one kana — together they let a ninja
+            write any Japanese sentence in symbols that look like obscure literary kanji.
           </p>
         </article>
 
         <section className="mt-14">
           <div className="flex items-baseline gap-3 border-t border-foreground pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            <span>01</span><span>/</span><span>The grid</span>
+            <span>01</span>
+            <span>/</span>
+            <span>The grid</span>
           </div>
           <h2 className="mt-3 font-display text-2xl font-medium tracking-tight sm:text-3xl">
             The 49 Shinobi Iroha symbols
           </h2>
           <p className="mt-4 max-w-[62ch] text-foreground/70">
-            Ordered by the classical <em>iroha</em> poem. The large character is the ninja
-            symbol; below it sits the hiragana it replaces, its romaji, and a short note on
-            the syllable's role in the poem.
+            Ordered by the classical <em>iroha</em> poem. The large character is the ninja symbol;
+            below it sits the hiragana it replaces, its romaji, and a short note on the syllable's
+            role in the poem.
           </p>
 
           <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -148,7 +150,10 @@ function NinjaSymbolsPage() {
                   <span className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="mt-3 break-all text-4xl leading-none sm:text-5xl" aria-hidden="true">
+                  <span
+                    className="mt-3 break-all text-4xl leading-none sm:text-5xl"
+                    aria-hidden="true"
+                  >
                     {symbol}
                   </span>
                   <div className="mt-4 flex items-baseline gap-2">
@@ -173,26 +178,35 @@ function NinjaSymbolsPage() {
           </h2>
           <div className="mt-4 max-w-[64ch] space-y-4 text-base leading-relaxed text-foreground/80 sm:text-[17px]">
             <p>
-              The Shinobi Iroha is a strict <strong>1-to-1 substitution cipher</strong>: every
-              kana has exactly one ninja symbol, and every symbol decodes back to one kana.
-              Many of the glyphs are real but rare kanji; others are built by pairing a
-              left-side radical (water 氵, person 亻, hand 扌) with a right-side component
-              borrowed from common characters like 化, 玄, 立 or 黒. The visual logic is
-              intentional — the cipher was meant to look like a fragment of obscure scripture,
-              not gibberish.
+              The Shinobi Iroha is a strict <strong>1-to-1 substitution cipher</strong>: every kana
+              has exactly one ninja symbol, and every symbol decodes back to one kana. Many of the
+              glyphs are real but rare kanji; others are built by pairing a left-side radical (water
+              氵, person 亻, hand 扌) with a right-side component borrowed from common characters
+              like 化, 玄, 立 or 黒. The visual logic is intentional — the cipher was meant to look
+              like a fragment of obscure scripture, not gibberish.
             </p>
             <p>
               Dakuten (が, ぱ, etc.), katakana, and small kana (っ, ゃ) are folded down to their
               base kana before encoding. There is no separate symbol for them — a ninja reader
-              restored them from context, exactly the way a modern reader of unpunctuated
-              hiragana would.
+              restored them from context, exactly the way a modern reader of unpunctuated hiragana
+              would.
             </p>
             <p>
-              These symbols are increasingly used today in tattoos, calligraphy, game design
-              and historical illustration — anywhere the visual language of the shinobi is
-              referenced. To turn your own words into the ninja alphabet, use the
-              <Link to="/" className="underline underline-offset-4 hover:opacity-60"> Kage translator</Link>, or
-              read the <Link to="/bansenshukai-history" className="underline underline-offset-4 hover:opacity-60">history of the Bansenshukai</Link>.
+              These symbols are increasingly used today in tattoos, calligraphy, game design and
+              historical illustration — anywhere the visual language of the shinobi is referenced.
+              To turn your own words into the ninja alphabet, use the
+              <Link to="/" className="underline underline-offset-4 hover:opacity-60">
+                {" "}
+                Kage translator
+              </Link>
+              , or read the{" "}
+              <Link
+                to="/bansenshukai-history"
+                className="underline underline-offset-4 hover:opacity-60"
+              >
+                history of the Bansenshukai
+              </Link>
+              .
             </p>
           </div>
         </section>
@@ -201,8 +215,12 @@ function NinjaSymbolsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span className="normal-case">Created by Noa Wilhide in France</span>
             <div className="flex items-center gap-4">
-              <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">History →</Link>
-              <Link to="/" className="text-foreground hover:opacity-60">← Back to Kage</Link>
+              <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
+                History →
+              </Link>
+              <Link to="/" className="text-foreground hover:opacity-60">
+                ← Back to Kage
+              </Link>
             </div>
           </div>
         </footer>

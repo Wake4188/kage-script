@@ -7,7 +7,22 @@ function getGeminiConfig() {
   return { apiKey, model };
 }
 
-function buildGeminiCacheKey(kind: "encode" | "decode", input: string, targetLang?: string): string {
+export function buildApiBaseUrl(
+  value = process.env.APP_URL || process.env.VERCEL_URL || "http://127.0.0.1:3000",
+) {
+  const trimmed = value?.trim();
+  if (!trimmed) return "http://127.0.0.1:3000";
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed.replace(/\/+$/, "");
+  }
+  return `https://${trimmed.replace(/\/+$/, "")}`;
+}
+
+function buildGeminiCacheKey(
+  kind: "encode" | "decode",
+  input: string,
+  targetLang?: string,
+): string {
   return `${kind}:${targetLang ?? "en"}:${input.trim()}`;
 }
 
@@ -84,7 +99,11 @@ async function callGeminiApi<T>(
     const json = (await res.json()) as {
       candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
     };
-    const text = json.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("")?.trim() ?? "";
+    const text =
+      json.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text ?? "")
+        .join("")
+        ?.trim() ?? "";
 
     if (!text) return null;
     return parseGeminiJson<T>(text);
@@ -109,13 +128,16 @@ export async function callGeminiJson<T>(
   if (process.env.NODE_ENV === "test") {
     const result = await callGeminiApi<T>(kind, input, prompt, targetLang);
     if (result !== null) {
-      geminiCache.set(cacheKey, { expiresAt: Date.now() + GEMINI_CACHE_TTL_MS, value: JSON.stringify(result) });
+      geminiCache.set(cacheKey, {
+        expiresAt: Date.now() + GEMINI_CACHE_TTL_MS,
+        value: JSON.stringify(result),
+      });
     }
     return result;
   }
 
-  const baseUrl = process.env.APP_URL || process.env.VERCEL_URL || "http://127.0.0.1:3000";
-  const url = new URL("/api/translate", baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`).toString();
+  const baseUrl = buildApiBaseUrl();
+  const url = new URL("/api/translate", baseUrl).toString();
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -125,7 +147,10 @@ export async function callGeminiJson<T>(
     if (!response.ok) return null;
     const payload = (await response.json()) as { result: T | null };
     if (payload.result !== null) {
-      geminiCache.set(cacheKey, { expiresAt: Date.now() + GEMINI_CACHE_TTL_MS, value: JSON.stringify(payload.result) });
+      geminiCache.set(cacheKey, {
+        expiresAt: Date.now() + GEMINI_CACHE_TTL_MS,
+        value: JSON.stringify(payload.result),
+      });
     }
     return payload.result;
   } catch (error) {

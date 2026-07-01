@@ -96,7 +96,9 @@ export async function japaneseToHiragana(japanese: string): Promise<string> {
   }
 }
 
-export async function translateTextToJapanese(text: string): Promise<{ japanese: string; romaji: string }> {
+export async function translateTextToJapanese(
+  text: string,
+): Promise<{ japanese: string; romaji: string }> {
   const json = await gt(text, "auto", "ja", ["t", "rm"]);
   const sentences = json[0] ?? [];
   let japanese = "";
@@ -151,10 +153,12 @@ async function kanaToJapanese(text: string): Promise<string> {
   const json = (await res.json()) as InputToolsResponse;
   if (json[0] !== "SUCCESS") return text;
 
-  return json[1]
-    ?.map((entry) => entry?.[1]?.[0] ?? entry?.[0] ?? "")
-    .join("")
-    .trim() || text;
+  return (
+    json[1]
+      ?.map((entry) => entry?.[1]?.[0] ?? entry?.[0] ?? "")
+      .join("")
+      .trim() || text
+  );
 }
 
 function splitForIme(text: string): string[] {
@@ -196,7 +200,9 @@ function japaneseRecoveryScore(text: string): number {
   return kanji * 4 + katakana * 2 - spaces;
 }
 
-async function translateWithGeminiToJapanese(text: string): Promise<{ japanese: string; hiragana: string } | null> {
+async function translateWithGeminiToJapanese(
+  text: string,
+): Promise<{ japanese: string; hiragana: string } | null> {
   if (!text?.trim()) return null;
 
   const prompt = [
@@ -213,16 +219,20 @@ async function translateWithGeminiToJapanese(text: string): Promise<{ japanese: 
   return callGeminiJson<{ japanese: string; hiragana: string }>("encode", text, prompt);
 }
 
-async function recoverJapaneseWithGemini(hiragana: string, targetLang: string): Promise<{ japanese: string; translation: string } | null> {
+async function recoverJapaneseWithGemini(
+  hiragana: string,
+  targetLang: string,
+): Promise<{ japanese: string; translation: string } | null> {
   if (!hiragana?.trim()) return null;
 
-  const targetLabel = {
-    en: "English",
-    fr: "French",
-    es: "Spanish",
-    de: "German",
-    ja: "Japanese",
-  }[targetLang] ?? "English";
+  const targetLabel =
+    {
+      en: "English",
+      fr: "French",
+      es: "Spanish",
+      de: "German",
+      ja: "Japanese",
+    }[targetLang] ?? "English";
 
   const prompt = [
     "The following input is the phonetic reading of a Japanese sentence, possibly imperfect.",
@@ -236,7 +246,12 @@ async function recoverJapaneseWithGemini(hiragana: string, targetLang: string): 
     `Input: ${hiragana}`,
   ].join("\n");
 
-  return callGeminiJson<{ japanese: string; translation: string }>("decode", hiragana, prompt, targetLang);
+  return callGeminiJson<{ japanese: string; translation: string }>(
+    "decode",
+    hiragana,
+    prompt,
+    targetLang,
+  );
 }
 
 export const translateToHiragana = createServerFn({ method: "POST" })
@@ -275,7 +290,8 @@ export const translateFromHiragana = createServerFn({ method: "POST" })
     const recovered = await Promise.all(
       candidates.map((candidate) => kanaToJapaneseBestEffort(candidate).catch(() => candidate)),
     );
-    const japanese = recovered.sort((a, b) => japaneseRecoveryScore(b) - japaneseRecoveryScore(a))[0] ?? repaired;
+    const japanese =
+      recovered.sort((a, b) => japaneseRecoveryScore(b) - japaneseRecoveryScore(a))[0] ?? repaired;
 
     // Step 2: translate normalized Japanese into the user's language.
     const json = await gt(japanese, "ja", target, ["t"]);

@@ -4,7 +4,7 @@ import { N as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent,
 import { t as I18nProvider } from "./i18n-CUqn5wZ1.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as Analytics } from "../_libs/vercel__analytics.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BEUFqfaI.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-eI0XBoZM.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-B027RSC5.css";
@@ -202,7 +202,7 @@ var Route$3 = createFileRoute("/sitemap.xml")({ server: { handlers: { GET: async
 		"Cache-Control": "public, max-age=3600"
 	} });
 } } } });
-var $$splitComponentImporter$2 = () => import("./ninja-symbols-DwxNVngD.mjs");
+var $$splitComponentImporter$2 = () => import("./ninja-symbols-BLTsSeX4.mjs");
 var Route$2 = createFileRoute("/ninja-symbols")({
 	head: () => ({
 		meta: [
@@ -264,7 +264,7 @@ var Route$2 = createFileRoute("/ninja-symbols")({
 	}),
 	component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-var $$splitComponentImporter$1 = () => import("./bansenshukai-history-D6fEMzxi.mjs");
+var $$splitComponentImporter$1 = () => import("./bansenshukai-history-CC2xvdr8.mjs");
 var Route$1 = createFileRoute("/bansenshukai-history")({
 	head: () => ({
 		meta: [
@@ -326,7 +326,7 @@ var Route$1 = createFileRoute("/bansenshukai-history")({
 	}),
 	component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-var $$splitComponentImporter = () => import("./routes-DPHnIFl4.mjs");
+var $$splitComponentImporter = () => import("./routes-qJTdVWLX.mjs");
 var Route = createFileRoute("/")({
 	head: () => ({
 		meta: [

@@ -11,9 +11,15 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Kage / 影 — Ninja Cipher Translator (忍びいろは)" },
-      { name: "description", content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back." },
+      {
+        name: "description",
+        content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back.",
+      },
       { property: "og:title", content: "Kage / 影 — Ninja Cipher Translator (忍びいろは)" },
-      { property: "og:description", content: "Encode any language into the 1676 ninja cipher, or decode it back." },
+      {
+        property: "og:description",
+        content: "Encode any language into the 1676 ninja cipher, or decode it back.",
+      },
       { property: "og:url", content: "https://ninja-script-app.lovable.app/" },
     ],
     links: [{ rel: "canonical", href: "https://ninja-script-app.lovable.app/" }],
@@ -110,18 +116,27 @@ function Index() {
     return () => clearTimeout(id);
   }, [copied]);
 
+  const resetOutput = () => {
+    setHiragana("");
+    setNinja("");
+    setDecoded("");
+    setEnglish("");
+    setCopied(false);
+  };
+
   const submit = () => {
     const t = input.trim();
     if (!t) return;
     if (mode === "encode") {
       if (mutation.isPending) return;
+      resetOutput();
       mutation.mutate(t);
     } else {
       if (decodeMutation.isPending) return;
       const { decodedText, metadata } = shinobiDecodeWithMetadata(t);
       const hira = decodedText;
+      resetOutput();
       setDecoded(hira);
-      setEnglish("");
       const translateSource = metadata?.japanese ?? hira;
       decodeMutation.mutate(translateSource);
     }
@@ -131,18 +146,19 @@ function Index() {
 
   const copy = async () => {
     if (!output) return;
-    await navigator.clipboard.writeText(output);
-    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(output);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const switchMode = (next: "encode" | "decode") => {
     if (next === mode) return;
     setMode(next);
     setInput("");
-    setHiragana("");
-    setNinja("");
-    setDecoded("");
-    setEnglish("");
+    resetOutput();
   };
 
   return (
@@ -199,7 +215,11 @@ function Index() {
               aria-label={mounted && isDark ? t.themeLight : t.themeDark}
               className="inline-flex h-7 w-7 items-center justify-center border border-foreground text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
-              {mounted && isDark ? <Sun size={14} strokeWidth={1.5} /> : <Moon size={14} strokeWidth={1.5} />}
+              {mounted && isDark ? (
+                <Sun size={14} strokeWidth={1.5} />
+              ) : (
+                <Moon size={14} strokeWidth={1.5} />
+              )}
             </button>
             <span className="hidden text-muted-foreground sm:inline">v1 · 1676</span>
           </div>
@@ -273,8 +293,7 @@ function Index() {
             type="button"
             onClick={submit}
             disabled={
-              !input.trim() ||
-              (mode === "encode" ? mutation.isPending : decodeMutation.isPending)
+              !input.trim() || (mode === "encode" ? mutation.isPending : decodeMutation.isPending)
             }
             className="mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6"
           >
@@ -287,7 +306,9 @@ function Index() {
                   ? t.decoding
                   : t.decode}
             </span>
-            <span aria-hidden className="ml-6">→</span>
+            <span aria-hidden className="ml-6">
+              →
+            </span>
           </button>
         </section>
 
@@ -306,7 +327,10 @@ function Index() {
               {copied ? t.copied : t.copy}
             </button>
           </div>
-          <div className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl" aria-live="polite">
+          <div
+            className="min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl"
+            aria-live="polite"
+          >
             {output ? (
               output
             ) : (mode === "encode" ? mutation.isPending : decodeMutation.isPending) ? (

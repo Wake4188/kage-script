@@ -113,9 +113,18 @@ for (const e of MAP) {
 
 // Small kana folding tables
 const SMALL_KANA: Record<string, string> = {
-  ぁ: "あ", ぃ: "い", ぅ: "う", ぇ: "え", ぉ: "お",
-  っ: "つ", ゃ: "や", ゅ: "ゆ", ょ: "よ", ゎ: "わ",
-  ゕ: "か", ゖ: "け",
+  ぁ: "あ",
+  ぃ: "い",
+  ぅ: "う",
+  ぇ: "え",
+  ぉ: "お",
+  っ: "つ",
+  ゃ: "や",
+  ゅ: "ゆ",
+  ょ: "よ",
+  ゎ: "わ",
+  ゕ: "か",
+  ゖ: "け",
 };
 
 function katakanaToHiragana(ch: string): string {
@@ -132,7 +141,9 @@ function normalize(text: string): string {
   // katakana -> hiragana
   t = Array.from(t).map(katakanaToHiragana).join("");
   // small kana -> normal
-  t = Array.from(t).map((c) => SMALL_KANA[c] ?? c).join("");
+  t = Array.from(t)
+    .map((c) => SMALL_KANA[c] ?? c)
+    .join("");
   return t;
 }
 
@@ -164,9 +175,15 @@ function decodeMetadataPayload(payload: string): Record<string, string> | null {
   const chars = Array.from(payload);
   for (let i = 0; i + 3 < chars.length; i += 4) {
     const symbols = chars.slice(i, i + 4);
-    const values = symbols.map((symbol) => METADATA_SYMBOL_INDEX.get(symbol as (typeof METADATA_SYMBOLS)[number]));
+    const values = symbols.map((symbol) =>
+      METADATA_SYMBOL_INDEX.get(symbol as (typeof METADATA_SYMBOLS)[number]),
+    );
     if (values.some((value) => value === undefined)) break;
-    const byte = ((values[0] as number) << 6) | ((values[1] as number) << 4) | ((values[2] as number) << 2) | (values[3] as number);
+    const byte =
+      ((values[0] as number) << 6) |
+      ((values[1] as number) << 4) |
+      ((values[2] as number) << 2) |
+      (values[3] as number);
     bytes.push(byte);
   }
   if (!bytes.length) return null;
@@ -189,14 +206,20 @@ export function shinobiEncode(text: string, metadata?: Record<string, string>): 
 const decodeMap = new Map<string, string>();
 for (const e of MAP) decodeMap.set(e.code, e.char);
 const decodeKeys = [...decodeMap.keys()].sort((a, b) => b.length - a.length);
-const decodeRe = new RegExp(decodeKeys.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "gu");
+const decodeRe = new RegExp(
+  decodeKeys.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+  "gu",
+);
 
 export function shinobiDecode(text: string): string {
   const visible = text.split(METADATA_PREFIX)[0] ?? "";
   return visible.replace(decodeRe, (m) => decodeMap.get(m) ?? m).normalize("NFC");
 }
 
-export function shinobiDecodeWithMetadata(text: string): { decodedText: string; metadata: Record<string, string> | null } {
+export function shinobiDecodeWithMetadata(text: string): {
+  decodedText: string;
+  metadata: Record<string, string> | null;
+} {
   const prefixIndex = text.indexOf(METADATA_PREFIX);
   const visible = prefixIndex === -1 ? text : text.slice(0, prefixIndex);
   const payload = prefixIndex === -1 ? "" : text.slice(prefixIndex + METADATA_PREFIX.length);

@@ -1,7 +1,7 @@
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as shinobiEncode } from "./shinobi-B8ukdaBB.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/ninja-symbols-DwxNVngD.js
+//#region node_modules/.nitro/vite/services/ssr/assets/ninja-symbols-BLTsSeX4.js
 var import_jsx_runtime = require_jsx_runtime();
 var IROHA = [
 	{
@@ -373,12 +373,13 @@ function NinjaSymbolsPage() {
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Dakuten (が, ぱ, etc.), katakana, and small kana (っ, ゃ) are folded down to their base kana before encoding. There is no separate symbol for them — a ninja reader restored them from context, exactly the way a modern reader of unpunctuated hiragana would." }),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
 									"These symbols are increasingly used today in tattoos, calligraphy, game design and historical illustration — anywhere the visual language of the shinobi is referenced. To turn your own words into the ninja alphabet, use the",
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
 										to: "/",
 										className: "underline underline-offset-4 hover:opacity-60",
-										children: " Kage translator"
+										children: [" ", "Kage translator"]
 									}),
-									", or read the ",
+									", or read the",
+									" ",
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 										to: "/bansenshukai-history",
 										className: "underline underline-offset-4 hover:opacity-60",

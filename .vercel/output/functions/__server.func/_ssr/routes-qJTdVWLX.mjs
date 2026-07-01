@@ -3,12 +3,12 @@ import { i as require_react, r as require_jsx_runtime, t as useMutation } from "
 import { N as useRouter, T as isRedirect, h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as shinobiEncode, t as shinobiDecodeWithMetadata } from "./shinobi-B8ukdaBB.mjs";
 import { n as LANGS, r as useI18n } from "./i18n-CUqn5wZ1.mjs";
-import { t as getServerFnById } from "../__23tanstack-start-server-fn-resolver-iwABwqQ_.mjs";
+import { t as getServerFnById } from "../__23tanstack-start-server-fn-resolver-CGU3oTdK.mjs";
 import { i as TSS_SERVER_FUNCTION, l as createServerFn } from "./esm-Dova13aH.mjs";
 import { n as stringType, t as objectType } from "../_libs/zod.mjs";
 import "../_libs/wanakana.mjs";
 import { n as Moon, r as Languages, t as Sun } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-DPHnIFl4.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-qJTdVWLX.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function useServerFn(serverFn) {
@@ -110,18 +110,26 @@ function Index() {
 		const id = setTimeout(() => setCopied(false), 1500);
 		return () => clearTimeout(id);
 	}, [copied]);
+	const resetOutput = () => {
+		setHiragana("");
+		setNinja("");
+		setDecoded("");
+		setEnglish("");
+		setCopied(false);
+	};
 	const submit = () => {
 		const t = input.trim();
 		if (!t) return;
 		if (mode === "encode") {
 			if (mutation.isPending) return;
+			resetOutput();
 			mutation.mutate(t);
 		} else {
 			if (decodeMutation.isPending) return;
 			const { decodedText, metadata } = shinobiDecodeWithMetadata(t);
 			const hira = decodedText;
+			resetOutput();
 			setDecoded(hira);
-			setEnglish("");
 			const translateSource = metadata?.japanese ?? hira;
 			decodeMutation.mutate(translateSource);
 		}
@@ -129,17 +137,18 @@ function Index() {
 	const output = mode === "encode" ? ninja : english;
 	const copy = async () => {
 		if (!output) return;
-		await navigator.clipboard.writeText(output);
-		setCopied(true);
+		try {
+			await navigator.clipboard.writeText(output);
+			setCopied(true);
+		} catch {
+			setCopied(false);
+		}
 	};
 	const switchMode = (next) => {
 		if (next === mode) return;
 		setMode(next);
 		setInput("");
-		setHiragana("");
-		setNinja("");
-		setDecoded("");
-		setEnglish("");
+		resetOutput();
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
 		className: "min-h-dvh bg-background text-foreground font-display",

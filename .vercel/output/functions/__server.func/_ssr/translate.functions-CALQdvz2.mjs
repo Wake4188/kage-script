@@ -1,7 +1,7 @@
 import { i as TSS_SERVER_FUNCTION, l as createServerFn } from "./esm-Dova13aH.mjs";
 import { n as stringType, t as objectType } from "../_libs/zod.mjs";
 import { t as toHiragana } from "../_libs/wanakana.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/translate.functions-48mg5570.js
+//#region node_modules/.nitro/vite/services/ssr/assets/translate.functions-CALQdvz2.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -12,6 +12,12 @@ var createServerRpc = (serverFnMeta, splitImportFn) => {
 };
 var GEMINI_CACHE_TTL_MS = 600 * 1e3;
 var geminiCache = /* @__PURE__ */ new Map();
+function buildApiBaseUrl(value = process.env.APP_URL || process.env.VERCEL_URL || "http://127.0.0.1:3000") {
+	const trimmed = value?.trim();
+	if (!trimmed) return "http://127.0.0.1:3000";
+	if (/^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/+$/, "");
+	return `https://${trimmed.replace(/\/+$/, "")}`;
+}
 function buildGeminiCacheKey(kind, input, targetLang) {
 	return `${kind}:${targetLang ?? "en"}:${input.trim()}`;
 }
@@ -27,8 +33,8 @@ async function callGeminiJson(kind, input, prompt, targetLang) {
 	const cacheKey = buildGeminiCacheKey(kind, input, targetLang);
 	const cached = geminiCache.get(cacheKey);
 	if (cached && cached.expiresAt > Date.now()) return parseGeminiJson(cached.value ?? "") ?? null;
-	const baseUrl = process.env.APP_URL || process.env.VERCEL_URL || "http://127.0.0.1:3000";
-	const url = new URL("/api/translate", baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`).toString();
+	const baseUrl = buildApiBaseUrl();
+	const url = new URL("/api/translate", baseUrl).toString();
 	try {
 		const response = await fetch(url, {
 			method: "POST",

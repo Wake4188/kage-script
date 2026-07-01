@@ -1,12 +1,12 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/__23tanstack-start-server-fn-resolver-iwABwqQ_.js
+//#region node_modules/.nitro/vite/services/ssr/assets/__23tanstack-start-server-fn-resolver-CGU3oTdK.js
 var manifest = {
 	"15800936c196ae116e4337c805eacb2391492c42dfb93ec61d30fe429beb7c78": {
 		functionName: "translateToHiragana_createServerFn_handler",
-		importer: () => import("./_ssr/translate.functions-48mg5570.mjs")
+		importer: () => import("./_ssr/translate.functions-CALQdvz2.mjs")
 	},
 	"c31230cc85529b826003c06f9c956713d062fae19193f0be4297d370bc527d91": {
 		functionName: "translateFromHiragana_createServerFn_handler",
-		importer: () => import("./_ssr/translate.functions-48mg5570.mjs")
+		importer: () => import("./_ssr/translate.functions-CALQdvz2.mjs")
 	}
 };
 async function getServerFnById(id, access) {

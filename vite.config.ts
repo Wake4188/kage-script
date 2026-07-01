@@ -7,10 +7,15 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // API route files are handled by TanStack Start runtime and should not be treated as UI routes.
+    routeFileIgnorePattern: "src/routes/api/",
   },
   // Build for Vercel when deploying outside Lovable's sandbox.
   // Inside Lovable's sandbox this override is ignored and Cloudflare is used.

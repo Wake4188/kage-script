@@ -1,6 +1,6 @@
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/bansenshukai-history-D6fEMzxi.js
+//#region node_modules/.nitro/vite/services/ssr/assets/bansenshukai-history-CC2xvdr8.js
 var import_jsx_runtime = require_jsx_runtime();
 function HistoryPage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
@@ -55,7 +55,8 @@ function HistoryPage() {
 							title: "What is the Bansenshukai?",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "Bansenshukai" }),
-								" — literally ",
+								" — literally",
+								" ",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 									className: "font-mono-display",
 									children: "“sea of ten thousand rivers gathered”"
@@ -75,7 +76,8 @@ function HistoryPage() {
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: " Shinobi Iroha" }),
 								" (忍びいろは) — “the ninja iroha.” The classical Japanese iroha is a poem that uses every kana exactly once, so it functions as an alphabet. The Shinobi Iroha replaces each of the ",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "49 kana" }),
-								" with a distinct kanji-like glyph. The result is a simple, rigorous ",
+								" with a distinct kanji-like glyph. The result is a simple, rigorous",
+								" ",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: "substitution cipher" }),
 								": any Japanese sentence can be transcribed, character by character, into a string that looks like obscure literary kanji."
 							] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "The glyphs were not invented from scratch. Many are real but rare characters; others are built by combining a left-side radical (water 氵, person 亻, etc.) with a right-side component drawn from common kanji like 化, 玄, 立, or 黒. The pattern is internally consistent — once you know the grid, you can decode a message without a key, but to anyone who has never seen the system it reads as nonsense." })]
@@ -107,7 +109,8 @@ function HistoryPage() {
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "Kage" }),
 								" implements the Shinobi Iroha exactly as it appears in the",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("em", { children: " Bansenshukai" }),
-								": 49 kana mapped to 49 glyphs, with dakuten and katakana folded down to their base kana before substitution. ",
+								": 49 kana mapped to 49 glyphs, with dakuten and katakana folded down to their base kana before substitution.",
+								" ",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 									to: "/",
 									className: "underline underline-offset-4 hover:opacity-60",
