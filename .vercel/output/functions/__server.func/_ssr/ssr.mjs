@@ -51,9 +51,29 @@ function renderErrorPage() {
   </body>
 </html>`;
 }
+var SECURITY_HEADERS = {
+	"Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+	"Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://va.vercel-scripts.com; connect-src 'self' https://inputtools.google.com https://generativelanguage.googleapis.com https://vitals.vercel-insights.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; worker-src 'self' blob:; upgrade-insecure-requests",
+	"X-Frame-Options": "DENY",
+	"X-Content-Type-Options": "nosniff",
+	"Referrer-Policy": "strict-origin-when-cross-origin",
+	"Permissions-Policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=(), interest-cohort=()",
+	"Cross-Origin-Opener-Policy": "same-origin",
+	"Cross-Origin-Embedder-Policy": "unsafe-none",
+	"Cross-Origin-Resource-Policy": "same-origin"
+};
+function applySecurityHeaders(response) {
+	const headers = new Headers(response.headers);
+	for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value);
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers
+	});
+}
 var serverEntryPromise;
 async function getServerEntry() {
-	if (!serverEntryPromise) serverEntryPromise = import("./server-DIRfKrJr.mjs").then((m) => m.default ?? m);
+	if (!serverEntryPromise) serverEntryPromise = import("./server-DcsbUpvW.mjs").then((m) => m.default ?? m);
 	return serverEntryPromise;
 }
 async function normalizeCatastrophicSsrResponse(response) {
@@ -62,20 +82,20 @@ async function normalizeCatastrophicSsrResponse(response) {
 	const body = await response.clone().text();
 	if (!body.includes("\"unhandled\":true") || !body.includes("\"message\":\"HTTPError\"")) return response;
 	console.error(consumeLastCapturedError() ?? /* @__PURE__ */ new Error(`h3 swallowed SSR error: ${body}`));
-	return new Response(renderErrorPage(), {
+	return applySecurityHeaders(new Response(renderErrorPage(), {
 		status: 500,
 		headers: { "content-type": "text/html; charset=utf-8" }
-	});
+	}));
 }
 var server_default = { async fetch(request, env, ctx) {
 	try {
-		return await normalizeCatastrophicSsrResponse(await (await getServerEntry()).fetch(request, env, ctx));
+		return applySecurityHeaders(await normalizeCatastrophicSsrResponse(await (await getServerEntry()).fetch(request, env, ctx)));
 	} catch (error) {
 		console.error(error);
-		return new Response(renderErrorPage(), {
+		return applySecurityHeaders(new Response(renderErrorPage(), {
 			status: 500,
 			headers: { "content-type": "text/html; charset=utf-8" }
-		});
+		}));
 	}
 } };
 //#endregion

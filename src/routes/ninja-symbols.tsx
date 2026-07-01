@@ -33,7 +33,7 @@ export const Route = createFileRoute("/ninja-symbols")({
           description:
             "Complete visual reference of the 49 ninja symbols of the Shinobi Iroha cipher from the 1676 Bansenshukai, with hiragana, romaji and meanings.",
           author: { "@type": "Person", name: "Noa Wilhide" },
-          mainEntityOfPage: "https://ninja-script-app.lovable.app/ninja-symbols",
+          mainEntityOfPage: buildCanonicalUrl("/ninja-symbols"),
           inLanguage: "en",
           about: [
             { "@type": "Thing", name: "Ninja symbols" },

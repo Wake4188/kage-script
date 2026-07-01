@@ -8,7 +8,7 @@ import { i as TSS_SERVER_FUNCTION, l as createServerFn } from "./esm-Dova13aH.mj
 import { n as stringType, t as objectType } from "../_libs/zod.mjs";
 import "../_libs/wanakana.mjs";
 import { n as Moon, r as Languages, t as Sun } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-qJTdVWLX.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-Cg7ckWDx.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function useServerFn(serverFn) {
@@ -151,6 +151,7 @@ function Index() {
 		resetOutput();
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
+		id: "main-content",
 		className: "min-h-dvh bg-background text-foreground font-display",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-8 pt-6 sm:px-8 sm:pt-10",
@@ -167,6 +168,7 @@ function Index() {
 									type: "button",
 									onClick: () => setLangOpen((o) => !o),
 									"aria-label": t.langSwitch,
+									"aria-controls": "language-menu",
 									"aria-haspopup": "listbox",
 									"aria-expanded": langOpen,
 									className: "inline-flex h-7 min-w-7 items-center justify-center gap-1 border border-foreground px-1.5 text-foreground transition hover:bg-foreground hover:text-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
@@ -178,6 +180,7 @@ function Index() {
 										children: LANGS.find((l) => l.code === lang)?.short ?? "EN"
 									})]
 								}), langOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+									id: "language-menu",
 									role: "listbox",
 									className: "absolute right-0 z-10 mt-1 min-w-[140px] border border-foreground bg-background py-1 font-mono-display text-[10px] uppercase tracking-[0.2em] shadow-lg",
 									children: LANGS.map((l) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -265,6 +268,7 @@ function Index() {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
 							id: "shinobi-input",
 							value: input,
+							"aria-describedby": "translation-help",
 							onChange: (e) => setInput(e.target.value.slice(0, 2e3)),
 							onKeyDown: (e) => {
 								if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
@@ -278,6 +282,7 @@ function Index() {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
 							onClick: submit,
+							"aria-label": mode === "encode" ? t.encode : t.decode,
 							disabled: !input.trim() || (mode === "encode" ? mutation.isPending : decodeMutation.isPending),
 							className: "mt-4 inline-flex w-full items-center justify-between border border-foreground bg-foreground px-4 py-3 font-mono-display text-[11px] uppercase tracking-[0.2em] text-background transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto sm:px-6",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: mode === "encode" ? mutation.isPending ? t.encoding : t.encode : decodeMutation.isPending ? t.decoding : t.decode }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -290,8 +295,10 @@ function Index() {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 					className: "mt-12 border-t border-foreground sm:mt-16",
+					"aria-labelledby": "output-heading",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							id: "output-heading",
 							className: "sr-only",
 							children: mode === "encode" ? t.cipherLabel : t.translationLabel
 						}),
@@ -307,6 +314,7 @@ function Index() {
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							id: "translation-help",
 							className: "min-h-[6rem] break-words py-3 text-2xl leading-[1.4] sm:min-h-[8rem] sm:text-3xl",
 							"aria-live": "polite",
 							children: output ? output : (mode === "encode" ? mutation.isPending : decodeMutation.isPending) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {

@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
           alternateName: "影",
           applicationCategory: "UtilitiesApplication",
           operatingSystem: "Web",
-          url: "https://ninja-script-app.lovable.app",
+          url: buildCanonicalUrl("/"),
           description:
             "Encode any language into the 1676 ninja kanji cipher 忍びいろは, or decode it back.",
           offers: {
@@ -291,7 +291,6 @@ function Index() {
               if ((e.metaKey || e.ctrlKey) && e.key === "Enter") submit();
             }}
             placeholder={mode === "encode" ? t.inputPlaceholderEncode : t.inputPlaceholderDecode}
-            aria-describedby="translation-help"
             rows={3}
             spellCheck={false}
             maxLength={2000}

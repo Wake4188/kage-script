@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { I18nProvider } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
 
@@ -114,7 +115,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "WebSite",
           name: "Kage",
           alternateName: "影",
-          url: "https://ninja-script-app.lovable.app",
+          url: buildCanonicalUrl("/"),
           description:
             "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back.",
         }),
@@ -179,6 +180,7 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <Analytics />
+        <SpeedInsights />
       </I18nProvider>
     </QueryClientProvider>
   );

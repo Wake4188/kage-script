@@ -32,7 +32,7 @@ export const Route = createFileRoute("/bansenshukai-history")({
           description:
             "A history of the 1676 ninja encyclopedia Bansenshukai and the 49-symbol Shinobi Iroha cipher.",
           author: { "@type": "Person", name: "Noa Wilhide" },
-          mainEntityOfPage: "https://ninja-script-app.lovable.app/bansenshukai-history",
+          mainEntityOfPage: buildCanonicalUrl("/bansenshukai-history"),
           inLanguage: "en",
           about: [
             { "@type": "Thing", name: "Bansenshukai" },

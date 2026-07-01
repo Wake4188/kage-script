@@ -1,9 +1,10 @@
 import { r as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/bansenshukai-history-CC2xvdr8.js
+//#region node_modules/.nitro/vite/services/ssr/assets/bansenshukai-history-B-nsToXt.js
 var import_jsx_runtime = require_jsx_runtime();
 function HistoryPage() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
+		id: "main-content",
 		className: "min-h-dvh bg-background text-foreground font-display",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "mx-auto flex min-h-dvh w-full max-w-[680px] flex-col px-5 pb-12 pt-6 sm:px-8 sm:pt-10",

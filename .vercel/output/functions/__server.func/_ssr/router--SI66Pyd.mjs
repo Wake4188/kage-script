@@ -4,10 +4,10 @@ import { N as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent,
 import { t as I18nProvider } from "./i18n-CUqn5wZ1.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as Analytics } from "../_libs/vercel__analytics.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-eI0XBoZM.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router--SI66Pyd.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-B027RSC5.css";
+var styles_default = "/assets/styles-B3_ZSYEg.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -19,6 +19,10 @@ function reportLovableError(error, context = {}) {
 		handled: false,
 		severity: "error"
 	});
+}
+var SITE_URL = "https://kage-script.lovable.app";
+function buildCanonicalUrl(path) {
+	return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 function NotFoundComponent() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -88,7 +92,7 @@ function ErrorComponent({ error, reset }) {
 		})
 	});
 }
-var Route$4 = createRootRouteWithContext()({
+var Route$7 = createRootRouteWithContext()({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -101,8 +105,24 @@ var Route$4 = createRootRouteWithContext()({
 				content: "Kage"
 			},
 			{
+				name: "theme-color",
+				content: "#050505"
+			},
+			{
+				name: "color-scheme",
+				content: "dark light"
+			},
+			{
 				property: "og:site_name",
 				content: "Kage"
+			},
+			{
+				property: "og:type",
+				content: "website"
+			},
+			{
+				property: "og:image",
+				content: buildCanonicalUrl("/favicon.svg")
 			},
 			{
 				name: "twitter:card",
@@ -111,6 +131,14 @@ var Route$4 = createRootRouteWithContext()({
 			{
 				name: "twitter:site",
 				content: "@Lovable"
+			},
+			{
+				name: "twitter:title",
+				content: "Kage — Shinobi Iroha translator"
+			},
+			{
+				name: "twitter:description",
+				content: "Encode any language into the secret Shinobi Iroha ninja cipher, or decode it back."
 			}
 		],
 		links: [
@@ -122,6 +150,14 @@ var Route$4 = createRootRouteWithContext()({
 				rel: "icon",
 				type: "image/svg+xml",
 				href: "/favicon.svg"
+			},
+			{
+				rel: "apple-touch-icon",
+				href: "/apple-touch-icon.svg"
+			},
+			{
+				rel: "manifest",
+				href: "/manifest.json"
 			},
 			{
 				rel: "preconnect",
@@ -144,7 +180,7 @@ var Route$4 = createRootRouteWithContext()({
 				"@type": "WebSite",
 				name: "Kage",
 				alternateName: "影",
-				url: "https://ninja-script-app.lovable.app",
+				url: buildCanonicalUrl("/"),
 				description: "Encode any language into the secret 忍びいろは (Shinobi Iroha) ninja cipher, or decode it back."
 			})
 		}]
@@ -157,18 +193,95 @@ var Route$4 = createRootRouteWithContext()({
 function RootShell({ children }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("html", {
 		lang: "en",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("head", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(HeadContent, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("script", { dangerouslySetInnerHTML: { __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}})();` } })] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("body", { children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Scripts, {})] })]
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("head", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(HeadContent, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", {
+			name: "referrer",
+			content: "strict-origin-when-cross-origin"
+		})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("body", { children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+				href: "#main-content",
+				className: "sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-3 focus:py-2 focus:text-foreground",
+				children: "Skip to content"
+			}),
+			children,
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", {
+				className: "mx-auto flex w-full max-w-[680px] flex-wrap items-center justify-center gap-3 px-5 pb-8 pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:px-8",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/privacy",
+						className: "hover:text-foreground",
+						children: "Privacy"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/terms",
+						className: "hover:text-foreground",
+						children: "Terms"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/imprint",
+						className: "hover:text-foreground",
+						children: "Imprint"
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Scripts, {})
+		] })]
 	});
 }
 function RootComponent() {
-	const { queryClient } = Route$4.useRouteContext();
+	const { queryClient } = Route$7.useRouteContext();
+	(0, import_react.useEffect)(() => {
+		try {
+			const storedTheme = window.localStorage.getItem("theme");
+			const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			const isDark = storedTheme === "dark" || !storedTheme && prefersDark;
+			document.documentElement.classList.toggle("dark", isDark);
+		} catch {}
+	}, []);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
 		client: queryClient,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(I18nProvider, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Analytics, {})] })
 	});
 }
+var $$splitComponentImporter$5 = () => import("./terms-khca7uv_.mjs");
+var Route$6 = createFileRoute("/terms")({
+	head: () => ({
+		meta: [
+			{ title: "Terms of Service — Kage" },
+			{
+				name: "description",
+				content: "Terms of service for the Kage translator application and related web services."
+			},
+			{
+				property: "og:title",
+				content: "Terms of Service — Kage"
+			},
+			{
+				property: "og:description",
+				content: "The terms governing use of Kage and the translation experience."
+			},
+			{
+				property: "og:url",
+				content: buildCanonicalUrl("/terms")
+			}
+		],
+		links: [{
+			rel: "canonical",
+			href: buildCanonicalUrl("/terms")
+		}],
+		scripts: [{
+			type: "application/ld+json",
+			children: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				name: "Terms of Service",
+				url: buildCanonicalUrl("/terms")
+			})
+		}]
+	}),
+	component: lazyRouteComponent($$splitComponentImporter$5, "component")
+});
 var BASE_URL = "https://kage-script.lovable.app";
-var Route$3 = createFileRoute("/sitemap.xml")({ server: { handlers: { GET: async () => {
+var Route$5 = createFileRoute("/sitemap.xml")({ server: { handlers: { GET: async () => {
 	const xml = [
 		`<?xml version="1.0" encoding="UTF-8"?>`,
 		`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
@@ -202,8 +315,46 @@ var Route$3 = createFileRoute("/sitemap.xml")({ server: { handlers: { GET: async
 		"Cache-Control": "public, max-age=3600"
 	} });
 } } } });
-var $$splitComponentImporter$2 = () => import("./ninja-symbols-BLTsSeX4.mjs");
-var Route$2 = createFileRoute("/ninja-symbols")({
+var $$splitComponentImporter$4 = () => import("./privacy-D_WaWLjQ.mjs");
+var Route$4 = createFileRoute("/privacy")({
+	head: () => ({
+		meta: [
+			{ title: "Privacy Policy — Kage" },
+			{
+				name: "description",
+				content: "Privacy policy for Kage, the browser-based Shinobi Iroha translator app and open-source project."
+			},
+			{
+				property: "og:title",
+				content: "Privacy Policy — Kage"
+			},
+			{
+				property: "og:description",
+				content: "How Kage handles data, browser storage, and third-party services in the translator experience."
+			},
+			{
+				property: "og:url",
+				content: buildCanonicalUrl("/privacy")
+			}
+		],
+		links: [{
+			rel: "canonical",
+			href: buildCanonicalUrl("/privacy")
+		}],
+		scripts: [{
+			type: "application/ld+json",
+			children: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				name: "Privacy Policy",
+				url: buildCanonicalUrl("/privacy")
+			})
+		}]
+	}),
+	component: lazyRouteComponent($$splitComponentImporter$4, "component")
+});
+var $$splitComponentImporter$3 = () => import("./ninja-symbols-CGzEJqoa.mjs");
+var Route$3 = createFileRoute("/ninja-symbols")({
 	head: () => ({
 		meta: [
 			{ title: "Ninja Symbols — The 49 Shinobi Iroha Characters & Meanings" },
@@ -225,12 +376,20 @@ var Route$2 = createFileRoute("/ninja-symbols")({
 			},
 			{
 				property: "og:url",
-				content: "https://ninja-script-app.lovable.app/ninja-symbols"
+				content: buildCanonicalUrl("/ninja-symbols")
+			},
+			{
+				name: "twitter:title",
+				content: "Ninja Symbols — The 49 Shinobi Iroha Characters"
+			},
+			{
+				name: "twitter:description",
+				content: "Visual reference of the 49 symbols of the Shinobi Iroha cipher with hiragana, romaji, and meanings."
 			}
 		],
 		links: [{
 			rel: "canonical",
-			href: "https://ninja-script-app.lovable.app/ninja-symbols"
+			href: buildCanonicalUrl("/ninja-symbols")
 		}],
 		scripts: [{
 			type: "application/ld+json",
@@ -243,7 +402,7 @@ var Route$2 = createFileRoute("/ninja-symbols")({
 					"@type": "Person",
 					name: "Noa Wilhide"
 				},
-				mainEntityOfPage: "https://ninja-script-app.lovable.app/ninja-symbols",
+				mainEntityOfPage: buildCanonicalUrl("/ninja-symbols"),
 				inLanguage: "en",
 				about: [
 					{
@@ -262,9 +421,47 @@ var Route$2 = createFileRoute("/ninja-symbols")({
 			})
 		}]
 	}),
+	component: lazyRouteComponent($$splitComponentImporter$3, "component")
+});
+var $$splitComponentImporter$2 = () => import("./imprint-BEm6MGkc.mjs");
+var Route$2 = createFileRoute("/imprint")({
+	head: () => ({
+		meta: [
+			{ title: "Imprint — Kage" },
+			{
+				name: "description",
+				content: "Imprint and legal contact information for the Kage translator project."
+			},
+			{
+				property: "og:title",
+				content: "Imprint — Kage"
+			},
+			{
+				property: "og:description",
+				content: "Contact and legal notice information for the Kage project."
+			},
+			{
+				property: "og:url",
+				content: buildCanonicalUrl("/imprint")
+			}
+		],
+		links: [{
+			rel: "canonical",
+			href: buildCanonicalUrl("/imprint")
+		}],
+		scripts: [{
+			type: "application/ld+json",
+			children: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				name: "Imprint",
+				url: buildCanonicalUrl("/imprint")
+			})
+		}]
+	}),
 	component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-var $$splitComponentImporter$1 = () => import("./bansenshukai-history-CC2xvdr8.mjs");
+var $$splitComponentImporter$1 = () => import("./bansenshukai-history-B-nsToXt.mjs");
 var Route$1 = createFileRoute("/bansenshukai-history")({
 	head: () => ({
 		meta: [
@@ -287,12 +484,20 @@ var Route$1 = createFileRoute("/bansenshukai-history")({
 			},
 			{
 				property: "og:url",
-				content: "https://ninja-script-app.lovable.app/bansenshukai-history"
+				content: buildCanonicalUrl("/bansenshukai-history")
+			},
+			{
+				name: "twitter:title",
+				content: "Bansenshukai & the Shinobi Iroha Cipher — Kage"
+			},
+			{
+				name: "twitter:description",
+				content: "A history of the Bansenshukai and the 49-symbol Shinobi Iroha cipher used to encode secret messages."
 			}
 		],
 		links: [{
 			rel: "canonical",
-			href: "https://ninja-script-app.lovable.app/bansenshukai-history"
+			href: buildCanonicalUrl("/bansenshukai-history")
 		}],
 		scripts: [{
 			type: "application/ld+json",
@@ -305,7 +510,7 @@ var Route$1 = createFileRoute("/bansenshukai-history")({
 					"@type": "Person",
 					name: "Noa Wilhide"
 				},
-				mainEntityOfPage: "https://ninja-script-app.lovable.app/bansenshukai-history",
+				mainEntityOfPage: buildCanonicalUrl("/bansenshukai-history"),
 				inLanguage: "en",
 				about: [
 					{
@@ -326,7 +531,7 @@ var Route$1 = createFileRoute("/bansenshukai-history")({
 	}),
 	component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-var $$splitComponentImporter = () => import("./routes-qJTdVWLX.mjs");
+var $$splitComponentImporter = () => import("./routes-Cg7ckWDx.mjs");
 var Route = createFileRoute("/")({
 	head: () => ({
 		meta: [
@@ -334,6 +539,10 @@ var Route = createFileRoute("/")({
 			{
 				name: "description",
 				content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back."
+			},
+			{
+				name: "stackscope-claim",
+				content: "mbx3lucv"
 			},
 			{
 				property: "og:title",
@@ -345,12 +554,20 @@ var Route = createFileRoute("/")({
 			},
 			{
 				property: "og:url",
-				content: "https://ninja-script-app.lovable.app/"
+				content: buildCanonicalUrl("/")
+			},
+			{
+				name: "twitter:title",
+				content: "Kage / 影 — Ninja Cipher Translator"
+			},
+			{
+				name: "twitter:description",
+				content: "Encode any language into the secret Shinobi Iroha ninja cipher, or decode it back."
 			}
 		],
 		links: [{
 			rel: "canonical",
-			href: "https://ninja-script-app.lovable.app/"
+			href: buildCanonicalUrl("/")
 		}],
 		scripts: [{
 			type: "application/ld+json",
@@ -361,7 +578,7 @@ var Route = createFileRoute("/")({
 				alternateName: "影",
 				applicationCategory: "UtilitiesApplication",
 				operatingSystem: "Web",
-				url: "https://ninja-script-app.lovable.app",
+				url: buildCanonicalUrl("/"),
 				description: "Encode any language into the 1676 ninja kanji cipher 忍びいろは, or decode it back.",
 				offers: {
 					"@type": "Offer",
@@ -377,32 +594,50 @@ var Route = createFileRoute("/")({
 	}),
 	component: lazyRouteComponent($$splitComponentImporter, "component")
 });
-var SitemapDotxmlRoute = Route$3.update({
+var TermsRoute = Route$6.update({
+	id: "/terms",
+	path: "/terms",
+	getParentRoute: () => Route$7
+});
+var SitemapDotxmlRoute = Route$5.update({
 	id: "/sitemap.xml",
 	path: "/sitemap.xml",
-	getParentRoute: () => Route$4
+	getParentRoute: () => Route$7
 });
-var NinjaSymbolsRoute = Route$2.update({
+var PrivacyRoute = Route$4.update({
+	id: "/privacy",
+	path: "/privacy",
+	getParentRoute: () => Route$7
+});
+var NinjaSymbolsRoute = Route$3.update({
 	id: "/ninja-symbols",
 	path: "/ninja-symbols",
-	getParentRoute: () => Route$4
+	getParentRoute: () => Route$7
+});
+var ImprintRoute = Route$2.update({
+	id: "/imprint",
+	path: "/imprint",
+	getParentRoute: () => Route$7
 });
 var BansenshukaiHistoryRoute = Route$1.update({
 	id: "/bansenshukai-history",
 	path: "/bansenshukai-history",
-	getParentRoute: () => Route$4
+	getParentRoute: () => Route$7
 });
 var rootRouteChildren = {
 	IndexRoute: Route.update({
 		id: "/",
 		path: "/",
-		getParentRoute: () => Route$4
+		getParentRoute: () => Route$7
 	}),
 	BansenshukaiHistoryRoute,
+	ImprintRoute,
 	NinjaSymbolsRoute,
-	SitemapDotxmlRoute
+	PrivacyRoute,
+	SitemapDotxmlRoute,
+	TermsRoute
 };
-var routeTree = Route$4._addFileChildren(rootRouteChildren)._addFileTypes();
+var routeTree = Route$7._addFileChildren(rootRouteChildren)._addFileTypes();
 var getRouter = () => {
 	return createRouter({
 		routeTree,

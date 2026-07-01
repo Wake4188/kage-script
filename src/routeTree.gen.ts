@@ -9,19 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
+import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
   id: '/ninja-symbols',
   path: '/ninja-symbols',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImprintRoute = ImprintRouteImport.update({
+  id: '/imprint',
+  path: '/imprint',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BansenshukaiHistoryRoute = BansenshukaiHistoryRouteImport.update({
@@ -38,44 +56,80 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/imprint': typeof ImprintRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/imprint': typeof ImprintRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/imprint': typeof ImprintRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bansenshukai-history' | '/ninja-symbols' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/bansenshukai-history'
+    | '/imprint'
+    | '/ninja-symbols'
+    | '/privacy'
+    | '/sitemap.xml'
+    | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bansenshukai-history' | '/ninja-symbols' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/bansenshukai-history'
+    | '/imprint'
+    | '/ninja-symbols'
+    | '/privacy'
+    | '/sitemap.xml'
+    | '/terms'
   id:
     | '__root__'
     | '/'
     | '/bansenshukai-history'
+    | '/imprint'
     | '/ninja-symbols'
+    | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
+  ImprintRoute: typeof ImprintRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -83,11 +137,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ninja-symbols': {
       id: '/ninja-symbols'
       path: '/ninja-symbols'
       fullPath: '/ninja-symbols'
       preLoaderRoute: typeof NinjaSymbolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/imprint': {
+      id: '/imprint'
+      path: '/imprint'
+      fullPath: '/imprint'
+      preLoaderRoute: typeof ImprintRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bansenshukai-history': {
@@ -110,8 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
+  ImprintRoute: ImprintRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
