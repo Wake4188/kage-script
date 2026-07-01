@@ -1,12 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import { Moon, Sun, Languages } from "lucide-react";
-import { shinobiEncode, shinobiDecode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Moon, Sun, Languages, Bookmark, Share2, Download, History } from "lucide-react";
+import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
+import {
+  addTranslationFavoriteEntry,
+  addTranslationHistoryEntry,
+  buildShareableTranslationUrl,
+  type TranslationRecord,
+} from "@/lib/translation-utils";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
+import { RecentlyViewed, trackRecentPage } from "@/components/learning/RecentlyViewed";
+import { RelatedLinks } from "@/components/learning/RelatedLinks";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -83,6 +91,10 @@ function Index() {
   const [decoded, setDecoded] = useState("");
   const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
+  const [history, setHistory] = useState<TranslationRecord[]>([]);
+  const [favorites, setFavorites] = useState<TranslationRecord[]>([]);
+  const [shareUrl, setShareUrl] = useState("");
+  const [shareCopied, setShareCopied] = useState(false);
   const { isDark, toggle, mounted } = useTheme();
   const { lang, setLang, t } = useI18n();
   const [langOpen, setLangOpen] = useState(false);
@@ -101,8 +113,18 @@ function Index() {
   const mutation = useMutation({
     mutationFn: (text: string) => translateFn({ data: { text } }),
     onSuccess: (res) => {
-      setHiragana(res.hiragana);
-      setNinja(shinobiEncode(res.hiragana, res.japanese ? { japanese: res.japanese } : undefined));
+      const nextHiragana = res.hiragana;
+      const nextNinja = shinobiEncode(nextHiragana, res.japanese ? { japanese: res.japanese } : undefined);
+      setHiragana(nextHiragana);
+      setNinja(nextNinja);
+      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
+        mode: "encode",
+        input: input.trim(),
+        output: nextNinja,
+      };
+      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
+      saveHistoryItem(historyEntry);
+      setShareUrl(buildShareableTranslationUrl("/", "encode", input.trim()));
     },
   });
 
@@ -110,7 +132,16 @@ function Index() {
   const decodeMutation = useMutation({
     mutationFn: (text: string) => translateBackFn({ data: { text, targetLang: lang } }),
     onSuccess: (res) => {
-      setEnglish(res.english);
+      const outputText = res.english;
+      setEnglish(outputText);
+      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
+        mode: "decode",
+        input: input.trim(),
+        output: outputText,
+      };
+      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
+      saveHistoryItem(historyEntry);
+      setShareUrl(buildShareableTranslationUrl("/", "decode", input.trim()));
     },
   });
 
@@ -120,12 +151,111 @@ function Index() {
     return () => clearTimeout(id);
   }, [copied]);
 
+  useEffect(() => {
+    trackRecentPage("Translator", "/");
+  }, []);
+
+  useEffect(() => {
+    const storedHistory = window.localStorage.getItem("kage-translation-history");
+    const storedFavorites = window.localStorage.getItem("kage-translation-favorites");
+    if (storedHistory) {
+      try {
+        setHistory(JSON.parse(storedHistory));
+      } catch {}
+    }
+    if (storedFavorites) {
+      try {
+        setFavorites(JSON.parse(storedFavorites));
+      } catch {}
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("kage-translation-history", JSON.stringify(history));
+    } catch {}
+  }, [history]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("kage-translation-favorites", JSON.stringify(favorites));
+    } catch {}
+  }, [favorites]);
+
+  const stats = useMemo(() => {
+    const trimmedInput = input.trim();
+    const outputText = output || "";
+    return {
+      inputCharacters: Array.from(trimmedInput).length,
+      outputCharacters: Array.from(outputText).length,
+      modeLabel: mode === "encode" ? "symbols" : "characters",
+    };
+  }, [input, output, mode]);
+
+  const downloadSvg = async () => {
+    if (!output) return;
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
+  <rect width="1080" height="420" fill="#050505" />
+  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
+  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
+  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
+  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
+</svg>`;
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kage-translation-${mode}.svg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const downloadPng = async () => {
+    if (!output) return;
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
+  <rect width="1080" height="420" fill="#050505" />
+  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
+  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
+  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
+  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
+</svg>`;
+    const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    const image = new Image();
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 420;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.fillStyle = "#050505";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `kage-translation-${mode}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      });
+      URL.revokeObjectURL(url);
+    };
+    image.src = url;
+  };
+
   const resetOutput = () => {
     setHiragana("");
     setNinja("");
     setDecoded("");
     setEnglish("");
     setCopied(false);
+    setShareUrl("");
   };
 
   const submit = () => {
@@ -146,7 +276,31 @@ function Index() {
     }
   };
 
+  const saveHistoryItem = (item: TranslationRecord) => {
+    setHistory((current) => addTranslationHistoryEntry(current, item));
+  };
+
+  const addFavorite = (item: TranslationRecord) => {
+    setFavorites((current) => addTranslationFavoriteEntry(current, item));
+  };
+
+  const generateShareLink = (item: TranslationRecord) => {
+    const url = buildShareableTranslationUrl("/", item.mode, item.input);
+    setShareUrl(url);
+    return url;
+  };
+
   const output = mode === "encode" ? ninja : english;
+
+  const currentRecord = useMemo(() => {
+    const trimmedInput = input.trim();
+    if (!trimmedInput || !output) return null;
+    return {
+      mode,
+      input: trimmedInput,
+      output,
+    } as Omit<TranslationRecord, "id" | "timestamp">;
+  }, [input, mode, output]);
 
   const copy = async () => {
     if (!output) return;
@@ -155,6 +309,17 @@ function Index() {
       setCopied(true);
     } catch {
       setCopied(false);
+    }
+  };
+
+  const copyShareLink = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1500);
+    } catch {
+      setShareCopied(false);
     }
   };
 
@@ -366,7 +531,55 @@ function Index() {
               <p className="mt-1 text-sm text-foreground/70 sm:text-base">{decoded}</p>
             </div>
           )}
-        </section>
+
+          <div className="mt-6 grid gap-4 rounded-lg border border-foreground/10 bg-background p-4 text-sm text-foreground/80 sm:grid-cols-[1fr_auto]">
+            <div>
+              <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                Live statistics
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+                {stats.inputCharacters} input characters · {stats.outputCharacters} output {stats.modeLabel}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => currentRecord && addFavorite(currentRecord)}
+                disabled={!currentRecord}
+                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+              >
+                <Bookmark size={14} />
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={copyShareLink}
+                disabled={!shareUrl}
+                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+              >
+                <Share2 size={14} />
+                {shareCopied ? "Link copied" : "Share"}
+              </button>
+              <button
+                type="button"
+                onClick={downloadSvg}
+                disabled={!output}
+                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+              >
+                <Download size={14} />
+                SVG
+              </button>
+              <button
+                type="button"
+                onClick={downloadPng}
+                disabled={!output}
+                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+              >
+                <Download size={14} />
+                PNG
+              </button>
+            </div>
+          </div>
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
           <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
