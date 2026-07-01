@@ -3,10 +3,10 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
-const SECURITY_HEADERS = {
+export const SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
   "Content-Security-Policy":
-    "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://va.vercel-scripts.com; connect-src 'self' https://inputtools.google.com https://generativelanguage.googleapis.com https://vitals.vercel-insights.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; worker-src 'self' blob:; upgrade-insecure-requests",
+    "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; connect-src 'self' https://inputtools.google.com https://generativelanguage.googleapis.com https://vitals.vercel-insights.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; worker-src 'self' blob:; upgrade-insecure-requests",
   "X-Frame-Options": "DENY",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",

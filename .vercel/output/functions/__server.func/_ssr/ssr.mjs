@@ -53,7 +53,7 @@ function renderErrorPage() {
 }
 var SECURITY_HEADERS = {
 	"Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-	"Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://va.vercel-scripts.com; connect-src 'self' https://inputtools.google.com https://generativelanguage.googleapis.com https://vitals.vercel-insights.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; worker-src 'self' blob:; upgrade-insecure-requests",
+	"Content-Security-Policy": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; connect-src 'self' https://inputtools.google.com https://generativelanguage.googleapis.com https://vitals.vercel-insights.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; worker-src 'self' blob:; upgrade-insecure-requests",
 	"X-Frame-Options": "DENY",
 	"X-Content-Type-Options": "nosniff",
 	"Referrer-Policy": "strict-origin-when-cross-origin",
@@ -99,4 +99,4 @@ var server_default = { async fetch(request, env, ctx) {
 	}
 } };
 //#endregion
-export { server_default as default, renderErrorPage as t };
+export { SECURITY_HEADERS, server_default as default, renderErrorPage as t };
