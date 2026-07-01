@@ -15,6 +15,7 @@ export const Route = createFileRoute("/")({
         name: "description",
         content: "Encode any language into the 1676 ninja cipher 忍びいろは, or decode it back.",
       },
+      { name: "stackscope-claim", content: "mbx3lucv" },
       { property: "og:title", content: "Kage / 影 — Ninja Cipher Translator (忍びいろは)" },
       {
         property: "og:description",
