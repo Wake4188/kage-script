@@ -7,6 +7,10 @@ export function RelatedLinks() {
         Learn next
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <Link to="/" className="border border-foreground/15 p-4 transition hover:border-foreground">
+          <p className="text-sm font-medium text-foreground">Translator</p>
+          <p className="mt-2 text-sm text-foreground/70">Encode or decode your text with the Shinobi Iroha cipher.</p>
+        </Link>
         <Link to="/ninja-symbols" className="border border-foreground/15 p-4 transition hover:border-foreground">
           <p className="text-sm font-medium text-foreground">Symbol reference</p>
           <p className="mt-2 text-sm text-foreground/70">Explore the complete 49-symbol alphabet and core meanings.</p>
