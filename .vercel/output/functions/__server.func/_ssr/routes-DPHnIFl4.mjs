@@ -8,7 +8,7 @@ import { i as TSS_SERVER_FUNCTION, l as createServerFn } from "./esm-Dova13aH.mj
 import { n as stringType, t as objectType } from "../_libs/zod.mjs";
 import "../_libs/wanakana.mjs";
 import { n as Moon, r as Languages, t as Sun } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-C5Pp3EjI.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-DPHnIFl4.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function useServerFn(serverFn) {
@@ -122,7 +122,8 @@ function Index() {
 			const hira = decodedText;
 			setDecoded(hira);
 			setEnglish("");
-			decodeMutation.mutate(hira + (metadata?.japanese ? `\n${metadata.japanese}` : ""));
+			const translateSource = metadata?.japanese ?? hira;
+			decodeMutation.mutate(translateSource);
 		}
 	};
 	const output = mode === "encode" ? ninja : english;

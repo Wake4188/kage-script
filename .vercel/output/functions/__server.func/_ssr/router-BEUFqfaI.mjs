@@ -4,7 +4,7 @@ import { N as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent,
 import { t as I18nProvider } from "./i18n-CUqn5wZ1.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as Analytics } from "../_libs/vercel__analytics.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-D_UWVud3.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BEUFqfaI.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-B027RSC5.css";
@@ -326,7 +326,7 @@ var Route$1 = createFileRoute("/bansenshukai-history")({
 	}),
 	component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-var $$splitComponentImporter = () => import("./routes-C5Pp3EjI.mjs");
+var $$splitComponentImporter = () => import("./routes-DPHnIFl4.mjs");
 var Route = createFileRoute("/")({
 	head: () => ({
 		meta: [
