@@ -27,7 +27,7 @@ async function getKuroshiro(): Promise<Kuroshiro | null> {
 
 const InputSchema = z.object({
   text: z.string().min(1).max(2000),
-  targetLang: z.string().min(2).max(8).optional(),
+  targetLang: z.enum(["en", "fr", "es", "de", "ja"]).optional(),
 });
 
 type GTSentence = [string | null, string | null, string | null, ...unknown[]];
