@@ -388,6 +388,10 @@ function Index() {
             <Link to="/ninja-symbols" className="text-foreground hover:opacity-60">
               {t.symbols}
             </Link>
+            <span className="text-muted-foreground/40">·</span>
+            <Link to="/kuji-in-hand-signs" className="text-foreground hover:opacity-60">
+              {t.kuji}
+            </Link>
           </div>
         </footer>
       </div>
