@@ -122,7 +122,8 @@ function Index() {
       const hira = decodedText;
       setDecoded(hira);
       setEnglish("");
-      decodeMutation.mutate(hira + (metadata?.japanese ? `\n${metadata.japanese}` : ""));
+      const translateSource = metadata?.japanese ?? hira;
+      decodeMutation.mutate(translateSource);
     }
   };
 
