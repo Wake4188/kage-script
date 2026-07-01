@@ -255,7 +255,7 @@ async function recoverJapaneseWithGemini(
 }
 
 export const translateToHiragana = createServerFn({ method: "POST" })
-  .validator((data: unknown) => InputSchema.parse(data))
+  .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
     // Prefer a higher-fidelity Japanese reading path when Gemini is configured.
     const gemini = await translateWithGeminiToJapanese(data.text);
@@ -270,7 +270,7 @@ export const translateToHiragana = createServerFn({ method: "POST" })
   });
 
 export const translateFromHiragana = createServerFn({ method: "POST" })
-  .validator((data: unknown) => InputSchema.parse(data))
+  .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }) => {
     const target = (data.targetLang ?? "en").toLowerCase();
 
