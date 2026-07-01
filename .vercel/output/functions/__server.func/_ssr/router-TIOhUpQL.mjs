@@ -4,7 +4,8 @@ import { N as useRouter, c as HeadContent, d as Outlet, f as lazyRouteComponent,
 import { t as I18nProvider } from "./i18n-CUqn5wZ1.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as Analytics } from "../_libs/vercel__analytics.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router--SI66Pyd.js
+import { t as SpeedInsights } from "../_libs/vercel__speed-insights.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/router-TIOhUpQL.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-B3_ZSYEg.css";
@@ -239,7 +240,11 @@ function RootComponent() {
 	}, []);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
 		client: queryClient,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(I18nProvider, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Analytics, {})] })
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(I18nProvider, { children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Analytics, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SpeedInsights, {})
+		] })
 	});
 }
 var $$splitComponentImporter$5 = () => import("./terms-khca7uv_.mjs");
