@@ -31,6 +31,7 @@ type Dict = {
   source: string;
   history: string;
   symbols: string;
+  kuji: string;
   themeLight: string;
   themeDark: string;
   langSwitch: string;
@@ -58,6 +59,7 @@ const en: Dict = {
   source: "Source ↗",
   history: "History →",
   symbols: "Symbols →",
+  kuji: "Kuji-in →",
   themeLight: "Switch to light mode",
   themeDark: "Switch to dark mode",
   langSwitch: "Change language",
@@ -85,6 +87,7 @@ const fr: Dict = {
   source: "Source ↗",
   history: "Histoire →",
   symbols: "Symboles →",
+  kuji: "Kuji-in →",
   themeLight: "Passer en mode clair",
   themeDark: "Passer en mode sombre",
   langSwitch: "Changer de langue",
@@ -112,6 +115,7 @@ const es: Dict = {
   source: "Fuente ↗",
   history: "Historia →",
   symbols: "Símbolos →",
+  kuji: "Kuji-in →",
   themeLight: "Cambiar a modo claro",
   themeDark: "Cambiar a modo oscuro",
   langSwitch: "Cambiar idioma",
@@ -139,6 +143,7 @@ const de: Dict = {
   source: "Quelle ↗",
   history: "Geschichte →",
   symbols: "Symbole →",
+  kuji: "Kuji-in →",
   themeLight: "Hellmodus aktivieren",
   themeDark: "Dunkelmodus aktivieren",
   langSwitch: "Sprache ändern",
@@ -166,6 +171,7 @@ const ja: Dict = {
   source: "ソース ↗",
   history: "歴史 →",
   symbols: "記号 →",
+  kuji: "九字護身法 →",
   themeLight: "ライトモードに切替",
   themeDark: "ダークモードに切替",
   langSwitch: "言語を変更",

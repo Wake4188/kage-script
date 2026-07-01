@@ -13,6 +13,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
+import { Route as KujiInHandSignsRouteImport } from './routes/kuji-in-hand-signs'
 import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
   path: '/ninja-symbols',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KujiInHandSignsRoute = KujiInHandSignsRouteImport.update({
+  id: '/kuji-in-hand-signs',
+  path: '/kuji-in-hand-signs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImprintRoute = ImprintRouteImport.update({
   id: '/imprint',
   path: '/imprint',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/imprint': typeof ImprintRoute
+  '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/imprint': typeof ImprintRoute
+  '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/imprint': typeof ImprintRoute
+  '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/imprint'
+    | '/kuji-in-hand-signs'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/imprint'
+    | '/kuji-in-hand-signs'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/imprint'
+    | '/kuji-in-hand-signs'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
   ImprintRoute: typeof ImprintRoute
+  KujiInHandSignsRoute: typeof KujiInHandSignsRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinjaSymbolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kuji-in-hand-signs': {
+      id: '/kuji-in-hand-signs'
+      path: '/kuji-in-hand-signs'
+      fullPath: '/kuji-in-hand-signs'
+      preLoaderRoute: typeof KujiInHandSignsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/imprint': {
       id: '/imprint'
       path: '/imprint'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
   ImprintRoute: ImprintRoute,
+  KujiInHandSignsRoute: KujiInHandSignsRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

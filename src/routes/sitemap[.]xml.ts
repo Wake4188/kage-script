@@ -17,6 +17,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/bansenshukai-history", changefreq: "monthly", priority: "0.7" },
           { path: "/ninja-symbols", changefreq: "monthly", priority: "0.7" },
+          { path: "/kuji-in-hand-signs", changefreq: "monthly", priority: "0.7" },
         ];
 
         const urls = entries.map((e) =>
