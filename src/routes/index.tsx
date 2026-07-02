@@ -184,7 +184,7 @@ function Index() {
 
   const stats = useMemo(() => {
     const trimmedInput = input.trim();
-    const outputText = output || "";
+    const outputText = mode === "encode" ? ninja : english;
     const wordCount = trimmedInput ? trimmedInput.split(/\s+/).filter(Boolean).length : 0;
     return {
       inputCharacters: Array.from(trimmedInput).length,
@@ -192,7 +192,7 @@ function Index() {
       wordCount,
       modeLabel: mode === "encode" ? "symbols" : "characters",
     };
-  }, [input, output, mode]);
+  }, [input, ninja, english, mode]);
 
   // Load from ?mode=&input= share URLs on mount.
   useEffect(() => {
@@ -347,7 +347,7 @@ function Index() {
     setHistory((current) => addTranslationHistoryEntry(current, item));
   };
 
-  const addFavorite = (item: TranslationRecord) => {
+  const addFavorite = (item: Omit<TranslationRecord, "id" | "timestamp">) => {
     setFavorites((current) => addTranslationFavoriteEntry(current, item));
   };
 
