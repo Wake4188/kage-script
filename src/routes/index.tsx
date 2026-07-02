@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Moon, Sun, Languages, Bookmark, Share2, Download, History } from "lucide-react";
+import { Moon, Sun, Languages, Bookmark, Share2, Download, History, Trash2, Upload, FileDown, X, Star } from "lucide-react";
 import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 import {
@@ -185,12 +185,79 @@ function Index() {
   const stats = useMemo(() => {
     const trimmedInput = input.trim();
     const outputText = output || "";
+    const wordCount = trimmedInput ? trimmedInput.split(/\s+/).filter(Boolean).length : 0;
     return {
       inputCharacters: Array.from(trimmedInput).length,
       outputCharacters: Array.from(outputText).length,
+      wordCount,
       modeLabel: mode === "encode" ? "symbols" : "characters",
     };
   }, [input, output, mode]);
+
+  // Load from ?mode=&input= share URLs on mount.
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const m = params.get("mode");
+      const q = params.get("input");
+      if ((m === "encode" || m === "decode") && q) {
+        setMode(m);
+        setInput(q.slice(0, 2000));
+      }
+    } catch {}
+  }, []);
+
+  const downloadTxt = () => {
+    if (!output) return;
+    const body = `Kage / 影 — Shinobi Iroha (${mode})\n\nInput:\n${input}\n\nOutput:\n${output}\n${hiragana ? `\nHiragana:\n${hiragana}\n` : ""}${decoded ? `\nDecoded kana:\n${decoded}\n` : ""}\nhttps://kage-script.lovable.app`;
+    const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kage-translation-${mode}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const exportHistory = () => {
+    const payload = JSON.stringify({ history, favorites }, null, 2);
+    const blob = new Blob([payload], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kage-history.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const importHistory = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        if (Array.isArray(parsed?.history)) setHistory(parsed.history.slice(0, 8));
+        if (Array.isArray(parsed?.favorites)) setFavorites(parsed.favorites.slice(0, 8));
+      } catch {}
+    };
+    reader.readAsText(file);
+  };
+
+  const clearHistory = () => setHistory([]);
+  const clearFavorites = () => setFavorites([]);
+  const removeHistoryItem = (id: string) =>
+    setHistory((h) => h.filter((r) => r.id !== id));
+  const removeFavoriteItem = (id: string) =>
+    setFavorites((f) => f.filter((r) => r.id !== id));
+  const loadRecord = (r: TranslationRecord) => {
+    setMode(r.mode);
+    setInput(r.input);
+    resetOutput();
+  };
+
+  const [panelOpen, setPanelOpen] = useState<false | "history" | "favorites">(false);
+  const importInputRef = useRef<HTMLInputElement | null>(null);
 
   const downloadSvg = async () => {
     if (!output) return;
@@ -578,8 +645,123 @@ function Index() {
                 <Download size={14} />
                 PNG
               </button>
+              <button
+                type="button"
+                onClick={downloadTxt}
+                disabled={!output}
+                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+              >
+                <FileDown size={14} />
+                TXT
+              </button>
             </div>
           </div>
+          <p className="mt-3 font-mono-display text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            {stats.wordCount} words · {stats.inputCharacters} characters
+          </p>
+        </section>
+
+        {/* History & favorites */}
+        <section className="mt-10 border-t border-foreground pt-4" aria-labelledby="history-heading">
+          <h2 id="history-heading" className="sr-only">History and favorites</h2>
+          <div className="flex flex-wrap items-center gap-2 font-mono-display text-[10px] uppercase tracking-[0.2em]">
+            <button
+              type="button"
+              onClick={() => setPanelOpen(panelOpen === "history" ? false : "history")}
+              aria-expanded={panelOpen === "history"}
+              className="inline-flex items-center gap-2 border border-foreground px-3 py-2 text-foreground hover:bg-foreground hover:text-background"
+            >
+              <History size={12} /> History ({history.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setPanelOpen(panelOpen === "favorites" ? false : "favorites")}
+              aria-expanded={panelOpen === "favorites"}
+              className="inline-flex items-center gap-2 border border-foreground px-3 py-2 text-foreground hover:bg-foreground hover:text-background"
+            >
+              <Star size={12} /> Favorites ({favorites.length})
+            </button>
+            <button
+              type="button"
+              onClick={exportHistory}
+              className="inline-flex items-center gap-2 border border-foreground/40 px-3 py-2 text-foreground hover:border-foreground"
+            >
+              <FileDown size={12} /> Export
+            </button>
+            <button
+              type="button"
+              onClick={() => importInputRef.current?.click()}
+              className="inline-flex items-center gap-2 border border-foreground/40 px-3 py-2 text-foreground hover:border-foreground"
+            >
+              <Upload size={12} /> Import
+            </button>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept="application/json"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) importHistory(f);
+                e.target.value = "";
+              }}
+            />
+          </div>
+
+          {panelOpen && (
+            <div className="mt-4 border border-foreground/20 p-3">
+              <div className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                <span>{panelOpen === "history" ? "Recent" : "Saved"}</span>
+                <button
+                  type="button"
+                  onClick={() => (panelOpen === "history" ? clearHistory() : clearFavorites())}
+                  className="inline-flex items-center gap-1 hover:text-foreground"
+                >
+                  <Trash2 size={12} /> Clear
+                </button>
+              </div>
+              <ul className="mt-3 space-y-2">
+                {(panelOpen === "history" ? history : favorites).length === 0 && (
+                  <li className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Nothing yet.
+                  </li>
+                )}
+                {(panelOpen === "history" ? history : favorites).map((r) => (
+                  <li
+                    key={r.id}
+                    className="flex items-start justify-between gap-2 border-t border-foreground/10 pt-2 text-sm"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => loadRecord(r)}
+                      className="flex-1 text-left"
+                    >
+                      <span className="font-mono-display text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {r.mode}
+                      </span>
+                      <span className="ml-2 break-words">{r.input.slice(0, 80)}</span>
+                      <span className="mt-1 block break-words text-foreground/60">
+                        → {r.output.slice(0, 80)}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        panelOpen === "history"
+                          ? removeHistoryItem(r.id)
+                          : removeFavoriteItem(r.id)
+                      }
+                      aria-label="Remove"
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <X size={14} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
           <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
