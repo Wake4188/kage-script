@@ -9,15 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TranslatorGuideRouteImport } from './routes/translator-guide'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
+import { Route as LearningResourcesRouteImport } from './routes/learning-resources'
 import { Route as KujiInHandSignsRouteImport } from './routes/kuji-in-hand-signs'
 import { Route as ImprintRouteImport } from './routes/imprint'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CommonMistakesRouteImport } from './routes/common-mistakes'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TranslatorGuideRoute = TranslatorGuideRouteImport.update({
+  id: '/translator-guide',
+  path: '/translator-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -38,6 +47,11 @@ const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
   path: '/ninja-symbols',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearningResourcesRoute = LearningResourcesRouteImport.update({
+  id: '/learning-resources',
+  path: '/learning-resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KujiInHandSignsRoute = KujiInHandSignsRouteImport.update({
   id: '/kuji-in-hand-signs',
   path: '/kuji-in-hand-signs',
@@ -46,6 +60,16 @@ const KujiInHandSignsRoute = KujiInHandSignsRouteImport.update({
 const ImprintRoute = ImprintRouteImport.update({
   id: '/imprint',
   path: '/imprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommonMistakesRoute = CommonMistakesRouteImport.update({
+  id: '/common-mistakes',
+  path: '/common-mistakes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BansenshukaiHistoryRoute = BansenshukaiHistoryRouteImport.update({
@@ -62,80 +86,115 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/common-mistakes': typeof CommonMistakesRoute
+  '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/translator-guide': typeof TranslatorGuideRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/common-mistakes': typeof CommonMistakesRoute
+  '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/translator-guide': typeof TranslatorGuideRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
+  '/common-mistakes': typeof CommonMistakesRoute
+  '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/translator-guide': typeof TranslatorGuideRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/bansenshukai-history'
+    | '/common-mistakes'
+    | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/translator-guide'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/bansenshukai-history'
+    | '/common-mistakes'
+    | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/translator-guide'
   id:
     | '__root__'
     | '/'
     | '/bansenshukai-history'
+    | '/common-mistakes'
+    | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/translator-guide'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
+  CommonMistakesRoute: typeof CommonMistakesRoute
+  FaqRoute: typeof FaqRoute
   ImprintRoute: typeof ImprintRoute
   KujiInHandSignsRoute: typeof KujiInHandSignsRoute
+  LearningResourcesRoute: typeof LearningResourcesRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  TranslatorGuideRoute: typeof TranslatorGuideRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/translator-guide': {
+      id: '/translator-guide'
+      path: '/translator-guide'
+      fullPath: '/translator-guide'
+      preLoaderRoute: typeof TranslatorGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -164,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinjaSymbolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learning-resources': {
+      id: '/learning-resources'
+      path: '/learning-resources'
+      fullPath: '/learning-resources'
+      preLoaderRoute: typeof LearningResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/kuji-in-hand-signs': {
       id: '/kuji-in-hand-signs'
       path: '/kuji-in-hand-signs'
@@ -176,6 +242,20 @@ declare module '@tanstack/react-router' {
       path: '/imprint'
       fullPath: '/imprint'
       preLoaderRoute: typeof ImprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/common-mistakes': {
+      id: '/common-mistakes'
+      path: '/common-mistakes'
+      fullPath: '/common-mistakes'
+      preLoaderRoute: typeof CommonMistakesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bansenshukai-history': {
@@ -198,12 +278,16 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
+  CommonMistakesRoute: CommonMistakesRoute,
+  FaqRoute: FaqRoute,
   ImprintRoute: ImprintRoute,
   KujiInHandSignsRoute: KujiInHandSignsRoute,
+  LearningResourcesRoute: LearningResourcesRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  TranslatorGuideRoute: TranslatorGuideRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
