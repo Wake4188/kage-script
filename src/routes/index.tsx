@@ -126,6 +126,18 @@ function Index() {
       saveHistoryItem(historyEntry);
       setShareUrl(buildShareableTranslationUrl("/", "encode", input.trim()));
     },
+    onError: () => {
+      // Client-side fallback: convert latin/kana input to hiragana with
+      // wanakana so the user always sees output even when the server or
+      // upstream translator is unreachable.
+      const t = input.trim();
+      const fallbackHiragana = toHiragana(t.replace(/[A-Za-z0-9\s.,:;!?/()[\]{}"`~\-]+/g, (c) => toHiragana(c)));
+      const nextNinja = shinobiEncode(fallbackHiragana);
+      setHiragana(fallbackHiragana);
+      setNinja(nextNinja);
+      setShareUrl(buildShareableTranslationUrl("/", "encode", t));
+    },
+    retry: 1,
   });
 
   const translateBackFn = useServerFn(translateFromHiragana);
