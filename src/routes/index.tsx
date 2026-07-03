@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Moon, Sun, Languages, Bookmark, Share2, Download, History, Trash2, Upload, FileDown, X, Star } from "lucide-react";
+import { Moon, Sun, Languages } from "lucide-react";
+import { toHiragana } from "wanakana";
 import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 import {
@@ -13,8 +14,7 @@ import {
 } from "@/lib/translation-utils";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
-import { RecentlyViewed, trackRecentPage } from "@/components/learning/RecentlyViewed";
-import { RelatedLinks } from "@/components/learning/RelatedLinks";
+import { trackRecentPage } from "@/components/learning/RecentlyViewed";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -126,6 +126,18 @@ function Index() {
       saveHistoryItem(historyEntry);
       setShareUrl(buildShareableTranslationUrl("/", "encode", input.trim()));
     },
+    onError: () => {
+      // Client-side fallback: convert latin/kana input to hiragana with
+      // wanakana so the user always sees output even when the server or
+      // upstream translator is unreachable.
+      const t = input.trim();
+      const fallbackHiragana = toHiragana(t.replace(/[A-Za-z0-9\s.,:;!?/()[\]{}"`~\-]+/g, (c) => toHiragana(c)));
+      const nextNinja = shinobiEncode(fallbackHiragana);
+      setHiragana(fallbackHiragana);
+      setNinja(nextNinja);
+      setShareUrl(buildShareableTranslationUrl("/", "encode", t));
+    },
+    retry: 1,
   });
 
   const translateBackFn = useServerFn(translateFromHiragana);
@@ -599,138 +611,114 @@ function Index() {
             </div>
           )}
 
-          <div className="mt-6 grid gap-4 rounded-lg border border-foreground/10 bg-background p-4 text-sm text-foreground/80 sm:grid-cols-[1fr_auto]">
-            <div>
-              <p className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Live statistics
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-                {stats.inputCharacters} input characters · {stats.outputCharacters} output {stats.modeLabel}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
+          {/* Elegant inline toolbar — matches the "COPY" text-button aesthetic */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span>
+              {stats.inputCharacters} char · {stats.wordCount} word · {stats.outputCharacters} {stats.modeLabel}
+            </span>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <button
                 type="button"
                 onClick={() => currentRecord && addFavorite(currentRecord)}
                 disabled={!currentRecord}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
               >
-                <Bookmark size={14} />
                 Save
               </button>
               <button
                 type="button"
                 onClick={copyShareLink}
                 disabled={!shareUrl}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
               >
-                <Share2 size={14} />
-                {shareCopied ? "Link copied" : "Share"}
-              </button>
-              <button
-                type="button"
-                onClick={downloadSvg}
-                disabled={!output}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
-              >
-                <Download size={14} />
-                SVG
-              </button>
-              <button
-                type="button"
-                onClick={downloadPng}
-                disabled={!output}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
-              >
-                <Download size={14} />
-                PNG
+                {shareCopied ? "Link ✓" : "Share"}
               </button>
               <button
                 type="button"
                 onClick={downloadTxt}
                 disabled={!output}
-                className="inline-flex items-center gap-2 rounded-md border border-foreground/15 bg-background px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground transition hover:border-foreground disabled:opacity-40"
+                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
               >
-                <FileDown size={14} />
-                TXT
+                .txt
+              </button>
+              <button
+                type="button"
+                onClick={downloadSvg}
+                disabled={!output}
+                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
+              >
+                .svg
+              </button>
+              <button
+                type="button"
+                onClick={downloadPng}
+                disabled={!output}
+                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
+              >
+                .png
               </button>
             </div>
           </div>
-          <p className="mt-3 font-mono-display text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            {stats.wordCount} words · {stats.inputCharacters} characters
-          </p>
         </section>
 
-        {/* History & favorites */}
-        <section className="mt-10 border-t border-foreground pt-4" aria-labelledby="history-heading">
-          <h2 id="history-heading" className="sr-only">History and favorites</h2>
-          <div className="flex flex-wrap items-center gap-2 font-mono-display text-[10px] uppercase tracking-[0.2em]">
-            <button
-              type="button"
-              onClick={() => setPanelOpen(panelOpen === "history" ? false : "history")}
-              aria-expanded={panelOpen === "history"}
-              className="inline-flex items-center gap-2 border border-foreground px-3 py-2 text-foreground hover:bg-foreground hover:text-background"
-            >
-              <History size={12} /> History ({history.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setPanelOpen(panelOpen === "favorites" ? false : "favorites")}
-              aria-expanded={panelOpen === "favorites"}
-              className="inline-flex items-center gap-2 border border-foreground px-3 py-2 text-foreground hover:bg-foreground hover:text-background"
-            >
-              <Star size={12} /> Favorites ({favorites.length})
-            </button>
-            <button
-              type="button"
-              onClick={exportHistory}
-              className="inline-flex items-center gap-2 border border-foreground/40 px-3 py-2 text-foreground hover:border-foreground"
-            >
-              <FileDown size={12} /> Export
-            </button>
-            <button
-              type="button"
-              onClick={() => importInputRef.current?.click()}
-              className="inline-flex items-center gap-2 border border-foreground/40 px-3 py-2 text-foreground hover:border-foreground"
-            >
-              <Upload size={12} /> Import
-            </button>
-            <input
-              ref={importInputRef}
-              type="file"
-              accept="application/json"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) importHistory(f);
-                e.target.value = "";
-              }}
-            />
-          </div>
-
-          {panelOpen && (
-            <div className="mt-4 border border-foreground/20 p-3">
-              <div className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                <span>{panelOpen === "history" ? "Recent" : "Saved"}</span>
+        {/* History & favorites — text-only, matches header aesthetic */}
+        {(history.length > 0 || favorites.length > 0) && (
+          <section className="mt-12 border-t border-foreground pt-4" aria-labelledby="history-heading">
+            <h2 id="history-heading" className="sr-only">History and favorites</h2>
+            <div className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-5">
                 <button
                   type="button"
-                  onClick={() => (panelOpen === "history" ? clearHistory() : clearFavorites())}
-                  className="inline-flex items-center gap-1 hover:text-foreground"
+                  onClick={() => setPanelOpen(panelOpen === "history" ? false : "history")}
+                  aria-expanded={panelOpen === "history"}
+                  className={"transition hover:opacity-60 " + (panelOpen === "history" ? "text-foreground" : "text-muted-foreground")}
                 >
-                  <Trash2 size={12} /> Clear
+                  Recent ({history.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPanelOpen(panelOpen === "favorites" ? false : "favorites")}
+                  aria-expanded={panelOpen === "favorites"}
+                  className={"transition hover:opacity-60 " + (panelOpen === "favorites" ? "text-foreground" : "text-muted-foreground")}
+                >
+                  Saved ({favorites.length})
                 </button>
               </div>
-              <ul className="mt-3 space-y-2">
+              <div className="flex items-center gap-4 text-muted-foreground">
+                <button type="button" onClick={exportHistory} className="hover:text-foreground">Export</button>
+                <button type="button" onClick={() => importInputRef.current?.click()} className="hover:text-foreground">Import</button>
+                {panelOpen && (
+                  <button
+                    type="button"
+                    onClick={() => (panelOpen === "history" ? clearHistory() : clearFavorites())}
+                    className="hover:text-foreground"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) importHistory(f);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+
+            {panelOpen && (
+              <ul className="mt-4 divide-y divide-foreground/10">
                 {(panelOpen === "history" ? history : favorites).length === 0 && (
-                  <li className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <li className="py-3 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     Nothing yet.
                   </li>
                 )}
                 {(panelOpen === "history" ? history : favorites).map((r) => (
-                  <li
-                    key={r.id}
-                    className="flex items-start justify-between gap-2 border-t border-foreground/10 pt-2 text-sm"
-                  >
+                  <li key={r.id} className="flex items-start justify-between gap-3 py-3">
                     <button
                       type="button"
                       onClick={() => loadRecord(r)}
@@ -739,8 +727,8 @@ function Index() {
                       <span className="font-mono-display text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
                         {r.mode}
                       </span>
-                      <span className="ml-2 break-words">{r.input.slice(0, 80)}</span>
-                      <span className="mt-1 block break-words text-foreground/60">
+                      <span className="ml-2 break-words text-sm text-foreground">{r.input.slice(0, 80)}</span>
+                      <span className="mt-1 block break-words text-xs text-foreground/50">
                         → {r.output.slice(0, 80)}
                       </span>
                     </button>
@@ -752,16 +740,16 @@ function Index() {
                           : removeFavoriteItem(r.id)
                       }
                       aria-label="Remove"
-                      className="text-muted-foreground hover:text-foreground"
+                      className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground"
                     >
-                      <X size={14} />
+                      ×
                     </button>
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
-        </section>
+            )}
+          </section>
+        )}
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
           <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
@@ -786,6 +774,10 @@ function Index() {
             <span className="text-muted-foreground/40">·</span>
             <Link to="/kuji-in-hand-signs" className="text-foreground hover:opacity-60">
               {t.kuji}
+            </Link>
+            <span className="text-muted-foreground/40">·</span>
+            <Link to="/learn" className="text-foreground hover:opacity-60">
+              {t.learn}
             </Link>
           </div>
         </footer>

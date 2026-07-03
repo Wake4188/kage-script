@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
 import { Route as LearningResourcesRouteImport } from './routes/learning-resources'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as KujiInHandSignsRouteImport } from './routes/kuji-in-hand-signs'
 import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -50,6 +51,11 @@ const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
 const LearningResourcesRoute = LearningResourcesRouteImport.update({
   id: '/learning-resources',
   path: '/learning-resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KujiInHandSignsRoute = KujiInHandSignsRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
+  '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learn'
     | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learn'
     | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
+    | '/learn'
     | '/learning-resources'
     | '/ninja-symbols'
     | '/privacy'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   ImprintRoute: typeof ImprintRoute
   KujiInHandSignsRoute: typeof KujiInHandSignsRoute
+  LearnRoute: typeof LearnRoute
   LearningResourcesRoute: typeof LearningResourcesRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/learning-resources'
       fullPath: '/learning-resources'
       preLoaderRoute: typeof LearningResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kuji-in-hand-signs': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   ImprintRoute: ImprintRoute,
   KujiInHandSignsRoute: KujiInHandSignsRoute,
+  LearnRoute: LearnRoute,
   LearningResourcesRoute: LearningResourcesRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
   PrivacyRoute: PrivacyRoute,
