@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Moon, Sun, Languages, Bookmark, Share2, Download, History, Trash2, Upload, FileDown, X, Star } from "lucide-react";
+import { Moon, Sun, Languages } from "lucide-react";
+import { toHiragana } from "wanakana";
 import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
 import {
@@ -13,8 +14,7 @@ import {
 } from "@/lib/translation-utils";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
-import { RecentlyViewed, trackRecentPage } from "@/components/learning/RecentlyViewed";
-import { RelatedLinks } from "@/components/learning/RelatedLinks";
+import { trackRecentPage } from "@/components/learning/RecentlyViewed";
 
 export const Route = createFileRoute("/")({
   head: () => ({
