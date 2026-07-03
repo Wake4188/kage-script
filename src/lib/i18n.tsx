@@ -32,6 +32,7 @@ type Dict = {
   history: string;
   symbols: string;
   kuji: string;
+  learn: string;
   themeLight: string;
   themeDark: string;
   langSwitch: string;
