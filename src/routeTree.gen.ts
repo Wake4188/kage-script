@@ -19,6 +19,7 @@ import { Route as LearnRouteImport } from './routes/learn'
 import { Route as KujiInHandSignsRouteImport } from './routes/kuji-in-hand-signs'
 import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CommonMistakesRouteImport } from './routes/common-mistakes'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
@@ -73,6 +74,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreRoute = ExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CommonMistakesRoute = CommonMistakesRouteImport.update({
   id: '/common-mistakes',
   path: '/common-mistakes',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/common-mistakes': typeof CommonMistakesRoute
+  '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/common-mistakes': typeof CommonMistakesRoute
+  '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bansenshukai-history': typeof BansenshukaiHistoryRoute
   '/common-mistakes': typeof CommonMistakesRoute
+  '/explore': typeof ExploreRoute
   '/faq': typeof FaqRoute
   '/imprint': typeof ImprintRoute
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/common-mistakes'
+    | '/explore'
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/common-mistakes'
+    | '/explore'
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/bansenshukai-history'
     | '/common-mistakes'
+    | '/explore'
     | '/faq'
     | '/imprint'
     | '/kuji-in-hand-signs'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BansenshukaiHistoryRoute: typeof BansenshukaiHistoryRoute
   CommonMistakesRoute: typeof CommonMistakesRoute
+  ExploreRoute: typeof ExploreRoute
   FaqRoute: typeof FaqRoute
   ImprintRoute: typeof ImprintRoute
   KujiInHandSignsRoute: typeof KujiInHandSignsRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore': {
+      id: '/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/common-mistakes': {
       id: '/common-mistakes'
       path: '/common-mistakes'
@@ -299,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BansenshukaiHistoryRoute: BansenshukaiHistoryRoute,
   CommonMistakesRoute: CommonMistakesRoute,
+  ExploreRoute: ExploreRoute,
   FaqRoute: FaqRoute,
   ImprintRoute: ImprintRoute,
   KujiInHandSignsRoute: KujiInHandSignsRoute,
@@ -313,13 +334,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

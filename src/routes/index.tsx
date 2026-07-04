@@ -764,20 +764,8 @@ function Index() {
               {t.source}
             </a>
             <span className="text-muted-foreground/40">·</span>
-            <Link to="/bansenshukai-history" className="text-foreground hover:opacity-60">
-              {t.history}
-            </Link>
-            <span className="text-muted-foreground/40">·</span>
-            <Link to="/ninja-symbols" className="text-foreground hover:opacity-60">
-              {t.symbols}
-            </Link>
-            <span className="text-muted-foreground/40">·</span>
-            <Link to="/kuji-in-hand-signs" className="text-foreground hover:opacity-60">
-              {t.kuji}
-            </Link>
-            <span className="text-muted-foreground/40">·</span>
-            <Link to="/learn" className="text-foreground hover:opacity-60">
-              {t.learn}
+            <Link to="/explore" className="text-foreground hover:opacity-60">
+              Explore →
             </Link>
           </div>
         </footer>
