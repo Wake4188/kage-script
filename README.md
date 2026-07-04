@@ -106,7 +106,9 @@ If you use the translation pipeline that depends on the Lovable integration, mak
 LOVABLE_API_KEY=your_key_here
 ```
 ## Benchmarking of pipeline vs old pipeline. 
-I had an independent AI (Scouts by Yutori) make an unbiased benchmark of the pipeline. Here it is : 
+I had an independent AI (Scouts by Yutori) make an unbiased benchmark of the pipeline. Here it is: ```bash
+https://github.com/Wake4188/kage-script/blob/main/test/Yutori%20Benshmark
+``` (it's in HTML)
 
 
 
