@@ -9,6 +9,7 @@ A modern web app for encoding and decoding the historical Shinobi Iroha cipher u
 ![TanStack Start](https://img.shields.io/badge/TanStack_Start-black?style=for-the-badge)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
 <a href="https://www.producthunt.com/products/kage-3?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-kage-4" target="_blank" rel="noopener noreferrer"><img alt="Kage - Kage is a website that translates text into Shinobi cipher | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1182427&amp;theme=light&amp;t=1782569084677"></a>
 
 </div>
@@ -109,7 +110,7 @@ LOVABLE_API_KEY=your_key_here
 ## Benchmarking of pipeline vs old pipeline. 
 I had an independent AI (Scouts by Yutori) make an unbiased benchmark of the pipeline. Here it is: 
 ```bash 
-[https://github.com/Wake4188/kage-script/blob/main/test/Yutori%20Benshmark](https://passive-white-fixqmfpa.edgeone.dev/) 
+https://passive-white-fixqmfpa.edgeone.dev/
 ```
 
 ## History and inspiration
