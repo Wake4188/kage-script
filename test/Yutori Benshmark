@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kage-Script Pipeline Benchmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@200;300;400&family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F8FAFC;
+    --surface:   #F1F5F9;
+    --border:    #E2E8F0;
+    --text:      #1A1B1F;
+    --text-sec:  #334155;
+    --text-ter:  #64748B;
+    --teal:      #10676F;
+    --mint:      #1DCD98;
+    --cyan:      #35A4B9;
+    --sand:      #E3A880;
+    --coral:     #DB8577;
+    --red:       #FF6467;
+    --shadow-card: 0 50px 14px 0 rgba(0,0,0,0.00),0 32px 13px 0 rgba(0,0,0,0.01),0 18px 11px 0 rgba(0,0,0,0.04),0 8px 8px 0 rgba(0,0,0,0.06),0 2px 4px 0 rgba(0,0,0,0.07);
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+
+  body { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── Header ── */
+  .header { margin-bottom: 40px; }
+  .header h1 {
+    font-family: 'Spectral', serif; font-weight: 200; font-size: 48px;
+    line-height: 110%; letter-spacing: -1.44px; color: var(--text-sec);
+  }
+  .header .subtitle {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-ter);
+    margin-top: 8px;
+  }
+  .header-meta {
+    display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .header-meta a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--teal);
+    text-decoration: none; border-bottom: 1px solid rgba(16,103,111,0.3);
+  }
+  .header-meta a:hover { border-bottom-color: var(--teal); }
+  .save-status {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-ter);
+    margin-left: auto;
+  }
+  .save-status.saving { color: var(--sand); }
+  .save-status.saved  { color: var(--mint); }
+  .save-status.failed { color: var(--red); }
+
+  /* ── Summary Cards ── */
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  @media (max-width: 800px) { .cards { grid-template-columns: repeat(2,1fr); } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 24px 20px; box-shadow: var(--shadow-card);
+  }
+  .card-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-ter); margin-bottom: 10px;
+  }
+  .card-value {
+    font-family: 'Spectral', serif; font-size: 32px; font-weight: 300;
+    line-height: 130%; letter-spacing: -0.96px; color: var(--text-sec);
+  }
+  .card-delta {
+    display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
+    color: var(--mint); background: rgba(29,205,152,0.1); border-radius: 6px;
+    padding: 2px 8px;
+  }
+  .card-sub { font-size: 12px; color: var(--text-ter); margin-top: 4px; }
+
+  /* ── Chart ── */
+  .section-title {
+    font-family: 'Spectral', serif; font-size: 24px; font-weight: 400;
+    letter-spacing: -0.6px; color: var(--text-sec); margin-bottom: 20px;
+  }
+  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; box-shadow: var(--shadow-card); margin-bottom: 40px; }
+  .chart-legend { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-sec); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .legend-old { background: var(--sand); }
+  .legend-new { background: var(--teal); }
+
+  .chart-rows { display: flex; flex-direction: column; gap: 10px; }
+  .chart-row { display: grid; grid-template-columns: 100px 1fr 1fr 44px; align-items: center; gap: 8px; }
+  .chart-band-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-ter); text-align: right; }
+  .bar-group { display: flex; flex-direction: column; gap: 3px; }
+  .bar-track { height: 10px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; min-width: 2px; }
+  .bar-fill-old { background: var(--sand); }
+  .bar-fill-new { background: var(--teal); }
+  .chart-count { font-size: 11px; color: var(--text-ter); font-variant-numeric: tabular-nums; }
+
+  /* ── Callout ── */
+  .callout { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 24px 24px; box-shadow: var(--shadow-card); margin-bottom: 40px; }
+  .callout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 16px; margin-top: 16px; }
+  .callout-item { border-radius: 12px; padding: 14px 16px; border: 1px solid transparent; }
+  .callout-win   { background: rgba(29,205,152,0.07); border-color: rgba(29,205,152,0.25); }
+  .callout-warn  { background: rgba(255,100,103,0.06); border-color: rgba(255,100,103,0.2); }
+  .callout-note  { background: rgba(53,164,185,0.07); border-color: rgba(53,164,185,0.2); }
+  .callout-item-title { font-size: 12px; font-weight: 700; color: var(--text-sec); margin-bottom: 4px; }
+  .callout-item-body  { font-size: 12px; color: var(--text-ter); line-height: 1.5; }
+  .pill {
+    display: inline-block; border-radius: 6px; padding: 1px 7px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.5px; margin: 0 2px;
+  }
+  .pill-teal  { background: rgba(16,103,111,0.1); color: var(--teal); }
+  .pill-mint  { background: rgba(29,205,152,0.12); color: #0d9f74; }
+  .pill-coral { background: rgba(219,133,119,0.12); color: #b85a48; }
+  .pill-red   { background: rgba(255,100,103,0.1); color: #c93a3c; }
+
+  /* ── Controls ── */
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .filter-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-btn {
+    height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-sec); font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { background: var(--border); }
+  .filter-btn.active {
+    background: linear-gradient(208deg, #3C3F43 13.06%, #23242A 82.45%);
+    border-color: transparent; color: #F8FAFC; font-weight: 700;
+  }
+  .search-input {
+    height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif;
+    font-size: 13px; width: 220px; outline: none;
+  }
+  .search-input:focus { border-color: var(--teal); }
+  .sort-select {
+    height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-sec); font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 500; cursor: pointer; outline: none;
+  }
+  .sort-select:focus { border-color: var(--teal); }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-card); }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; }
+  thead { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 2; }
+  thead th {
+    padding: 10px 12px; text-align: left; font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-ter); white-space: nowrap;
+  }
+  thead th:first-child { width: 40px; text-align: center; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: default; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #F8FAFC; }
+  td { padding: 10px 12px; vertical-align: top; }
+  td:first-child { text-align: center; color: var(--text-ter); font-size: 11px; font-family: 'IBM Plex Mono', monospace; }
+  .cell-text {
+    display: block; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; color: var(--text); cursor: help;
+  }
+  .cell-text.orig { font-weight: 500; }
+  .cell-text.dimmed { color: var(--text-ter); }
+  .sim-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 52px; height: 22px; border-radius: 6px; font-size: 11px;
+    font-weight: 700; font-variant-numeric: tabular-nums; font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .sim-green { background: rgba(29,205,152,0.12); color: #0d9f74; }
+  .sim-yellow { background: rgba(227,168,128,0.15); color: #a06030; }
+  .sim-red   { background: rgba(255,100,103,0.1); color: #c93a3c; }
+  .delta-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 58px; height: 22px; border-radius: 6px; font-size: 11px;
+    font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .delta-pos { background: rgba(29,205,152,0.10); color: #0d9f74; }
+  .delta-neg { background: rgba(255,100,103,0.08); color: #c93a3c; }
+  .delta-zero { background: var(--border); color: var(--text-ter); }
+  .exact-star { color: var(--teal); font-size: 11px; margin-left: 3px; }
+
+  .table-footer { padding: 10px 16px; font-size: 12px; color: var(--text-ter); background: var(--surface); border-top: 1px solid var(--border); border-radius: 0 0 20px 20px; }
+  .hidden-row { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <h1>Kage-Script Pipeline Benchmark</h1>
+  <p class="subtitle">101 sentences &middot; encode &rarr; decode round-trip accuracy</p>
+  <div class="header-meta">
+    <a href="https://github.com/Wake4188/kage-script" target="_blank" rel="noopener">github.com/Wake4188/kage-script</a>
+    <span class="save-status" id="saveStatus"></span>
+  </div>
+</header>
+
+<!-- Summary Cards -->
+<div class="cards" id="summaryCards">
+  <div class="card">
+    <div class="card-label">Avg Similarity</div>
+    <div class="card-value">71.25%</div>
+    <div class="card-sub">Old pipeline</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Avg Similarity</div>
+    <div class="card-value" style="color: var(--teal);">84.76%</div>
+    <span class="card-delta">+13.51 pp</span>
+    <div class="card-sub">New pipeline</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Exact Matches</div>
+    <div class="card-value">11 <span style="font-size:18px; color:var(--text-ter);">/ 101</span></div>
+    <div class="card-sub">Old pipeline &nbsp;&mdash;&nbsp; 10.9%</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Exact Matches</div>
+    <div class="card-value" style="color: var(--teal);">26 <span style="font-size:18px; color:var(--text-ter);">/ 101</span></div>
+    <span class="card-delta">+15 more</span>
+    <div class="card-sub">New pipeline &nbsp;&mdash;&nbsp; 25.7%</div>
+  </div>
+</div>
+
+<!-- Distribution Chart -->
+<section class="chart-wrap">
+  <h2 class="section-title">Similarity Score Distribution</h2>
+  <div class="chart-legend">
+    <div class="legend-item"><div class="legend-dot legend-old"></div> Old pipeline</div>
+    <div class="legend-item"><div class="legend-dot legend-new"></div> New pipeline</div>
+  </div>
+  <div class="chart-rows" id="chartRows"></div>
+</section>
+
+<!-- Notable Patterns -->
+<section class="callout">
+  <h2 class="section-title">Notable Patterns</h2>
+  <div class="callout-grid">
+    <div class="callout-item callout-win">
+      <div class="callout-item-title">Technical identifiers preserved</div>
+      <div class="callout-item-body">
+        <span class="pill pill-teal">README</span><span class="pill pill-teal">parseMarkdownToHTML</span><span class="pill pill-teal">TanStack</span>
+        &mdash; new pipeline returns exact matches; old pipeline garbles these as phonetic noise.
+      </div>
+    </div>
+    <div class="callout-item callout-win">
+      <div class="callout-item-title">Proper names preserved</div>
+      <div class="callout-item-body">
+        <span class="pill pill-teal">Alex</span><span class="pill pill-teal">Maria</span><span class="pill pill-teal">Nguyen</span>
+        &mdash; new pipeline returns exact or near-exact results; old pipeline substitutes unrelated words.
+      </div>
+    </div>
+    <div class="callout-item callout-win">
+      <div class="callout-item-title">File paths &amp; API terms</div>
+      <div class="callout-item-body">
+        <span class="pill pill-teal">/var/log/app.log</span><span class="pill pill-teal">404 error</span>
+        &mdash; new pipeline <span class="pill pill-mint">93.8%</span> and <span class="pill pill-mint">100%</span> vs old pipeline <span class="pill pill-coral">35.5%</span> and <span class="pill pill-coral">52.5%</span>.
+      </div>
+    </div>
+    <div class="callout-item callout-note">
+      <div class="callout-item-title">Pipeline artifact: &ldquo;bench spacing&rdquo;</div>
+      <div class="callout-item-body">
+        Old pipeline converts &ldquo;benchmark&rdquo; &rarr; &ldquo;bench spacing&rdquo; or &ldquo;bench space&rdquo; in multiple sentences. New pipeline retains the correct term.
+      </div>
+    </div>
+    <div class="callout-item callout-warn">
+      <div class="callout-item-title">Word-order reordering &mdash; worst cases</div>
+      <div class="callout-item-body">
+        Sentences <span class="pill pill-red">#31</span> and <span class="pill pill-red">#96</span> score ~23&ndash;26% for both pipelines. Japanese SOV order completely reorders the clause structure, which neither pipeline recovers.
+      </div>
+    </div>
+    <div class="callout-item callout-note">
+      <div class="callout-item-title">Sentence #5 &mdash; new loses to old</div>
+      <div class="callout-item-body">
+        &ldquo;The weather is nice today.&rdquo; &mdash; new returns <span class="pill pill-coral">42.3%</span>, old returns <span class="pill pill-mint">69.4%</span>. The new pipeline expanded the sentence differently.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Table Controls -->
+<div class="controls">
+  <div class="filter-group" id="filterBtns">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="new-wins">New wins</button>
+    <button class="filter-btn" data-filter="old-wins">Old wins</button>
+    <button class="filter-btn" data-filter="tied">Tied</button>
+    <button class="filter-btn" data-filter="exact-new">Exact (new)</button>
+    <button class="filter-btn" data-filter="failed">Failed (&lt;0.6 new)</button>
+  </div>
+  <input class="search-input" id="searchInput" type="search" placeholder="Search original text...">
+  <select class="sort-select" id="sortSelect">
+    <option value="index">Sort: Index</option>
+    <option value="new-desc">Sort: New sim &darr;</option>
+    <option value="new-asc">Sort: New sim &uarr;</option>
+    <option value="delta-desc">Sort: Delta &darr;</option>
+  </select>
+</div>
+
+<!-- Table -->
+<div class="table-wrap">
+  <table id="benchTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Original</th>
+        <th>Old output</th>
+        <th>New output</th>
+        <th>Old sim</th>
+        <th>New sim</th>
+        <th>Delta</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="table-footer" id="tableFooter">Showing 101 of 101</div>
+</div>
+
+<script>
+/* ─── Data ─── */
+const DATA = [
+  {i:1,orig:"Hello there!",old:"Hello!",nw:"Hello!",oldSim:0.5,newSim:0.5,oldExact:false,newExact:false},
+  {i:2,orig:"How are you today?",old:"How are you today?",nw:"How are you today?",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:3,orig:"Please call me tomorrow.",old:"Please call me tomorrow.",nw:"Please call me tomorrow.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:4,orig:"I am learning Japanese.",old:"I'm studying Japanese.",nw:"I'm studying Japanese.",oldSim:0.6957,newSim:0.6957,oldExact:false,newExact:false},
+  {i:5,orig:"The weather is nice today.",old:"The weather is nice today, isn't it?",nw:"It's nice weather today.",oldSim:0.6944,newSim:0.4231,oldExact:false,newExact:false},
+  {i:6,orig:"Would you like some coffee?",old:"How about a publicly funded doctor?",nw:"Would you like some coffee?",oldSim:0.3143,newSim:1,oldExact:false,newExact:true},
+  {i:7,orig:"My name is Alex.",old:"My name is exhaustive.",nw:"My name is Alex.",oldSim:0.5909,newSim:1,oldExact:false,newExact:true},
+  {i:8,orig:"We met in Paris last year.",old:"We met in Paris last year.",nw:"We met in Paris last year.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:9,orig:"She works at a startup.",old:"She works at Star and Atsufu Enterprises.",nw:"She works at a start-up company.",oldSim:0.4634,newSim:0.71875,oldExact:false,newExact:false},
+  {i:10,orig:"This is a short sentence.",old:"This is a short medical text.",nw:"This is a short sentence.",oldSim:0.6552,newSim:1,oldExact:false,newExact:true},
+  {i:11,orig:"The quick brown fox jumps over the lazy dog.",old:"A quick brown fox flies over a lazy dog.",nw:"A quick brown fox jumps over a lazy dog.",oldSim:0.7727,newSim:0.8636,oldExact:false,newExact:false},
+  {i:12,orig:"I have two cats and three dogs.",old:"I have two cats and three dogs.",nw:"I have two cats and three dogs.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:13,orig:"Please bring me the blue folder.",old:"Please bring me the blue flame daa.",nw:"Please bring me the blue folder.",oldSim:0.8,newSim:1,oldExact:false,newExact:true},
+  {i:14,orig:"The meeting starts at 9:30.",old:"The meeting will begin at 9:30.",nw:"The meeting begins at 9:30.",oldSim:0.6774,newSim:0.8148,oldExact:false,newExact:false},
+  {i:15,orig:"Call me at 555-1234.",old:"Please call us at 555-1234.",nw:"Please call us at 555-1234.",oldSim:0.6667,newSim:0.6667,oldExact:false,newExact:false},
+  {i:16,orig:"I bought a 14-inch laptop.",old:"I bought a 14-inch brain and computer.",nw:"I purchased a 14-inch laptop.",oldSim:0.6053,newSim:0.7241,oldExact:false,newExact:false},
+  {i:17,orig:"The project deadline is June 15.",old:"The project deadline for rehearsal is June 15th.",nw:"The project deadline is June 15th.",oldSim:0.6667,newSim:0.9412,oldExact:false,newExact:false},
+  {i:18,orig:"He said, \"Hello, world!\"",old:"He said, \"Hello, world!\"",nw:"He said, \"Hello, world!\"",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:19,orig:"Don't forget your passport.",old:"Don't forget your passport.",nw:"Don't forget your passport.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:20,orig:"My favorite color is teal.",old:"My favorite color is Body.",nw:"My favorite color is teal.",oldSim:0.8462,newSim:1,oldExact:false,newExact:true},
+  {i:21,orig:"The train leaves at 6:05 PM.",old:"The train departs at 6:05 p.m.",nw:"The train departs at 6:05 p.m.",oldSim:0.8333,newSim:0.8333,oldExact:false,newExact:false},
+  {i:22,orig:"We need to finish this by Friday.",old:"I have to finish this by Friday.",nw:"I have to finish this by Friday.",oldSim:0.8182,newSim:0.8182,oldExact:false,newExact:false},
+  {i:23,orig:"It is important to be patient.",old:"It is important to be patient.",nw:"It is important to be patient.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:24,orig:"Can you help me with this issue?",old:"Can you please help me with this problem?",nw:"Can you help me with this issue?",oldSim:0.6829,newSim:1,oldExact:false,newExact:true},
+  {i:25,orig:"I live in Seattle, Washington.",old:"I live in Seattle, Washington.",nw:"I live in Seattle, Washington.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:26,orig:"The museum opens at 10 AM.",old:"The museum opens at 10am.",nw:"The museum opens at 10am.",oldSim:0.9615,newSim:0.9615,oldExact:false,newExact:false},
+  {i:27,orig:"Please send the report before noon.",old:"Please submit your report by noon.",nw:"Please submit your report by noon.",oldSim:0.6,newSim:0.6,oldExact:false,newExact:false},
+  {i:28,orig:"This is a very long sentence that contains many details and should test the pipeline over multiple clauses and punctuation marks while still staying readable and meaningful for the benchmark.",old:"This is a very long medical text that contains many words and details, and you will need to test your pipeline across multiple phrases and punctuation marks while keeping it readable and meaningful on the bench.",nw:"This is a very long sentence with lots of details, and you need to test your pipeline across multiple phrases and punctuation while keeping it readable and meaningful for your benchmarks.",oldSim:0.6872,newSim:0.6859,oldExact:false,newExact:false},
+  {i:29,orig:"The company announced a new product launch for next quarter, and the board expects strong demand from both Europe and Asia.",old:"The company has announced new product launches for the next quarter, and the board expects strong demand from both Europe and Asia.",nw:"The company has announced new product launches for the next quarter, and the board expects strong demand from both Europe and Asia.",oldSim:0.9084,newSim:0.9084,oldExact:false,newExact:false},
+  {i:30,orig:"After the storm, the children returned home safely and the neighbors celebrated together in the evening.",old:"After the storm, the children returned home safely, and in the evening, the neighbors celebrated together.",nw:"After the storm, the children returned home safely, and in the evening the neighbors celebrated together.",oldSim:0.6981,newSim:0.7048,oldExact:false,newExact:false},
+  {i:31,orig:"I would like to schedule a meeting for next Tuesday morning, if that works for everyone involved.",old:"If it is convenient for all concerned, I would like to schedule a meeting for next Tuesday morning.",nw:"If it is convenient for all concerned, I would like to schedule a meeting for next Tuesday morning.",oldSim:0.2323,newSim:0.2323,oldExact:false,newExact:false},
+  {i:32,orig:"Please review the attached document carefully and send your feedback before the end of the week.",old:"Please read the attached document carefully and send the Sugiido Backpack by the end of the week.",nw:"Please read the attached document carefully and send us your feedback by the end of the week.",oldSim:0.7732,newSim:0.875,oldExact:false,newExact:false},
+  {i:33,orig:"The software update includes performance improvements, bug fixes, and better support for multilingual input.",old:"Software Pressure Zodiac includes improvements to Puff King Manse, bug fixes, and improvements to support multilingual input.",nw:"Software updates include performance improvements, bug fixes, and improved support for multilingual input.",oldSim:0.536,newSim:0.8796,oldExact:false,newExact:false},
+  {i:34,orig:"A modern web application should be fast, accessible, and easy to maintain for long-term development.",old:"Modern top-b applications need to be fast, accessible, and easy to maintain for long-term development.",nw:"Modern web applications must be fast, accessible, and easy to maintain for long-term development.",oldSim:0.8627,newSim:0.93,oldExact:false,newExact:false},
+  {i:35,orig:"Machine learning models can recognize patterns, generate text, and assist with translation tasks.",old:"Machine learning models can recognize draft patterns, generate text, and assist with translation tasks.",nw:"Machine learning models can recognize patterns, generate text, and assist with translation tasks.",oldSim:0.9418,newSim:1,oldExact:false,newExact:true},
+  {i:36,orig:"Our team is preparing a launch plan for the new dashboard and the training materials for customers.",old:"We are preparing a new introduction plan and training materials for our customers.",nw:"Our team is preparing a new dashboard implementation plan and training materials for our customers.",oldSim:0.5657,newSim:0.6364,oldExact:false,newExact:false},
+  {i:37,orig:"The conference will be held in Tokyo, Japan, on October 12 and will feature speakers from several countries.",old:"The event will be held in Tokyo, Japan on October 12th and will be attended by speakers from all over the world.",nw:"The conference will be held in Tokyo, Japan on October 12th and will be attended by speakers from several countries.",oldSim:0.6786,newSim:0.8879,oldExact:false,newExact:false},
+  {i:38,orig:"The research paper explains the tradeoffs between accuracy, latency, and cost in real-world systems.",old:"The research paper describes the trade-off between accuracy, delay, and cost in real systems.",nw:"Research papers discuss the trade-offs between accuracy, delay, and cost in real-world systems.",oldSim:0.8,newSim:0.82,oldExact:false,newExact:false},
+  {i:39,orig:"The user asked for a summary of the meeting notes, and the assistant produced a concise version.",old:"Arizaa requested a summary of the meeting notes, and his assistant prepared a concise version.",nw:"The user requested a summary of the meeting notes, and the assistant created a concise version.",oldSim:0.7604,newSim:0.8542,oldExact:false,newExact:false},
+  {i:40,orig:"We are evaluating three different approaches and comparing them with a small but representative test set.",old:"We evaluate three different approaches and compare them with a small but representative test theory.",nw:"We evaluate three different approaches and compare them against a small but representative test set.",oldSim:0.8571,newSim:0.8476,oldExact:false,newExact:false},
+  {i:41,orig:"In many languages, punctuation changes the rhythm and meaning of a sentence in subtle ways.",old:"In multi-district languages, punctuation marks subtly change the rhythm and meaning of sentences.",nw:"In many languages, punctuation marks subtly change the rhythm and meaning of a sentence.",oldSim:0.5567,newSim:0.6813,oldExact:false,newExact:false},
+  {i:42,orig:"The project manager wrote a detailed memo about the rollout schedule and the fallback plan.",old:"Project Maneji has written a detailed memo regarding the plans for Rollout: Yuruto Sukeji and Fourou.",nw:"The project manager wrote detailed notes about the rollout schedule and fallback plan.",oldSim:0.4158,newSim:0.8791,oldExact:false,newExact:false},
+  {i:43,orig:"A tiny change in the data can cause a very large difference in the final output quality.",old:"Even the slightest change in the output can have a big difference in the final output quality.",nw:"Small changes to the data can make a big difference in the final output quality.",oldSim:0.6596,newSim:0.7614,oldExact:false,newExact:false},
+  {i:44,orig:"Please confirm the invoice number, the delivery date, and the shipping address before we proceed.",old:"Please check your invoice number, delivery date, and shipping address before proceeding.",nw:"Please check your invoice number, delivery date, and shipping address before proceeding.",oldSim:0.7526,newSim:0.7526,oldExact:false,newExact:false},
+  {i:45,orig:"The server crashed after the update, but the logs were preserved for debugging purposes.",old:"After the update, Baa was saved in Kuratsu City, but the log end was saved for the next purpose.",nw:"The server crashed after the update, but the logs were saved for debugging purposes.",oldSim:0.4375,newSim:0.9432,oldExact:false,newExact:false},
+  {i:46,orig:"A good benchmark should include greetings, names, numbers, punctuation, technical vocabulary, and longer sentences.",old:"A good bench space should include greetings, names, numbers, punctuation, technical terms, and long sentences.",nw:"A good benchmark should include greetings, names, numbers, punctuation, jargon, and long sentences.",oldSim:0.8522,newSim:0.8261,oldExact:false,newExact:false},
+  {i:47,orig:"The password reset link expires in 24 hours, so please act quickly.",old:"The expiration date for password disassociation and links is 24 hours, so please take action immediately.",nw:"Your password reset link will expire for 24 hours, so act quickly.",oldSim:0.4667,newSim:0.7015,oldExact:false,newExact:false},
+  {i:48,orig:"My friend Maria visited London in April and bought a red umbrella.",old:"My friend Maria visited London in April and bought a red doctor umbrella.",nw:"My friend Maria visited London in April and bought a red umbrella.",oldSim:0.9041,newSim:1,oldExact:false,newExact:true},
+  {i:49,orig:"The device uses USB-C, Wi-Fi 6, and Bluetooth 5.3.",old:"This device uses sb-c, wei 6, b and th 5.3.",nw:"This device uses USB-C, Wi-Fi 6, and Bluetooth 5.3.",oldSim:0.7,newSim:0.9608,oldExact:false,newExact:false},
+  {i:50,orig:"The API response contained a 404 error and a timeout message.",old:"The API response included 404 Timeout after error.",nw:"The API response contained a 404 error and a timeout message.",oldSim:0.5246,newSim:1,oldExact:false,newExact:true},
+  {i:51,orig:"We are shipping version 2.1.4 next week.",old:"We are planning to ship Baji 4 2.1.4 next week.",nw:"We plan to ship version 2.1.4 next week.",oldSim:0.6383,newSim:0.75,oldExact:false,newExact:false},
+  {i:52,orig:"The file is located in /var/log/app.log and should be reviewed.",old:"This face is ・Ar・Og・App. It's on your computer and you need to check it out.",nw:"This file is located at /var/log/app.log and should be reviewed.",oldSim:0.3553,newSim:0.9375,oldExact:false,newExact:false},
+  {i:53,orig:"The function name is parseMarkdownToHTML and it runs in the browser.",old:"The function name is ''Parallel'' and ''HTML'' and will be executed in the browser.",nw:"The function name is parseMarkdownToHTML and it runs in the browser.",oldSim:0.6386,newSim:1,oldExact:false,newExact:true},
+  {i:54,orig:"The README mentions React, TypeScript, Vite, and TanStack.",old:"Rare dme mentions rare CT, TYP SC, CK, and other CK.",nw:"The README mentions React, TypeScript, Vite, and TanStack.",oldSim:0.6034,newSim:1,oldExact:false,newExact:true},
+  {i:55,orig:"I scheduled a call with Dr. Smith at 8:15 AM.",old:"I scheduled a call with Dr. Smith for 8:15am.",nw:"I scheduled a call with Dr. Smith for 8:15am.",oldSim:0.9111,newSim:0.9111,oldExact:false,newExact:false},
+  {i:56,orig:"The package includes 12 modules and 3 examples.",old:"In Patsukee, 12 characters contain 3 samples.",nw:"The package contains 12 modules and 3 samples.",oldSim:0.3404,newSim:0.8085,oldExact:false,newExact:false},
+  {i:57,orig:"Our roadmap includes Q3 planning, Q4 rollout, and post-launch monitoring.",old:"Our review includes third quarter plans, fourth quarter developments, and post-launch monitoring.",nw:"Our roadmap includes Q3 planning, Q4 deployment, and post-launch monitoring.",oldSim:0.567,newSim:0.9079,oldExact:false,newExact:false},
+  {i:58,orig:"The article discusses UTF-8 encoding, Unicode normalization, and tokenization.",old:"In this article, we will explain UTF-8 encoding, Unico normalization, and tokenization.",nw:"This article describes UTF-8 encoding, Unicode normalization, and tokenization.",oldSim:0.7471,newSim:0.9241,oldExact:false,newExact:false},
+  {i:59,orig:"A simple sentence can still be ambiguous without enough context.",old:"A simple sentence that sounds hot can become vague without enough context.",nw:"Even simple sentences can become ambiguous without sufficient context.",oldSim:0.6892,newSim:0.6857,oldExact:false,newExact:false},
+  {i:60,orig:"I enjoy hiking, cooking, and listening to classical music.",old:"I enjoy hiking, cooking, and listening to music that makes my life easier.",nw:"I like hiking, cooking, and listening to classical music.",oldSim:0.6757,newSim:0.9138,oldExact:false,newExact:false},
+  {i:61,orig:"The city council approved the budget last night.",old:"The City Council approved the budget last night.",nw:"The City Council approved the budget last night.",oldSim:1,newSim:1,oldExact:false,newExact:false},
+  {i:62,orig:"The restaurant on Main Street serves sushi, ramen, and curry.",old:"The restaurant on Main Street Ito serves sushi, raa noodles, and kae.",nw:"The restaurant on Main Street serves sushi, ramen, and curry.",oldSim:0.7536,newSim:1,oldExact:false,newExact:true},
+  {i:63,orig:"Can we meet at 7:00 pm in the lobby?",old:"Can we meet in the lobby at 7pm?",nw:"Can we meet in the lobby at 7pm?",oldSim:0.5,newSim:0.5,oldExact:false,newExact:false},
+  {i:64,orig:"Please keep the receipt for your records.",old:"Please keep your receipt for your records.",nw:"Please keep your receipt for your records.",oldSim:0.9048,newSim:0.9048,oldExact:false,newExact:false},
+  {i:65,orig:"She bought a new tablet for her daughter.",old:"She bought a new one for her daughter.",nw:"She bought a new tablet for her daughter.",oldSim:0.878,newSim:1,oldExact:false,newExact:true},
+  {i:66,orig:"The old pipeline loses information at every stage, so the result is often less faithful.",old:"Because information is lost at every step in the paleomedical pipeline, results often have low fidelity.",nw:"Older pipelines often lose information at every step, resulting in low-fidelity results.",oldSim:0.3173,newSim:0.4773,oldExact:false,newExact:false},
+  {i:67,orig:"The redesign removes the romaji hop and uses more context-aware recovery.",old:"The redesign removes the robaji hotsufu and uses a more context-aware recovery.",nw:"The redesign removes Roman hops and uses more context-aware recovery.",oldSim:0.8987,newSim:0.9041,oldExact:false,newExact:false},
+  {i:68,orig:"This benchmark measures whether that change actually helps.",old:"This bench spacing measures whether the changes are actually helpful.",nw:"This benchmark measures whether the changes are actually helpful.",oldSim:0.7536,newSim:0.8462,oldExact:false,newExact:false},
+  {i:69,orig:"A short phrase like \"hello\" is easy, but longer prose reveals the real differences.",old:"It is easy to write short-term medical phrases such as 'Hello,' but in long-term medical prose, the true nature of the wrong doctor becomes clear.",nw:"Short phrases like \"hello\" are easy, but longer prose reveals the real difference.",oldSim:0.3581,newSim:0.9157,oldExact:false,newExact:false},
+  {i:70,orig:"Names such as Yuki, Sato, and Nguyen should be handled reasonably well.",old:"Names such as Yuki, Sato, and Ngu gastritis should be handled appropriately.",nw:"Names such as Yuki, Sato, and Nguyen should be handled appropriately.",oldSim:0.7105,newSim:0.831,oldExact:false,newExact:false},
+  {i:71,orig:"Technical words such as Kubernetes, microservices, and concurrency are challenging.",old:"Technical terminology such as 'difficult', 'microservices', and 'concurrency' are arbitrary.",nw:"Terminology such as Kubernetes, microservices, and concurrency can be difficult.",oldSim:0.6196,newSim:0.6988,oldExact:false,newExact:false},
+  {i:72,orig:"Even punctuation like commas, semicolons, quotes, and ellipses can change the final text.",old:"Punctuation marks such as commas, semicolons, quotation marks, and ellipses can also distort the final text.",nw:"Punctuation marks such as commas, semicolons, quotation marks, and ellipses can also change the final text.",oldSim:0.6389,newSim:0.7009,oldExact:false,newExact:false},
+  {i:73,orig:"The digits 12345 and the number 20,000 should remain recognizable after decoding.",old:"The numbers 12345 and 20,000 should remain recognizable after altitude.",nw:"The numbers 12345 and 20,000 should remain recognizable after decoding.",oldSim:0.6914,newSim:0.7901,oldExact:false,newExact:false},
+  {i:74,orig:"The system should preserve the original meaning of a request, not just the surface form.",old:"The system must preserve the original meaning of the request, not just its superficial form.",nw:"The system must preserve the original meaning of the request, not just its superficial form.",oldSim:0.8152,newSim:0.8152,oldExact:false,newExact:false},
+  {i:75,orig:"Today is Monday, June 27, 2026, and the time is 14:32.",old:"Today is Monday, June 27, 2026, and the time is 14:32.",nw:"Today is Monday, June 27, 2026, and the time is 14:32.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:76,orig:"Please open the settings panel and select the dark theme.",old:"Open the settings panel and select the Akute Ema.",nw:"Open the settings panel and select dark theme.",oldSim:0.7719,newSim:0.807,oldExact:false,newExact:false},
+  {i:77,orig:"The error message said: \"Connection failed: timeout after 30 seconds.\"",old:"The Great Mekkou Guards were as follows. \"Connection failed: Timed out after 30 seconds.\"",nw:"The error message was: \"Connection failed: Timed out after 30 seconds.\"",oldSim:0.6629,newSim:0.9296,oldExact:false,newExact:false},
+  {i:78,orig:"I need to pick up milk, eggs, bread, and cheese on the way home.",old:"When you return home, you have to buy milk, eggs, bread, and status maps.",nw:"I have to buy milk, eggs, bread and cheese on the way home.",oldSim:0.3562,newSim:0.8281,oldExact:false,newExact:false},
+  {i:79,orig:"The office is located on 5th Avenue near the river.",old:"The office is located on 5th Avenue near the river.",nw:"The office is located on 5th Avenue near the river.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:80,orig:"We have a backlog of 87 tickets and 4 open escalations.",old:"There are 87 land decisions and 4 backlogs of the royal Escale artist 4.",nw:"There is a backlog of 87 tickets and 4 open escalations.",oldSim:0.3611,newSim:0.875,oldExact:false,newExact:false},
+  {i:81,orig:"The release notes mention improved caching and reduced memory usage.",old:"Lily Know includes improvements to Kiyazu City Oil and a reduction in memory usage.",nw:"The release notes list cache improvements and memory usage reductions.",oldSim:0.3976,newSim:0.4714,oldExact:false,newExact:false},
+  {i:82,orig:"This sentence is intentionally written with mixed casing and punctuation to test robustness.",old:"This sentence is intentionally slopped with mixed case and punctuation to test robustness.",nw:"This sentence was intentionally written with mixed case and punctuation to test its robustness.",oldSim:0.9022,newSim:0.9053,oldExact:false,newExact:false},
+  {i:83,orig:"The password must contain at least 8 characters and one special symbol.",old:"Password must contain at least 8 characters and 1 special character.",nw:"Passwords must contain at least 8 characters and one special symbol.",oldSim:0.7746,newSim:0.9296,oldExact:false,newExact:false},
+  {i:84,orig:"If the network is slow, the application should retry automatically.",old:"If the heat permanent action is delayed, the app artist 4 will have to retry automatically.",nw:"If the network is slow, the application should automatically retry.",oldSim:0.5275,newSim:0.8209,oldExact:false,newExact:false},
+  {i:85,orig:"The new architecture is designed to preserve more information and reduce avoidable loss.",old:"The new IA Tired Mouth Store is designed to help you store more information and reduce avoidable losses.",nw:"The new architecture is designed to store more information and reduce avoidable losses.",oldSim:0.7404,newSim:0.9091,oldExact:false,newExact:false},
+  {i:86,orig:"A benchmark with 100 examples is large enough to show clear trends.",old:"A bench size of 100 examples is large enough to show a clear trend.",nw:"A benchmark with 100 examples is large enough to show clear trends.",oldSim:0.8209,newSim:1,oldExact:false,newExact:true},
+  {i:87,orig:"The old route and the new route should be compared on the same sentences.",old:"It is necessary to compare the old route and the new route in simultaneous sentences.",nw:"The old route and the new route must be compared in the same sentence.",oldSim:0.4235,newSim:0.9041,oldExact:false,newExact:false},
+  {i:88,orig:"This sentence includes an em dash — and parentheses (and bracketed notes) to stress the decoder.",old:"This sentence includes a picture omitted and parentheses (and brackets) to emphasize the decoder.",nw:"This sentence includes an em dash and parentheses (and a note in parentheses) to emphasize the decoder.",oldSim:0.701,newSim:0.7476,oldExact:false,newExact:false},
+  {i:89,orig:"Please ensure the output is valid JSON and includes all required fields.",old:"Make sure that the output is a valid field and includes all required fields.",nw:"Make sure the output is valid JSON and includes all required fields.",oldSim:0.7632,newSim:0.9167,oldExact:false,newExact:false},
+  {i:90,orig:"I am writing this from a laptop in a quiet room near the station.",old:"I'm writing this with my brain and computer in a quiet room near a station.",nw:"I'm writing this on my laptop in a quiet room near the station.",oldSim:0.6667,newSim:0.8923,oldExact:false,newExact:false},
+  {i:91,orig:"The model should preserve the intended meaning of context-heavy prose.",old:"The model should preserve the intended meaning of the context-sensitive prose.",nw:"The model should preserve the intended meaning of the context-sensitive prose.",oldSim:0.859,newSim:0.859,oldExact:false,newExact:false},
+  {i:92,orig:"We recommend using a small sample of real user requests for future evaluations.",old:"We recommend using a small sample of actual requests for future evaluations.",nw:"We recommend using a small sample of real user requests for future evaluations.",oldSim:0.9114,newSim:1,oldExact:false,newExact:true},
+  {i:93,orig:"The system should work well for formal writing and casual conversation alike.",old:"This system should work equally well for informal documents and casual conversations.",nw:"This system should work equally well in formal documents and casual conversations.",oldSim:0.6941,newSim:0.6707,oldExact:false,newExact:false},
+  {i:94,orig:"This benchmark is not perfect, but it is a practical way to quantify improvement.",old:"This bench spacing is not perfect, but it is a practical way to quantify improvement.",nw:"This benchmark is not perfect, but it is a practical way to quantify improvements.",oldSim:0.9176,newSim:0.9878,oldExact:false,newExact:false},
+  {i:95,orig:"The task is to compare the two pipelines on the same input and measure how much they differ.",old:"The task is to compare two angular pipelines on simultaneous inputs and measure how different they are.",nw:"The task is to compare two pipelines on the same input and measure how different they are.",oldSim:0.6699,newSim:0.8043,oldExact:false,newExact:false},
+  {i:96,orig:"A single sentence can be ambiguous, so the aggregate metric matters more than any one example.",old:"Aggregate metrics are more important than single examples because a single sentence can be ambiguous.",nw:"Aggregate metrics are more important than single examples because a single sentence can be ambiguous.",oldSim:0.2574,newSim:0.2574,oldExact:false,newExact:false},
+  {i:97,orig:"The new implementation aims to reduce errors caused by unnecessary intermediate transformations.",old:"The new arbitrary implementation aims to reduce errors caused by unnecessary intermediate conversions.",nw:"The new implementation aims to reduce errors caused by unnecessary intermediate conversions.",oldSim:0.8137,newSim:0.9063,oldExact:false,newExact:false},
+  {i:98,orig:"Our goal is to maximize round-trip accuracy while keeping the cipher intact.",old:"Our goal is to maximize round-trip accuracy while keeping the cipher intact.",nw:"Our goal is to maximize round-trip accuracy while keeping the cipher intact.",oldSim:1,newSim:1,oldExact:true,newExact:true},
+  {i:99,orig:"The old system often over-normalizes text and loses subtle distinctions.",old:"Paleomedical systems often over-normalize text and lose subtle distinctions.",nw:"Older systems often over-normalize text and lose subtle distinctions.",oldSim:0.8289,newSim:0.875,oldExact:false,newExact:false},
+  {i:100,orig:"The redesign tries to keep the meaning intact until the final translation step.",old:"The redesign attempts to keep the meaning intact until the final translation.",nw:"The redesign attempts to keep the meaning intact until the final translation step.",oldSim:0.8608,newSim:0.9268,oldExact:false,newExact:false},
+  {i:101,orig:"The benchmark covers greetings, names, punctuation, numbers, technical terms, and long prose.",old:"This bench space covers greetings, names, punctuation, numbers, technical terms, and medical prose.",nw:"This benchmark covers greetings, names, punctuation, numbers, jargon, and long prose.",oldSim:0.8586,newSim:0.828,oldExact:false,newExact:false}
+];
+
+/* ─── Chart ─── */
+const bands = [
+  { label: "1.0 (exact)", test: d => d.newSim >= 1.0,                   testO: d => d.oldSim >= 1.0 },
+  { label: "0.9 – 1.0",   test: d => d.newSim >= 0.9 && d.newSim < 1.0, testO: d => d.oldSim >= 0.9 && d.oldSim < 1.0 },
+  { label: "0.8 – 0.9",   test: d => d.newSim >= 0.8 && d.newSim < 0.9, testO: d => d.oldSim >= 0.8 && d.oldSim < 0.9 },
+  { label: "0.7 – 0.8",   test: d => d.newSim >= 0.7 && d.newSim < 0.8, testO: d => d.oldSim >= 0.7 && d.oldSim < 0.8 },
+  { label: "0.6 – 0.7",   test: d => d.newSim >= 0.6 && d.newSim < 0.7, testO: d => d.oldSim >= 0.6 && d.oldSim < 0.7 },
+  { label: "< 0.6",        test: d => d.newSim < 0.6,                    testO: d => d.oldSim < 0.6 }
+];
+
+const chartEl = document.getElementById('chartRows');
+const maxCount = 101;
+bands.forEach(b => {
+  const nCount = DATA.filter(b.test).length;
+  const oCount = DATA.filter(b.testO).length;
+  const nPct = (nCount / maxCount * 100).toFixed(1);
+  const oPct = (oCount / maxCount * 100).toFixed(1);
+  chartEl.innerHTML += `
+    <div class="chart-row">
+      <div class="chart-band-label">${b.label}</div>
+      <div class="bar-group">
+        <div class="bar-track"><div class="bar-fill bar-fill-old" style="width:${oPct}%"></div></div>
+        <div class="bar-track"><div class="bar-fill bar-fill-new" style="width:${nPct}%"></div></div>
+      </div>
+      <div></div>
+      <div class="chart-count" style="line-height:1.3; font-size:11px; color:var(--text-ter);">
+        <span style="color:var(--sand)">${oCount}</span><br>
+        <span style="color:var(--teal)">${nCount}</span>
+      </div>
+    </div>`;
+});
+
+/* ─── Helpers ─── */
+function simClass(v) {
+  if (v >= 0.9) return 'sim-green';
+  if (v >= 0.7) return 'sim-yellow';
+  return 'sim-red';
+}
+function trunc(str, n) {
+  return str.length > n ? str.slice(0, n - 1) + '…' : str;
+}
+function fmtSim(v) {
+  return (v * 100).toFixed(1) + '%';
+}
+
+/* ─── Render table ─── */
+let currentFilter = 'all';
+let currentSearch = '';
+let currentSort = 'index';
+
+function applyFilter(d) {
+  if (currentFilter === 'new-wins') return d.newSim > d.oldSim;
+  if (currentFilter === 'old-wins') return d.oldSim > d.newSim;
+  if (currentFilter === 'tied')     return Math.abs(d.newSim - d.oldSim) < 0.001;
+  if (currentFilter === 'exact-new') return d.newSim >= 1.0;
+  if (currentFilter === 'failed')   return d.newSim < 0.6;
+  return true;
+}
+function applySearch(d) {
+  if (!currentSearch) return true;
+  return d.orig.toLowerCase().includes(currentSearch.toLowerCase());
+}
+function applySort(arr) {
+  if (currentSort === 'new-desc') return [...arr].sort((a,b) => b.newSim - a.newSim);
+  if (currentSort === 'new-asc')  return [...arr].sort((a,b) => a.newSim - b.newSim);
+  if (currentSort === 'delta-desc') return [...arr].sort((a,b) => (b.newSim-b.oldSim) - (a.newSim-a.oldSim));
+  return [...arr].sort((a,b) => a.i - b.i);
+}
+
+function renderTable() {
+  const visible = applySort(DATA.filter(d => applyFilter(d) && applySearch(d)));
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  visible.forEach(d => {
+    const delta = d.newSim - d.oldSim;
+    const dClass = Math.abs(delta) < 0.001 ? 'delta-zero' : delta > 0 ? 'delta-pos' : 'delta-neg';
+    const dSign  = delta > 0.0005 ? '+' : delta < -0.0005 ? '−' : '±';
+    const dVal   = Math.abs(delta * 100).toFixed(1) + '%';
+    const newStar = d.newSim >= 1.0 ? '<span class="exact-star" title="Exact match">&#9670;</span>' : '';
+    const oldStar = d.oldSim >= 1.0 ? '<span class="exact-star" title="Exact match">&#9670;</span>' : '';
+    tbody.insertAdjacentHTML('beforeend', `<tr>
+      <td>${d.i}</td>
+      <td><span class="cell-text orig" title="${d.orig.replace(/"/g,'&quot;')}">${trunc(d.orig, 62)}</span></td>
+      <td><span class="cell-text dimmed" title="${d.old.replace(/"/g,'&quot;')}">${trunc(d.old, 55)}</span></td>
+      <td><span class="cell-text" title="${d.nw.replace(/"/g,'&quot;')}">${trunc(d.nw, 55)}</span></td>
+      <td><span class="sim-badge ${simClass(d.oldSim)}">${fmtSim(d.oldSim)}${oldStar}</span></td>
+      <td><span class="sim-badge ${simClass(d.newSim)}">${fmtSim(d.newSim)}${newStar}</span></td>
+      <td><span class="delta-badge ${dClass}">${dSign}${dVal}</span></td>
+    </tr>`);
+  });
+  document.getElementById('tableFooter').textContent =
+    `Showing ${visible.length} of ${DATA.length}`;
+}
+
+/* ─── Controls wiring ─── */
+document.getElementById('filterBtns').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  renderTable();
+  saveState();
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value;
+  renderTable();
+  saveState();
+});
+
+document.getElementById('sortSelect').addEventListener('change', e => {
+  currentSort = e.target.value;
+  renderTable();
+  saveState();
+});
+
+renderTable();
+
+/* ─── Persistence ─── */
+const STORAGE_KEY = `artifact-state:${location.pathname}`;
+const STATE_SCHEMA_VERSION = 1;
+const ARTIFACT_REVISION = '1.0.0';
+let artifactRevision = ARTIFACT_REVISION;
+const saveStatusEl = document.getElementById('saveStatus');
+let inFlightSave = null;
+let queuedState = null;
+
+function setSaveStatus(status) {
+  saveStatusEl.className = 'save-status';
+  if (status === 'Saving...') { saveStatusEl.classList.add('saving'); saveStatusEl.textContent = 'Saving...'; }
+  else if (status === 'Saved') { saveStatusEl.classList.add('saved'); saveStatusEl.textContent = 'Saved'; setTimeout(() => { if (saveStatusEl.textContent === 'Saved') saveStatusEl.textContent = ''; }, 2500); }
+  else if (status === 'Save failed') { saveStatusEl.classList.add('failed'); saveStatusEl.textContent = 'Save failed'; }
+  else { saveStatusEl.textContent = status; }
+}
+
+async function persistState(state, { keepalive = false } = {}) {
+  setSaveStatus('Saving...');
+  try {
+    const res = await fetch('/artifacts/state', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      keepalive,
+      body: JSON.stringify({ path: location.pathname, state_json: state, state_schema_version: STATE_SCHEMA_VERSION, artifact_revision: artifactRevision }),
+    });
+    if (res.ok) {
+      const payload = await res.json();
+      artifactRevision = payload.artifact_revision ?? payload.state?.artifact_revision ?? artifactRevision;
+      setSaveStatus('Saved');
+    } else {
+      setSaveStatus('Save failed');
+    }
+  } catch { setSaveStatus('Save failed'); }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
+async function flushSaveQueue(options) {
+  while (queuedState) {
+    const next = queuedState; queuedState = null;
+    await persistState(next, options);
+  }
+  inFlightSave = null;
+}
+
+function saveState() {
+  const state = { filter: currentFilter, search: currentSearch, sort: currentSort };
+  queuedState = state;
+  if (!inFlightSave) inFlightSave = flushSaveQueue();
+}
+
+function flushPendingSave() {
+  if (!queuedState) return;
+  const next = queuedState; queuedState = null;
+  void persistState(next, { keepalive: true });
+}
+
+window.addEventListener('pagehide', flushPendingSave);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushPendingSave(); });
+
+async function loadPersistedState() {
+  let saved = {};
+  try {
+    const res = await fetch(`/artifacts/state?path=${encodeURIComponent(location.pathname)}`, { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      artifactRevision = payload.artifact_revision ?? payload.state?.artifact_revision ?? artifactRevision;
+      saved = payload.state?.state_json ?? {};
+    }
+  } catch {
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch {}
+  }
+  if (saved.filter) {
+    currentFilter = saved.filter;
+    const btn = document.querySelector(`.filter-btn[data-filter="${currentFilter}"]`);
+    if (btn) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+  }
+  if (saved.search !== undefined) { currentSearch = saved.search; document.getElementById('searchInput').value = saved.search; }
+  if (saved.sort) { currentSort = saved.sort; document.getElementById('sortSelect').value = saved.sort; }
+  renderTable();
+}
+
+loadPersistedState();
+</script>
+</body>
+</html>
