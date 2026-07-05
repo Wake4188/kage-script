@@ -6,12 +6,7 @@ import { Moon, Sun, Languages } from "lucide-react";
 import { toHiragana } from "wanakana";
 import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
-import {
-  addTranslationFavoriteEntry,
-  addTranslationHistoryEntry,
-  buildShareableTranslationUrl,
-  type TranslationRecord,
-} from "@/lib/translation-utils";
+import { buildShareableTranslationUrl } from "@/lib/translation-utils";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
 import { trackRecentPage } from "@/components/learning/RecentlyViewed";
@@ -91,10 +86,8 @@ function Index() {
   const [decoded, setDecoded] = useState("");
   const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState<TranslationRecord[]>([]);
-  const [favorites, setFavorites] = useState<TranslationRecord[]>([]);
   const [shareUrl, setShareUrl] = useState("");
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied">("idle");
   const { isDark, toggle, mounted } = useTheme();
   const { lang, setLang, t } = useI18n();
   const [langOpen, setLangOpen] = useState(false);
@@ -114,17 +107,17 @@ function Index() {
     mutationFn: (text: string) => translateFn({ data: { text } }),
     onSuccess: (res) => {
       const nextHiragana = res.hiragana;
-      const nextNinja = shinobiEncode(nextHiragana, res.japanese ? { japanese: res.japanese } : undefined);
+      const trimmed = input.trim();
+      const metadata: Record<string, string> = {};
+      if (res.japanese) metadata.japanese = res.japanese;
+      if (trimmed) metadata.original = trimmed;
+      const nextNinja = shinobiEncode(
+        nextHiragana,
+        Object.keys(metadata).length ? metadata : undefined,
+      );
       setHiragana(nextHiragana);
       setNinja(nextNinja);
-      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
-        mode: "encode",
-        input: input.trim(),
-        output: nextNinja,
-      };
-      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
-      saveHistoryItem(historyEntry);
-      setShareUrl(buildShareableTranslationUrl("/", "encode", input.trim()));
+      setShareUrl(buildShareableTranslationUrl("/", "encode", trimmed));
     },
     onError: () => {
       // Client-side fallback: convert latin/kana input to hiragana with
@@ -142,17 +135,11 @@ function Index() {
 
   const translateBackFn = useServerFn(translateFromHiragana);
   const decodeMutation = useMutation({
-    mutationFn: (text: string) => translateBackFn({ data: { text, targetLang: lang } }),
+    mutationFn: (payload: { text: string; original?: string }) =>
+      translateBackFn({ data: { text: payload.text, targetLang: lang, original: payload.original } }),
     onSuccess: (res) => {
       const outputText = res.english;
       setEnglish(outputText);
-      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
-        mode: "decode",
-        input: input.trim(),
-        output: outputText,
-      };
-      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
-      saveHistoryItem(historyEntry);
       setShareUrl(buildShareableTranslationUrl("/", "decode", input.trim()));
     },
   });
@@ -166,33 +153,6 @@ function Index() {
   useEffect(() => {
     trackRecentPage("Translator", "/");
   }, []);
-
-  useEffect(() => {
-    const storedHistory = window.localStorage.getItem("kage-translation-history");
-    const storedFavorites = window.localStorage.getItem("kage-translation-favorites");
-    if (storedHistory) {
-      try {
-        setHistory(JSON.parse(storedHistory));
-      } catch {}
-    }
-    if (storedFavorites) {
-      try {
-        setFavorites(JSON.parse(storedFavorites));
-      } catch {}
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("kage-translation-history", JSON.stringify(history));
-    } catch {}
-  }, [history]);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("kage-translation-favorites", JSON.stringify(favorites));
-    } catch {}
-  }, [favorites]);
 
   const stats = useMemo(() => {
     const trimmedInput = input.trim();
