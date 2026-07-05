@@ -450,140 +450,16 @@ function Index() {
             <span>
               {stats.inputCharacters} char · {stats.wordCount} word · {stats.outputCharacters} {stats.modeLabel}
             </span>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-              <button
-                type="button"
-                onClick={() => currentRecord && addFavorite(currentRecord)}
-                disabled={!currentRecord}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={copyShareLink}
-                disabled={!shareUrl}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                {shareCopied ? "Link ✓" : "Share"}
-              </button>
-              <button
-                type="button"
-                onClick={downloadTxt}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .txt
-              </button>
-              <button
-                type="button"
-                onClick={downloadSvg}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .svg
-              </button>
-              <button
-                type="button"
-                onClick={downloadPng}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .png
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={share}
+              disabled={!output}
+              className="text-foreground transition hover:opacity-60 disabled:opacity-20"
+            >
+              {shareStatus === "shared" ? "Shared ✓" : shareStatus === "copied" ? "Copied ✓" : "Share"}
+            </button>
           </div>
         </section>
-
-        {/* History & favorites — text-only, matches header aesthetic */}
-        {(history.length > 0 || favorites.length > 0) && (
-          <section className="mt-12 border-t border-foreground pt-4" aria-labelledby="history-heading">
-            <h2 id="history-heading" className="sr-only">History and favorites</h2>
-            <div className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em]">
-              <div className="flex items-center gap-5">
-                <button
-                  type="button"
-                  onClick={() => setPanelOpen(panelOpen === "history" ? false : "history")}
-                  aria-expanded={panelOpen === "history"}
-                  className={"transition hover:opacity-60 " + (panelOpen === "history" ? "text-foreground" : "text-muted-foreground")}
-                >
-                  Recent ({history.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPanelOpen(panelOpen === "favorites" ? false : "favorites")}
-                  aria-expanded={panelOpen === "favorites"}
-                  className={"transition hover:opacity-60 " + (panelOpen === "favorites" ? "text-foreground" : "text-muted-foreground")}
-                >
-                  Saved ({favorites.length})
-                </button>
-              </div>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <button type="button" onClick={exportHistory} className="hover:text-foreground">Export</button>
-                <button type="button" onClick={() => importInputRef.current?.click()} className="hover:text-foreground">Import</button>
-                {panelOpen && (
-                  <button
-                    type="button"
-                    onClick={() => (panelOpen === "history" ? clearHistory() : clearFavorites())}
-                    className="hover:text-foreground"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-              <input
-                ref={importInputRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) importHistory(f);
-                  e.target.value = "";
-                }}
-              />
-            </div>
-
-            {panelOpen && (
-              <ul className="mt-4 divide-y divide-foreground/10">
-                {(panelOpen === "history" ? history : favorites).length === 0 && (
-                  <li className="py-3 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Nothing yet.
-                  </li>
-                )}
-                {(panelOpen === "history" ? history : favorites).map((r) => (
-                  <li key={r.id} className="flex items-start justify-between gap-3 py-3">
-                    <button
-                      type="button"
-                      onClick={() => loadRecord(r)}
-                      className="flex-1 text-left"
-                    >
-                      <span className="font-mono-display text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                        {r.mode}
-                      </span>
-                      <span className="ml-2 break-words text-sm text-foreground">{r.input.slice(0, 80)}</span>
-                      <span className="mt-1 block break-words text-xs text-foreground/50">
-                        → {r.output.slice(0, 80)}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        panelOpen === "history"
-                          ? removeHistoryItem(r.id)
-                          : removeFavoriteItem(r.id)
-                      }
-                      aria-label="Remove"
-                      className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
           <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
