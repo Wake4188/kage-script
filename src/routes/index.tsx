@@ -179,115 +179,6 @@ function Index() {
     } catch {}
   }, []);
 
-  const downloadTxt = () => {
-    if (!output) return;
-    const body = `Kage / 影 — Shinobi Iroha (${mode})\n\nInput:\n${input}\n\nOutput:\n${output}\n${hiragana ? `\nHiragana:\n${hiragana}\n` : ""}${decoded ? `\nDecoded kana:\n${decoded}\n` : ""}\nhttps://kage-script.lovable.app`;
-    const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-translation-${mode}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const exportHistory = () => {
-    const payload = JSON.stringify({ history, favorites }, null, 2);
-    const blob = new Blob([payload], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-history.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const importHistory = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result));
-        if (Array.isArray(parsed?.history)) setHistory(parsed.history.slice(0, 8));
-        if (Array.isArray(parsed?.favorites)) setFavorites(parsed.favorites.slice(0, 8));
-      } catch {}
-    };
-    reader.readAsText(file);
-  };
-
-  const clearHistory = () => setHistory([]);
-  const clearFavorites = () => setFavorites([]);
-  const removeHistoryItem = (id: string) =>
-    setHistory((h) => h.filter((r) => r.id !== id));
-  const removeFavoriteItem = (id: string) =>
-    setFavorites((f) => f.filter((r) => r.id !== id));
-  const loadRecord = (r: TranslationRecord) => {
-    setMode(r.mode);
-    setInput(r.input);
-    resetOutput();
-  };
-
-  const [panelOpen, setPanelOpen] = useState<false | "history" | "favorites">(false);
-  const importInputRef = useRef<HTMLInputElement | null>(null);
-
-  const downloadSvg = async () => {
-    if (!output) return;
-    const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
-  <rect width="1080" height="420" fill="#050505" />
-  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
-  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
-  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
-  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
-</svg>`;
-    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-translation-${mode}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const downloadPng = async () => {
-    if (!output) return;
-    const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
-  <rect width="1080" height="420" fill="#050505" />
-  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
-  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
-  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
-  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
-</svg>`;
-    const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(svgBlob);
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1080;
-      canvas.height = 420;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.fillStyle = "#050505";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0);
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `kage-translation-${mode}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-      });
-      URL.revokeObjectURL(url);
-    };
-    image.src = url;
-  };
-
   const resetOutput = () => {
     setHiragana("");
     setNinja("");
@@ -311,35 +202,11 @@ function Index() {
       resetOutput();
       setDecoded(hira);
       const translateSource = metadata?.japanese ?? hira;
-      decodeMutation.mutate(translateSource);
+      decodeMutation.mutate({ text: translateSource, original: metadata?.original });
     }
   };
 
-  const saveHistoryItem = (item: TranslationRecord) => {
-    setHistory((current) => addTranslationHistoryEntry(current, item));
-  };
-
-  const addFavorite = (item: Omit<TranslationRecord, "id" | "timestamp">) => {
-    setFavorites((current) => addTranslationFavoriteEntry(current, item));
-  };
-
-  const generateShareLink = (item: TranslationRecord) => {
-    const url = buildShareableTranslationUrl("/", item.mode, item.input);
-    setShareUrl(url);
-    return url;
-  };
-
   const output = mode === "encode" ? ninja : english;
-
-  const currentRecord = useMemo(() => {
-    const trimmedInput = input.trim();
-    if (!trimmedInput || !output) return null;
-    return {
-      mode,
-      input: trimmedInput,
-      output,
-    } as Omit<TranslationRecord, "id" | "timestamp">;
-  }, [input, mode, output]);
 
   const copy = async () => {
     if (!output) return;
@@ -351,14 +218,21 @@ function Index() {
     }
   };
 
-  const copyShareLink = async () => {
-    if (!shareUrl) return;
+  const share = async () => {
+    if (!output) return;
+    const url = shareUrl || (typeof window !== "undefined" ? window.location.href : "");
+    const shareData = { title: "Kage / 影 — Shinobi Iroha", text: output, url };
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setShareCopied(true);
-      setTimeout(() => setShareCopied(false), 1500);
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        await navigator.share(shareData);
+        setShareStatus("shared");
+      } else {
+        await navigator.clipboard.writeText(`${output}${url ? `\n${url}` : ""}`);
+        setShareStatus("copied");
+      }
+      setTimeout(() => setShareStatus("idle"), 1500);
     } catch {
-      setShareCopied(false);
+      setShareStatus("idle");
     }
   };
 
