@@ -28,6 +28,7 @@ async function getKuroshiro(): Promise<Kuroshiro | null> {
 const InputSchema = z.object({
   text: z.string().min(1).max(2000),
   targetLang: z.enum(["en", "fr", "es", "de", "ja"]).optional(),
+  original: z.string().max(2000).optional(),
 });
 
 type GTSentence = [string | null, string | null, string | null, ...unknown[]];
@@ -210,7 +211,9 @@ async function translateWithGeminiToJapanese(
     "Return ONLY JSON with the keys japanese and hiragana.",
     "Requirements:",
     "- Preserve the intended meaning as closely as possible.",
-    "- Use natural Japanese.",
+    "- Keep sentence structure and word order as close to the source as possible.",
+    "- Preserve proper nouns, technical terms, numbers, file paths, and code identifiers verbatim or as phonetic katakana — do not paraphrase them.",
+    "- Do not add politeness markers (です/ます) or filler phrases that are not in the source.",
     "- Provide the hiragana reading that matches the Japanese sentence exactly.",
     "- Do not include commentary or markdown.",
     `Input text: ${text}`,
@@ -222,6 +225,7 @@ async function translateWithGeminiToJapanese(
 async function recoverJapaneseWithGemini(
   hiragana: string,
   targetLang: string,
+  original?: string,
 ): Promise<{ japanese: string; translation: string } | null> {
   if (!hiragana?.trim()) return null;
 
@@ -234,7 +238,7 @@ async function recoverJapaneseWithGemini(
       ja: "Japanese",
     }[targetLang] ?? "English";
 
-  const prompt = [
+  const promptLines = [
     "The following input is the phonetic reading of a Japanese sentence, possibly imperfect.",
     "Recover the most likely natural Japanese sentence and translate it to the target language.",
     "Return ONLY JSON with the keys japanese and translation.",
@@ -242,9 +246,16 @@ async function recoverJapaneseWithGemini(
     "- Preserve the intended meaning as closely as possible.",
     "- Keep the Japanese sentence natural and readable.",
     "- Do not include commentary or markdown.",
-    `Target language: ${targetLabel}`,
-    `Input: ${hiragana}`,
-  ].join("\n");
+  ];
+  if (original) {
+    promptLines.push(
+      "- The source text before encoding is provided below. Your translation MUST reproduce it as faithfully as possible, correcting any phonetic drift in the kana.",
+      "- Preserve proper nouns, technical terms, numbers, and code identifiers from the source verbatim.",
+      `Source text: ${original}`,
+    );
+  }
+  promptLines.push(`Target language: ${targetLabel}`, `Input: ${hiragana}`);
+  const prompt = promptLines.join("\n");
 
   return callGeminiJson<{ japanese: string; translation: string }>(
     "decode",
@@ -274,8 +285,26 @@ export const translateFromHiragana = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const target = (data.targetLang ?? "en").toLowerCase();
 
+    // Highest-fidelity path: if the cipher carried the original source text
+    // in its invisible metadata channel, translate that directly. This turns
+    // "decode degraded kana" into a lossless lookup, matching the encode
+    // input exactly when target === source language.
+    if (data.original?.trim()) {
+      const source = data.original.trim();
+      if (target === "ja") return { english: source };
+      try {
+        const json = await gt(source, "auto", target, ["t"]);
+        let out = "";
+        for (const s of json[0] ?? []) if (typeof s?.[0] === "string") out += s[0];
+        out = out.trim();
+        if (out) return { english: out };
+      } catch {
+        // fall through to kana recovery paths
+      }
+    }
+
     // Prefer a higher-fidelity recovery path when Gemini is configured.
-    const gemini = await recoverJapaneseWithGemini(data.text, target);
+    const gemini = await recoverJapaneseWithGemini(data.text, target, data.original);
     if (gemini?.translation) {
       return { english: gemini.translation.trim() };
     }
