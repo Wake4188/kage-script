@@ -6,12 +6,7 @@ import { Moon, Sun, Languages } from "lucide-react";
 import { toHiragana } from "wanakana";
 import { shinobiEncode, shinobiDecodeWithMetadata } from "@/lib/shinobi";
 import { translateToHiragana, translateFromHiragana } from "@/lib/translate.functions";
-import {
-  addTranslationFavoriteEntry,
-  addTranslationHistoryEntry,
-  buildShareableTranslationUrl,
-  type TranslationRecord,
-} from "@/lib/translation-utils";
+import { buildShareableTranslationUrl } from "@/lib/translation-utils";
 import { LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { buildCanonicalUrl } from "@/lib/site";
 import { trackRecentPage } from "@/components/learning/RecentlyViewed";
@@ -91,10 +86,8 @@ function Index() {
   const [decoded, setDecoded] = useState("");
   const [english, setEnglish] = useState("");
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState<TranslationRecord[]>([]);
-  const [favorites, setFavorites] = useState<TranslationRecord[]>([]);
   const [shareUrl, setShareUrl] = useState("");
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied">("idle");
   const { isDark, toggle, mounted } = useTheme();
   const { lang, setLang, t } = useI18n();
   const [langOpen, setLangOpen] = useState(false);
@@ -114,17 +107,17 @@ function Index() {
     mutationFn: (text: string) => translateFn({ data: { text } }),
     onSuccess: (res) => {
       const nextHiragana = res.hiragana;
-      const nextNinja = shinobiEncode(nextHiragana, res.japanese ? { japanese: res.japanese } : undefined);
+      const trimmed = input.trim();
+      const metadata: Record<string, string> = {};
+      if (res.japanese) metadata.japanese = res.japanese;
+      if (trimmed) metadata.original = trimmed;
+      const nextNinja = shinobiEncode(
+        nextHiragana,
+        Object.keys(metadata).length ? metadata : undefined,
+      );
       setHiragana(nextHiragana);
       setNinja(nextNinja);
-      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
-        mode: "encode",
-        input: input.trim(),
-        output: nextNinja,
-      };
-      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
-      saveHistoryItem(historyEntry);
-      setShareUrl(buildShareableTranslationUrl("/", "encode", input.trim()));
+      setShareUrl(buildShareableTranslationUrl("/", "encode", trimmed));
     },
     onError: () => {
       // Client-side fallback: convert latin/kana input to hiragana with
@@ -142,17 +135,11 @@ function Index() {
 
   const translateBackFn = useServerFn(translateFromHiragana);
   const decodeMutation = useMutation({
-    mutationFn: (text: string) => translateBackFn({ data: { text, targetLang: lang } }),
+    mutationFn: (payload: { text: string; original?: string }) =>
+      translateBackFn({ data: { text: payload.text, targetLang: lang, original: payload.original } }),
     onSuccess: (res) => {
       const outputText = res.english;
       setEnglish(outputText);
-      const record: Omit<TranslationRecord, "id" | "timestamp"> = {
-        mode: "decode",
-        input: input.trim(),
-        output: outputText,
-      };
-      const historyEntry = addTranslationHistoryEntry([], record, 1)[0];
-      saveHistoryItem(historyEntry);
       setShareUrl(buildShareableTranslationUrl("/", "decode", input.trim()));
     },
   });
@@ -166,33 +153,6 @@ function Index() {
   useEffect(() => {
     trackRecentPage("Translator", "/");
   }, []);
-
-  useEffect(() => {
-    const storedHistory = window.localStorage.getItem("kage-translation-history");
-    const storedFavorites = window.localStorage.getItem("kage-translation-favorites");
-    if (storedHistory) {
-      try {
-        setHistory(JSON.parse(storedHistory));
-      } catch {}
-    }
-    if (storedFavorites) {
-      try {
-        setFavorites(JSON.parse(storedFavorites));
-      } catch {}
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("kage-translation-history", JSON.stringify(history));
-    } catch {}
-  }, [history]);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("kage-translation-favorites", JSON.stringify(favorites));
-    } catch {}
-  }, [favorites]);
 
   const stats = useMemo(() => {
     const trimmedInput = input.trim();
@@ -219,115 +179,6 @@ function Index() {
     } catch {}
   }, []);
 
-  const downloadTxt = () => {
-    if (!output) return;
-    const body = `Kage / 影 — Shinobi Iroha (${mode})\n\nInput:\n${input}\n\nOutput:\n${output}\n${hiragana ? `\nHiragana:\n${hiragana}\n` : ""}${decoded ? `\nDecoded kana:\n${decoded}\n` : ""}\nhttps://kage-script.lovable.app`;
-    const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-translation-${mode}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const exportHistory = () => {
-    const payload = JSON.stringify({ history, favorites }, null, 2);
-    const blob = new Blob([payload], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-history.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const importHistory = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result));
-        if (Array.isArray(parsed?.history)) setHistory(parsed.history.slice(0, 8));
-        if (Array.isArray(parsed?.favorites)) setFavorites(parsed.favorites.slice(0, 8));
-      } catch {}
-    };
-    reader.readAsText(file);
-  };
-
-  const clearHistory = () => setHistory([]);
-  const clearFavorites = () => setFavorites([]);
-  const removeHistoryItem = (id: string) =>
-    setHistory((h) => h.filter((r) => r.id !== id));
-  const removeFavoriteItem = (id: string) =>
-    setFavorites((f) => f.filter((r) => r.id !== id));
-  const loadRecord = (r: TranslationRecord) => {
-    setMode(r.mode);
-    setInput(r.input);
-    resetOutput();
-  };
-
-  const [panelOpen, setPanelOpen] = useState<false | "history" | "favorites">(false);
-  const importInputRef = useRef<HTMLInputElement | null>(null);
-
-  const downloadSvg = async () => {
-    if (!output) return;
-    const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
-  <rect width="1080" height="420" fill="#050505" />
-  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
-  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
-  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
-  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
-</svg>`;
-    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `kage-translation-${mode}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
-  const downloadPng = async () => {
-    if (!output) return;
-    const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="420" viewBox="0 0 1080 420">
-  <rect width="1080" height="420" fill="#050505" />
-  <text x="50" y="80" font-family="JetBrains Mono, monospace" font-size="42" fill="#f8fafc">Kage / 影 — Shinobi Iroha</text>
-  <text x="50" y="160" font-family="JetBrains Mono, monospace" font-size="32" fill="#cbd5e1">${mode === "encode" ? "Encoded" : "Decoded"} output</text>
-  <text x="50" y="220" font-family="JetBrains Mono, monospace" font-size="28" fill="#f8fafc">${output.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>
-  <text x="50" y="360" font-family="JetBrains Mono, monospace" font-size="18" fill="#94a3b8">kage-script.lovable.app</text>
-</svg>`;
-    const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(svgBlob);
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1080;
-      canvas.height = 420;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.fillStyle = "#050505";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0);
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `kage-translation-${mode}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-      });
-      URL.revokeObjectURL(url);
-    };
-    image.src = url;
-  };
-
   const resetOutput = () => {
     setHiragana("");
     setNinja("");
@@ -351,35 +202,11 @@ function Index() {
       resetOutput();
       setDecoded(hira);
       const translateSource = metadata?.japanese ?? hira;
-      decodeMutation.mutate(translateSource);
+      decodeMutation.mutate({ text: translateSource, original: metadata?.original });
     }
   };
 
-  const saveHistoryItem = (item: TranslationRecord) => {
-    setHistory((current) => addTranslationHistoryEntry(current, item));
-  };
-
-  const addFavorite = (item: Omit<TranslationRecord, "id" | "timestamp">) => {
-    setFavorites((current) => addTranslationFavoriteEntry(current, item));
-  };
-
-  const generateShareLink = (item: TranslationRecord) => {
-    const url = buildShareableTranslationUrl("/", item.mode, item.input);
-    setShareUrl(url);
-    return url;
-  };
-
   const output = mode === "encode" ? ninja : english;
-
-  const currentRecord = useMemo(() => {
-    const trimmedInput = input.trim();
-    if (!trimmedInput || !output) return null;
-    return {
-      mode,
-      input: trimmedInput,
-      output,
-    } as Omit<TranslationRecord, "id" | "timestamp">;
-  }, [input, mode, output]);
 
   const copy = async () => {
     if (!output) return;
@@ -391,14 +218,21 @@ function Index() {
     }
   };
 
-  const copyShareLink = async () => {
-    if (!shareUrl) return;
+  const share = async () => {
+    if (!output) return;
+    const url = shareUrl || (typeof window !== "undefined" ? window.location.href : "");
+    const shareData = { title: "Kage / 影 — Shinobi Iroha", text: output, url };
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setShareCopied(true);
-      setTimeout(() => setShareCopied(false), 1500);
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        await navigator.share(shareData);
+        setShareStatus("shared");
+      } else {
+        await navigator.clipboard.writeText(`${output}${url ? `\n${url}` : ""}`);
+        setShareStatus("copied");
+      }
+      setTimeout(() => setShareStatus("idle"), 1500);
     } catch {
-      setShareCopied(false);
+      setShareStatus("idle");
     }
   };
 
@@ -616,140 +450,16 @@ function Index() {
             <span>
               {stats.inputCharacters} char · {stats.wordCount} word · {stats.outputCharacters} {stats.modeLabel}
             </span>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-              <button
-                type="button"
-                onClick={() => currentRecord && addFavorite(currentRecord)}
-                disabled={!currentRecord}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={copyShareLink}
-                disabled={!shareUrl}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                {shareCopied ? "Link ✓" : "Share"}
-              </button>
-              <button
-                type="button"
-                onClick={downloadTxt}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .txt
-              </button>
-              <button
-                type="button"
-                onClick={downloadSvg}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .svg
-              </button>
-              <button
-                type="button"
-                onClick={downloadPng}
-                disabled={!output}
-                className="text-foreground transition hover:opacity-60 disabled:opacity-20"
-              >
-                .png
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={share}
+              disabled={!output}
+              className="text-foreground transition hover:opacity-60 disabled:opacity-20"
+            >
+              {shareStatus === "shared" ? "Shared ✓" : shareStatus === "copied" ? "Copied ✓" : "Share"}
+            </button>
           </div>
         </section>
-
-        {/* History & favorites — text-only, matches header aesthetic */}
-        {(history.length > 0 || favorites.length > 0) && (
-          <section className="mt-12 border-t border-foreground pt-4" aria-labelledby="history-heading">
-            <h2 id="history-heading" className="sr-only">History and favorites</h2>
-            <div className="flex items-center justify-between font-mono-display text-[10px] uppercase tracking-[0.2em]">
-              <div className="flex items-center gap-5">
-                <button
-                  type="button"
-                  onClick={() => setPanelOpen(panelOpen === "history" ? false : "history")}
-                  aria-expanded={panelOpen === "history"}
-                  className={"transition hover:opacity-60 " + (panelOpen === "history" ? "text-foreground" : "text-muted-foreground")}
-                >
-                  Recent ({history.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPanelOpen(panelOpen === "favorites" ? false : "favorites")}
-                  aria-expanded={panelOpen === "favorites"}
-                  className={"transition hover:opacity-60 " + (panelOpen === "favorites" ? "text-foreground" : "text-muted-foreground")}
-                >
-                  Saved ({favorites.length})
-                </button>
-              </div>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <button type="button" onClick={exportHistory} className="hover:text-foreground">Export</button>
-                <button type="button" onClick={() => importInputRef.current?.click()} className="hover:text-foreground">Import</button>
-                {panelOpen && (
-                  <button
-                    type="button"
-                    onClick={() => (panelOpen === "history" ? clearHistory() : clearFavorites())}
-                    className="hover:text-foreground"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-              <input
-                ref={importInputRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) importHistory(f);
-                  e.target.value = "";
-                }}
-              />
-            </div>
-
-            {panelOpen && (
-              <ul className="mt-4 divide-y divide-foreground/10">
-                {(panelOpen === "history" ? history : favorites).length === 0 && (
-                  <li className="py-3 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Nothing yet.
-                  </li>
-                )}
-                {(panelOpen === "history" ? history : favorites).map((r) => (
-                  <li key={r.id} className="flex items-start justify-between gap-3 py-3">
-                    <button
-                      type="button"
-                      onClick={() => loadRecord(r)}
-                      className="flex-1 text-left"
-                    >
-                      <span className="font-mono-display text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                        {r.mode}
-                      </span>
-                      <span className="ml-2 break-words text-sm text-foreground">{r.input.slice(0, 80)}</span>
-                      <span className="mt-1 block break-words text-xs text-foreground/50">
-                        → {r.output.slice(0, 80)}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        panelOpen === "history"
-                          ? removeHistoryItem(r.id)
-                          : removeFavoriteItem(r.id)
-                      }
-                      aria-label="Remove"
-                      className="font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition hover:text-foreground"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
 
         <footer className="mt-auto border-t border-foreground pt-4 font-mono-display text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
           <div className="flex flex-nowrap items-center gap-2 overflow-x-auto whitespace-nowrap sm:gap-3">
