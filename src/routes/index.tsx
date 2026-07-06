@@ -221,19 +221,34 @@ function Index() {
   const share = async () => {
     if (!output) return;
     const url = shareUrl || (typeof window !== "undefined" ? window.location.href : "");
-    const shareData = { title: "Kage / 影 — Shinobi Iroha", text: output, url };
+    const payload = `${output}${url ? `\n${url}` : ""}`;
+    const shareData: ShareData = { title: "Kage / 影 — Shinobi Iroha", text: output, url };
+    const nav = typeof navigator !== "undefined" ? navigator : undefined;
+    const canShare =
+      !!nav &&
+      typeof nav.share === "function" &&
+      (typeof nav.canShare !== "function" || nav.canShare(shareData));
     try {
-      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-        await navigator.share(shareData);
+      if (canShare) {
+        await nav!.share(shareData);
         setShareStatus("shared");
-      } else {
-        await navigator.clipboard.writeText(`${output}${url ? `\n${url}` : ""}`);
+      } else if (nav?.clipboard?.writeText) {
+        await nav.clipboard.writeText(payload);
         setShareStatus("copied");
+      } else {
+        return;
       }
-      setTimeout(() => setShareStatus("idle"), 1500);
-    } catch {
-      setShareStatus("idle");
+    } catch (err) {
+      // AbortError = user cancelled the native sheet; treat as no-op.
+      if ((err as DOMException)?.name === "AbortError") return;
+      try {
+        await nav?.clipboard?.writeText(payload);
+        setShareStatus("copied");
+      } catch {
+        return;
+      }
     }
+    setTimeout(() => setShareStatus("idle"), 1500);
   };
 
   const switchMode = (next: "encode" | "decode") => {
