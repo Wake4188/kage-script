@@ -222,33 +222,47 @@ function Index() {
     if (!output) return;
     const url = shareUrl || (typeof window !== "undefined" ? window.location.href : "");
     const payload = `${output}${url ? `\n${url}` : ""}`;
-    const shareData: ShareData = { title: "Kage / 影 — Shinobi Iroha", text: output, url };
     const nav = typeof navigator !== "undefined" ? navigator : undefined;
-    const canShare =
-      !!nav &&
-      typeof nav.share === "function" &&
-      (typeof nav.canShare !== "function" || nav.canShare(shareData));
-    try {
-      if (canShare) {
-        await nav!.share(shareData);
-        setShareStatus("shared");
-      } else if (nav?.clipboard?.writeText) {
-        await nav.clipboard.writeText(payload);
-        setShareStatus("copied");
-      } else {
-        return;
-      }
-    } catch (err) {
-      // AbortError = user cancelled the native sheet; treat as no-op.
-      if ((err as DOMException)?.name === "AbortError") return;
-      try {
-        await nav?.clipboard?.writeText(payload);
-        setShareStatus("copied");
-      } catch {
-        return;
+    // Try native OS share sheet first (mobile / supported desktops).
+    if (nav && typeof nav.share === "function") {
+      const candidates: ShareData[] = [
+        { title: "Kage / 影 — Shinobi Iroha", text: output, url },
+        { title: "Kage / 影 — Shinobi Iroha", text: payload },
+        { text: output },
+      ];
+      for (const data of candidates) {
+        try {
+          if (typeof nav.canShare === "function" && !nav.canShare(data)) continue;
+          await nav.share(data);
+          setShareStatus("shared");
+          setTimeout(() => setShareStatus("idle"), 1500);
+          return;
+        } catch (err) {
+          if ((err as DOMException)?.name === "AbortError") return;
+          // try next candidate / fall through to clipboard
+        }
       }
     }
-    setTimeout(() => setShareStatus("idle"), 1500);
+    // Clipboard fallback.
+    try {
+      if (nav?.clipboard?.writeText) {
+        await nav.clipboard.writeText(payload);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = payload;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setShareStatus("copied");
+      setTimeout(() => setShareStatus("idle"), 1500);
+    } catch {
+      /* noop */
+    }
   };
 
   const switchMode = (next: "encode" | "decode") => {
@@ -461,7 +475,7 @@ function Index() {
           )}
 
           {/* Elegant inline toolbar — matches the "COPY" text-button aesthetic */}
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-foreground/10 pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground/70">
+          <div className="mt-8 mb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-foreground/10 pt-4 pb-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground/70">
             <span>
               {stats.inputCharacters} char · {stats.wordCount} word · {stats.outputCharacters} {stats.modeLabel}
             </span>
