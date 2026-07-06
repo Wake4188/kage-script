@@ -461,7 +461,7 @@ function Index() {
           )}
 
           {/* Elegant inline toolbar — matches the "COPY" text-button aesthetic */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono-display text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-foreground/10 pt-4 font-mono-display text-[10px] uppercase tracking-[0.2em] text-foreground/70">
             <span>
               {stats.inputCharacters} char · {stats.wordCount} word · {stats.outputCharacters} {stats.modeLabel}
             </span>
