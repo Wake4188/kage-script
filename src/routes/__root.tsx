@@ -105,8 +105,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap",
-        // @ts-expect-error fetchpriority is a valid HTML attribute
-        fetchpriority: "high",
       },
     ],
     scripts: [
