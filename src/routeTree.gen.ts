@@ -14,6 +14,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NinjaSymbolsRouteImport } from './routes/ninja-symbols'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LearningResourcesRouteImport } from './routes/learning-resources'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as KujiInHandSignsRouteImport } from './routes/kuji-in-hand-signs'
@@ -23,6 +24,9 @@ import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as CommonMistakesRouteImport } from './routes/common-mistakes'
 import { Route as BansenshukaiHistoryRouteImport } from './routes/bansenshukai-history'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const TranslatorGuideRoute = TranslatorGuideRouteImport.update({
   id: '/translator-guide',
@@ -47,6 +51,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const NinjaSymbolsRoute = NinjaSymbolsRouteImport.update({
   id: '/ninja-symbols',
   path: '/ninja-symbols',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearningResourcesRoute = LearningResourcesRouteImport.update({
@@ -94,6 +103,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -105,11 +132,15 @@ export interface FileRoutesByFullPath {
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
+  '/mcp': typeof McpRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/translator-guide': typeof TranslatorGuideRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -121,11 +152,15 @@ export interface FileRoutesByTo {
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
+  '/mcp': typeof McpRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/translator-guide': typeof TranslatorGuideRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,11 +173,15 @@ export interface FileRoutesById {
   '/kuji-in-hand-signs': typeof KujiInHandSignsRoute
   '/learn': typeof LearnRoute
   '/learning-resources': typeof LearningResourcesRoute
+  '/mcp': typeof McpRoute
   '/ninja-symbols': typeof NinjaSymbolsRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/translator-guide': typeof TranslatorGuideRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,11 +195,15 @@ export interface FileRouteTypes {
     | '/kuji-in-hand-signs'
     | '/learn'
     | '/learning-resources'
+    | '/mcp'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
     | '/translator-guide'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,11 +215,15 @@ export interface FileRouteTypes {
     | '/kuji-in-hand-signs'
     | '/learn'
     | '/learning-resources'
+    | '/mcp'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
     | '/translator-guide'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
+    | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
     | '/'
@@ -188,11 +235,15 @@ export interface FileRouteTypes {
     | '/kuji-in-hand-signs'
     | '/learn'
     | '/learning-resources'
+    | '/mcp'
     | '/ninja-symbols'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
     | '/translator-guide'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,11 +256,15 @@ export interface RootRouteChildren {
   KujiInHandSignsRoute: typeof KujiInHandSignsRoute
   LearnRoute: typeof LearnRoute
   LearningResourcesRoute: typeof LearningResourcesRoute
+  McpRoute: typeof McpRoute
   NinjaSymbolsRoute: typeof NinjaSymbolsRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   TranslatorGuideRoute: typeof TranslatorGuideRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -247,6 +302,13 @@ declare module '@tanstack/react-router' {
       path: '/ninja-symbols'
       fullPath: '/ninja-symbols'
       preLoaderRoute: typeof NinjaSymbolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learning-resources': {
@@ -312,6 +374,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -325,12 +408,27 @@ const rootRouteChildren: RootRouteChildren = {
   KujiInHandSignsRoute: KujiInHandSignsRoute,
   LearnRoute: LearnRoute,
   LearningResourcesRoute: LearningResourcesRoute,
+  McpRoute: McpRoute,
   NinjaSymbolsRoute: NinjaSymbolsRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   TranslatorGuideRoute: TranslatorGuideRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "kage-mcp",
+      "version": "0.1.0",
+      "title": "Kage / 影 — Shinobi Iroha"
+    },
+    "tools": [
+      {
+        "name": "encode_kage",
+        "title": "Encode to Shinobi Iroha",
+        "description": "Translate any text into Japanese hiragana and encode it into the 1676 忍びいろは (Shinobi Iroha) ninja cipher. Returns cipher text plus the intermediate hiragana.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "description": "Text in any language to encode."
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "decode_kage",
+        "title": "Decode from Shinobi Iroha",
+        "description": "Decode 忍びいろは (Shinobi Iroha) ninja cipher text back into hiragana and translate the result into the requested language.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "cipher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000,
+              "description": "Shinobi Iroha cipher text to decode."
+            },
+            "targetLang": {
+              "type": "string",
+              "default": "en",
+              "description": "ISO language code for the final translation (default en)."
+            }
+          },
+          "required": [
+            "cipher"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
