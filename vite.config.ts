@@ -5,6 +5,7 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 export default defineConfig({
   tanstackStart: {
@@ -17,4 +18,7 @@ export default defineConfig({
   // Build for Vercel when deploying outside Lovable's sandbox.
   // Inside Lovable's sandbox this override is ignored and Cloudflare is used.
   nitro: { preset: "vercel" },
+  vite: {
+    plugins: [mcpPlugin()],
+  },
 });
